@@ -112,7 +112,7 @@
   --primary-foreground: #ffffff;
 
   /* Secondary Colors */
-  --secondary: #112218 /* Lighter dark gray */
+  --secondary: #112218; /* Lighter dark gray */
   --secondary-rgb: 45, 45, 45;
   --secondary-foreground: #ffffff;
 

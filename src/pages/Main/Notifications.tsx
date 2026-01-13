@@ -1,7 +1,7 @@
 
-import { Badge } from '@/src/components/ui/badge';
-import { Button } from '@/src/components/ui/button';
-import { Card, CardContent } from '@/src/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
 import React, { useState } from 'react';
 import { Notification } from '../../../types';
 

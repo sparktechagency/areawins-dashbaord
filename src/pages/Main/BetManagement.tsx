@@ -1,5 +1,6 @@
+
 import React, { useState } from "react";
-import { Bet } from "../../types";
+import { Bet } from "../../../types";
 
 const initialBets: Bet[] = [
   {

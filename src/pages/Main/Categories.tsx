@@ -1,9 +1,3 @@
-import { Badge } from "@/src/components/ui/badge";
-import { Button } from "@/src/components/ui/button";
-import { Checkbox } from "@/src/components/ui/checkbox";
-import { Dialog } from "@/src/components/ui/dialog";
-import { Input } from "@/src/components/ui/input";
-import { Label } from "@/src/components/ui/label";
 import React, { useState } from "react";
 import { Category } from "../../../types";
 import {
@@ -12,6 +6,12 @@ import {
   CardHeader,
   CardTitle,
 } from "../../components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
+import Modal from "@/components/ui/modal";
+import { Checkbox } from "@/components/ui/checkbox";
 
 const initialCategories: Category[] = [
   {
@@ -99,12 +99,10 @@ const Categories: React.FC = () => {
           </p>
         </div>
         <Button
-          variant="accent"
           onClick={() => {
             setEditingCategory({ isActive: true });
             setIsModalOpen(true);
           }}
-          className="flex items-center gap-2 w-full md:w-auto px-8"
         >
           <span className="material-symbols-outlined text-lg">add_circle</span>{" "}
           New Category
@@ -178,7 +176,7 @@ const Categories: React.FC = () => {
         ))}
       </div>
 
-      <Dialog
+      <Modal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         title={editingCategory?.id ? "Edit Category" : "Create New Category"}
@@ -190,7 +188,10 @@ const Categories: React.FC = () => {
               required
               value={editingCategory?.name || ""}
               onChange={(e) =>
-                setEditingCategory({ ...editingCategory, name: e.target.value })
+                setEditingCategory({
+                  ...editingCategory,
+                  name: e.target.value,
+                })
               }
               placeholder="e.g. Cricket, Soccer"
               className="text-base font-bold"
@@ -233,10 +234,10 @@ const Categories: React.FC = () => {
             <Checkbox
               id="isActive"
               checked={editingCategory?.isActive !== false}
-              onChange={(e) =>
+              onCheckedChange={(checked) =>
                 setEditingCategory({
                   ...editingCategory,
-                  isActive: e.target.checked,
+                  isActive: Boolean(checked),
                 })
               }
             />
@@ -246,7 +247,7 @@ const Categories: React.FC = () => {
                 className="text-sm font-bold text-primary cursor-pointer leading-none"
               >
                 Category Visibility
-              </label>
+            </label>
               <p className="text-[10px] text-slate-400 font-medium">
                 When disabled, this sport will be hidden from the user panel.
               </p>
@@ -267,7 +268,7 @@ const Categories: React.FC = () => {
             </Button>
           </div>
         </form>
-      </Dialog>
+      </Modal>
     </div>
   );
 };

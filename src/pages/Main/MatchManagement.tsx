@@ -1,12 +1,12 @@
-import { Badge } from "@/src/components/ui/badge";
-import { Button } from "@/src/components/ui/button";
-import { Card } from "@/src/components/ui/card";
-import { Dialog } from "@/src/components/ui/dialog";
-import { Input } from "@/src/components/ui/input";
-import { Label } from "@/src/components/ui/label";
-import { Select } from "@/src/components/ui/select";
-import { Match, Team } from "@/types";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import Modal from "@/components/ui/modal";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import React, { useState } from "react";
+import { Match, Team } from "../../../types";
+import { Select } from "@/components/ui/select";
 
 const mockTeams: Team[] = [
   {
@@ -266,7 +266,7 @@ const MatchManagement: React.FC = () => {
         ))}
       </div>
 
-      <Dialog
+      <Modal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         title={editingMatch?.id ? "Edit Match" : "Schedule New Match"}
@@ -388,7 +388,7 @@ const MatchManagement: React.FC = () => {
             </Button>
           </div>
         </form>
-      </Dialog>
+      </Modal>
     </div>
   );
 };
