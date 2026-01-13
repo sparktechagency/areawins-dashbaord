@@ -7,15 +7,15 @@ const StatCard = ({ title, value, trend, trendText, icon, isAlert }: any) => (
     } hover:border-[#00D65C] transition-all`}
   >
     <CardHeader className="flex flex-row items-start justify-between pb-2">
-      <CardDescription className="uppercase font-bold tracking-wider text-[9px] md:text-[10px]">
+      <CardDescription className="uppercase font-bold tracking-wider text-[10px] md:text-[12px]">
         {title}
       </CardDescription>
       <div
-        className={`p-1.5 md:p-2 rounded-lg ${
+        className={`p-1.5 md:p-2.5 rounded-lg ${
           isAlert ? "bg-red-50 text-red-500" : "bg-[#00D65C]/10 text-[#00D65C]"
         }`}
       >
-        <span className="material-symbols-outlined text-base md:text-lg">
+        <span className="material-symbols-outlined text-base md:text-xl">
           {icon}
         </span>
       </div>
