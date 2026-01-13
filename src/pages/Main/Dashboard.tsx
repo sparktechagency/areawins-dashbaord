@@ -28,6 +28,7 @@ import {
 } from "../../components/ui";
 import OverView from "./OverView";
 import RevenueChart from "./RevenueChart";
+import RecentBets from "./RecentBets";
 
 const pieData = [
   { name: "Soccer", value: 65, color: "#00D65C" },
@@ -92,59 +93,7 @@ const Dashboard: React.FC = () => {
       {/* Bottom Grid */}
       <div className="grid grid-cols-1 xl:grid-cols-5 gap-6 md:gap-8">
         {/* Recent Bets */}
-        <Card className="xl:col-span-3 overflow-hidden">
-          <CardHeader className="flex flex-row items-center justify-between">
-            <CardTitle>Recent Bets</CardTitle>
-            <Button
-              variant="link"
-              className="text-[#00D65C] p-0 h-auto text-xs md:text-sm"
-            >
-              VIEW ALL
-            </Button>
-          </CardHeader>
-          <CardContent className="p-0 overflow-x-auto">
-            <div className="min-w-[600px]">
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead className="pl-6">User</TableHead>
-                    <TableHead>Sport</TableHead>
-                    <TableHead>Event</TableHead>
-                    <TableHead className="text-right">Stake</TableHead>
-                    <TableHead className="pr-6">Status</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {recentBets.map((bet) => (
-                    <TableRow key={bet.id}>
-                      <TableCell className="pl-6 font-bold">{bet.id}</TableCell>
-                      <TableCell>{bet.sport}</TableCell>
-                      <TableCell className="max-w-[150px] truncate">
-                        {bet.event}
-                      </TableCell>
-                      <TableCell className="text-right font-mono font-bold">
-                        ${bet.stake.toFixed(2)}
-                      </TableCell>
-                      <TableCell className="pr-6">
-                        <Badge
-                          variant={
-                            bet.status === "WON"
-                              ? "success"
-                              : bet.status === "LOST"
-                              ? "destructive"
-                              : "secondary"
-                          }
-                        >
-                          {bet.status}
-                        </Badge>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </div>
-          </CardContent>
-        </Card>
+        <RecentBets />
 
         {/* Right Distribution & Activity */}
         <div className="xl:col-span-2 flex flex-col gap-6 md:gap-8">
