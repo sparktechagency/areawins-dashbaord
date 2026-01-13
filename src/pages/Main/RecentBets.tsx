@@ -1,4 +1,12 @@
 import React from "react";
+import {
+  Button,
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/src/components/ui";
 
 const RecentBets = () => {
   return (
