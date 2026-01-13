@@ -10,7 +10,6 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
-import GeminiService from "../../../services/geminiService";
 import { Bet } from "../../../types";
 import {
   Badge,
@@ -27,15 +26,8 @@ import {
   TableHeader,
   TableRow,
 } from "../../components/ui";
-
-const data = [
-  { name: "Jan 01", revenue: 4000 },
-  { name: "Jan 07", revenue: 3000 },
-  { name: "Jan 14", revenue: 5000 },
-  { name: "Jan 21", revenue: 2780 },
-  { name: "Jan 28", revenue: 4890 },
-  { name: "Jan 31", revenue: 6390 },
-];
+import OverView from "./OverView";
+import RevenueChart from "./RevenueChart";
 
 const pieData = [
   { name: "Soccer", value: 65, color: "#00D65C" },
@@ -90,136 +82,12 @@ const Dashboard: React.FC = () => {
   const [aiInsight, setAiInsight] = React.useState<string>("");
   const [loadingAi, setLoadingAi] = React.useState(false);
 
-  const getAiInsight = async () => {
-    setLoadingAi(true);
-    const insight = await GeminiService.generateDashboardInsight({
-      revenue: "$128,430",
-      activeUsers: "14,205",
-      activeBets: "3,842",
-      pendingWithdrawals: "42",
-    });
-    setAiInsight(insight);
-    setLoadingAi(false);
-  };
-
   return (
     <div className="p-4 md:p-8 flex flex-col gap-6 md:gap-8">
-      {/* KPI Stats */}
-      <div className="grid grid-cols-1 xs:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
-        <StatCard
-          title="Total Revenue"
-          value="$128,430"
-          trend="+12.5%"
-          trendText="vs last month"
-          icon="monetization_on"
-          iconColor="accent"
-        />
-        <StatCard
-          title="Active Users"
-          value="14,205"
-          trend="+5.2%"
-          trendText="real-time"
-          icon="person_celebrate"
-        />
-        <StatCard
-          title="Active Bets"
-          value="3,842"
-          trend="+8.1%"
-          trendText="live volume"
-          icon="receipt_long"
-        />
-        <StatCard
-          title="Pending Withdrawals"
-          value="42"
-          trend="High Priority"
-          trendText="Requires action"
-          icon="priority_high"
-          isAlert
-        />
-      </div>
-
-      {/* AI Section */}
-      <Card className="border-l-4 border-l-[#00D65C]">
-        <CardHeader className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-          <div className="flex items-center gap-2">
-            <span className="material-symbols-outlined text-[#00D65C]">
-              auto_awesome
-            </span>
-            <CardTitle>Gemini AI Smart Insights</CardTitle>
-          </div>
-          <Button
-            variant="accent"
-            size="sm"
-            onClick={getAiInsight}
-            disabled={loadingAi}
-            className="w-full sm:w-auto"
-          >
-            {loadingAi ? "Analyzing..." : "Generate Insights"}
-          </Button>
-        </CardHeader>
-        <CardContent>
-          {aiInsight ? (
-            <p className="text-sm text-slate-600 leading-relaxed italic">
-              "{aiInsight}"
-            </p>
-          ) : (
-            <p className="text-sm text-slate-400">
-              Click generate to see platform insights powered by Gemini AI.
-            </p>
-          )}
-        </CardContent>
-      </Card>
+      <OverView />
 
       {/* Main Revenue Chart */}
-      <Card>
-        <CardHeader className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-          <div>
-            <CardTitle>Revenue Analytics</CardTitle>
-            <CardDescription>
-              Daily financial performance overview
-            </CardDescription>
-          </div>
-          <div className="flex gap-2 w-full sm:w-auto">
-            <Button variant="outline" size="sm" className="flex-1 sm:flex-none">
-              WEEKLY
-            </Button>
-            <Button variant="default" size="sm" className="flex-1 sm:flex-none">
-              MONTHLY
-            </Button>
-          </div>
-        </CardHeader>
-        <CardContent>
-          <div className="h-[250px] md:h-[300px] w-full">
-            <ResponsiveContainer width="100%" height="100%">
-              <AreaChart data={data}>
-                <defs>
-                  <linearGradient id="colorRev" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#00D65C" stopOpacity={0.2} />
-                    <stop offset="95%" stopColor="#00D65C" stopOpacity={0} />
-                  </linearGradient>
-                </defs>
-                <XAxis
-                  dataKey="name"
-                  axisLine={false}
-                  tickLine={false}
-                  tick={{ fontSize: 10, fontWeight: "bold", fill: "#9ca3af" }}
-                  dy={10}
-                />
-                <YAxis hide />
-                <Tooltip />
-                <Area
-                  type="monotone"
-                  dataKey="revenue"
-                  stroke="#00D65C"
-                  strokeWidth={3}
-                  fillOpacity={1}
-                  fill="url(#colorRev)"
-                />
-              </AreaChart>
-            </ResponsiveContainer>
-          </div>
-        </CardContent>
-      </Card>
+      <RevenueChart />
 
       {/* Bottom Grid */}
       <div className="grid grid-cols-1 xl:grid-cols-5 gap-6 md:gap-8">
@@ -376,46 +244,6 @@ const Dashboard: React.FC = () => {
     </div>
   );
 };
-
-const StatCard = ({ title, value, trend, trendText, icon, isAlert }: any) => (
-  <Card
-    className={`${
-      isAlert ? "border-l-4 border-l-red-500" : ""
-    } hover:border-[#00D65C] transition-all`}
-  >
-    <CardHeader className="flex flex-row items-start justify-between pb-2">
-      <CardDescription className="uppercase font-bold tracking-wider text-[9px] md:text-[10px]">
-        {title}
-      </CardDescription>
-      <div
-        className={`p-1.5 md:p-2 rounded-lg ${
-          isAlert ? "bg-red-50 text-red-500" : "bg-[#00D65C]/10 text-[#00D65C]"
-        }`}
-      >
-        <span className="material-symbols-outlined text-base md:text-lg">
-          {icon}
-        </span>
-      </div>
-    </CardHeader>
-    <CardContent>
-      <h2 className="text-2xl md:text-3xl font-extrabold tracking-tight">
-        {value}
-      </h2>
-      <div className="flex items-center gap-1 mt-1 md:mt-2">
-        <span
-          className={`${
-            trend.includes("+") ? "text-[#00D65C]" : "text-red-500"
-          } text-[10px] md:text-xs font-bold`}
-        >
-          {trend}
-        </span>
-        <span className="text-slate-400 text-[9px] md:text-[10px] font-medium">
-          {trendText}
-        </span>
-      </div>
-    </CardContent>
-  </Card>
-);
 
 const ActivityItem = ({ icon, color, text, time }: any) => (
   <div className="flex gap-4">
