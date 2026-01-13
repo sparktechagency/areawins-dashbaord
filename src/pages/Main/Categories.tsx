@@ -10,6 +10,8 @@ import { Button } from "@/src/components/ui/button";
 import { Badge } from "@/src/components/ui/badge";
 import { Dialog } from "@/src/components/ui/dialog";
 import { Label } from "@/src/components/ui/label";
+import { Input } from "@/src/components/ui/input";
+import { Checkbox } from "@/src/components/ui/checkbox";
 
 const initialCategories: Category[] = [
   {
