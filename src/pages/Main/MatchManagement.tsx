@@ -1,14 +1,12 @@
 import React, { useState } from "react";
-import {
-  Badge,
-  Button,
-  Card,
-  Dialog,
-  Input,
-  Label,
-  Select,
-} from "../../components/ui";
 import { Match, Team } from "@/types";
+import { Button } from "@/src/components/ui/button";
+import { Card } from "@/src/components/ui/card";
+import { Badge } from "@/src/components/ui/badge";
+import { Dialog } from "@/src/components/ui/dialog";
+import { Label } from "@/src/components/ui/label";
+import { Select } from "@/src/components/ui/select";
+import { Input } from "@/src/components/ui/input";
 
 const mockTeams: Team[] = [
   {

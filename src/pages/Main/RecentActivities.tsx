@@ -1,6 +1,11 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/src/components/ui";
 import React from "react";
 import ActivityItem from "./ActivityItem";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/src/components/ui/card";
 
 const RecentActivities = () => {
   return (

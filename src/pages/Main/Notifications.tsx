@@ -1,7 +1,6 @@
 
 import React, { useState } from 'react';
 import { Notification } from '../../../types';
-import { Badge, Button, Card, CardContent } from '../../components/ui';
 
 const initialNotifications: Notification[] = [
   {

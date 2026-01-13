@@ -1,11 +1,11 @@
+import { Button } from "@/src/components/ui/button";
 import {
-  Button,
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/src/components/ui";
+} from "@/src/components/ui/card";
 import React from "react";
 import {
   Area,
@@ -35,7 +35,7 @@ const RevenueChart = () => {
           </CardDescription>
         </div>
         <div className="flex gap-2 w-full sm:w-auto">
-          <Button variant="outline" size="sm" className="flex-1 sm:flex-none">
+          <Button variant="default" size="sm" className="flex-1 sm:flex-none">
             WEEKLY
           </Button>
           <Button variant="default" size="sm" className="flex-1 sm:flex-none">

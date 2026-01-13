@@ -1,19 +1,14 @@
 import React from "react";
 import {
-  Badge,
-  Button,
   Card,
   CardContent,
   CardHeader,
   CardTitle,
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "../../components/ui";
+} from "../../components/ui/card";
 import { Bet } from "@/types";
+import { Button } from "@/src/components/ui/button";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/src/components/ui/table";
+import { Badge } from "@/src/components/ui/badge";
 
 const RecentBets = () => {
   const recentBets: Bet[] = [
