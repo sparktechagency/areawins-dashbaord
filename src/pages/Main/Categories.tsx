@@ -1,7 +1,7 @@
 
 import React, { useState } from 'react';
-import { Category } from '../../types';
-import { Badge, Button, Card, CardContent, CardHeader, CardTitle, Checkbox, Dialog, Input, Label } from '../components/ui';
+import { Category } from '../../../types';
+import { Badge, Button, Card, CardContent, CardHeader, CardTitle, Checkbox, Dialog, Input, Label } from '../../components/ui';
 
 const initialCategories: Category[] = [
   { id: '1', name: 'Football', icon: 'sports_soccer', matchCount: 124, isActive: true },

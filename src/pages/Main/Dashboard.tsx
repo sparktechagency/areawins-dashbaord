@@ -10,8 +10,8 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
-import GeminiService from "../../services/geminiService";
-import { Bet } from "../../types";
+import GeminiService from "../../../services/geminiService";
+import { Bet } from "../../../types";
 import {
   Badge,
   Button,
@@ -26,7 +26,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "../components/ui";
+} from "../../components/ui";
 
 const data = [
   { name: "Jan 01", revenue: 4000 },

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { setUser } from "../redux/features/dashboard/dashboardSlice";
-import { RootState } from "../../types";
+import { RootState } from "../../../types";
+import { setUser } from "../../redux/features/dashboard/dashboardSlice";
 
 const Profile: React.FC = () => {
   const dashboardState = useSelector((state: RootState) => state.dashboard) || {};

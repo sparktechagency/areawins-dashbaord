@@ -1,18 +1,18 @@
 import { createBrowserRouter } from "react-router-dom";
 import Layout from "../components/Layout";
-import Dashboard from "../pages/Dashboard";
-import UserManagement from "../pages/UserManagement";
-import MatchManagement from "../pages/MatchManagement";
-import Categories from "../pages/Categories";
-import TournamentManagement from "../pages/TournamentManagement";
-import TeamManagement from "../pages/TeamManagement";
-import BetManagement from "../pages/BetManagement";
-import Profile from "../pages/Profile";
-import Notifications from "../pages/Notifications";
-import Settings from "../pages/Settings";
-import Promotions from "../pages/Promotions";
-import Financials from "../pages/Financials";
 import AuthFlow from "../pages/AuthFlow";
+import Categories from "../pages/Main/Categories";
+import Dashboard from "../pages/Main/Dashboard";
+import Financials from "../pages/Main/Financials";
+import Notifications from "../pages/Main/Notifications";
+import Profile from "../pages/Main/Profile";
+import Settings from "../pages/Main/Settings";
+import UserManagement from "../pages/Main/UserManagement";
+import MatchManagement from "../pages/Main/MatchManagement";
+import TeamManagement from "../pages/Main/TeamManagement";
+import TournamentManagement from "../pages/Main/TournamentManagement";
+import BetManagement from "../pages/Main/BetManagement";
+import Promotions from "../pages/Main/Promotions";
 const router = createBrowserRouter([
   {
     path: "/",
