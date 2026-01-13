@@ -4,7 +4,6 @@ import {
   Button,
   Card,
   CardContent,
-  CardDescription,
   CardHeader,
   CardTitle,
   Table,
@@ -14,8 +13,51 @@ import {
   TableHeader,
   TableRow,
 } from "../../components/ui";
+import { Bet } from "@/types";
 
 const RecentBets = () => {
+  const recentBets: Bet[] = [
+    {
+      id: "#u9283",
+      user: "u9283",
+      sport: "Soccer",
+      event: "Luton vs Man City",
+      stake: 250,
+      status: "WON",
+      type: "BACK",
+      timestamp: "2 mins ago",
+    },
+    {
+      id: "#u1105",
+      user: "u1105",
+      sport: "Tennis",
+      event: "Djokovic vs Alcaraz",
+      stake: 1200,
+      status: "PENDING",
+      type: "BACK",
+      timestamp: "5 mins ago",
+    },
+    {
+      id: "#u8821",
+      user: "u8821",
+      sport: "NBA",
+      event: "Lakers vs Celtics",
+      stake: 50,
+      status: "LOST",
+      type: "LAY",
+      timestamp: "14 mins ago",
+    },
+    {
+      id: "#u3392",
+      user: "u3392",
+      sport: "Soccer",
+      event: "Real Madrid vs Girona",
+      stake: 10,
+      status: "PENDING",
+      type: "BACK",
+      timestamp: "1 hour ago",
+    },
+  ];
   return (
     <Card className="xl:col-span-3 overflow-hidden">
       <CardHeader className="flex flex-row items-center justify-between">
