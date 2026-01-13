@@ -6,6 +6,10 @@ import {
   CardHeader,
   CardTitle,
 } from "../../components/ui/card";
+import { Button } from "@/src/components/ui/button";
+import { Badge } from "@/src/components/ui/badge";
+import { Dialog } from "@/src/components/ui/dialog";
+import { Label } from "@/src/components/ui/label";
 
 const initialCategories: Category[] = [
   {
