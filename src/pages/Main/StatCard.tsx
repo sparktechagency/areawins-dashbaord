@@ -1,4 +1,4 @@
-import { Card, CardContent, CardDescription, CardHeader } from "@/src/components/ui";
+import { Card, CardContent, CardDescription, CardHeader } from "@/src/components/ui/card";
 
 const StatCard = ({ title, value, trend, trendText, icon, isAlert }: any) => (
   <Card
