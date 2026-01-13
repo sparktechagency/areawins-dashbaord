@@ -3,9 +3,11 @@ import { useDispatch, useSelector } from "react-redux";
 import { Link, Outlet, useLocation } from "react-router-dom";
 import { toggleSidebar } from "../redux/features/dashboard/dashboardSlice";
 import { RootState } from "../../types";
+import { MdPayments } from "react-icons/md";
 
 const Layout: React.FC = () => {
-  const dashboardState = useSelector((state: RootState) => state.dashboard) || {};
+  const dashboardState =
+    useSelector((state: RootState) => state.dashboard) || {};
   const {
     isSidebarOpen = true,
     user = { name: "Admin", role: "Super Admin" },
@@ -68,9 +70,7 @@ const Layout: React.FC = () => {
         <div className="p-6 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="size-10 bg-accent rounded-lg flex items-center justify-center shrink-0">
-              <span className="material-symbols-outlined text-primary font-bold">
-                payments
-              </span>
+              <MdPayments />
             </div>
             {(isSidebarOpen || window.innerWidth < 1024) && (
               <div className={`${!isSidebarOpen && "lg:hidden"}`}>
@@ -93,7 +93,7 @@ const Layout: React.FC = () => {
         </div>
 
         {/* Navigation */}
-        <nav className="flex-1 px-4 py-4 flex flex-col gap-1 overflow-y-auto custom-scrollbar no-scrollbar">
+        <nav className="flex-1 px-4 py-2 flex flex-col gap-1  space-y-1 overflow-y-auto custom-scrollbar no-scrollbar">
           {isSidebarOpen && (
             <div className="text-white/30 text-[11px] font-bold uppercase px-3 py-2 tracking-wider mt-4">
               Main Menu
@@ -124,11 +124,11 @@ const Layout: React.FC = () => {
           ))}
 
           {isSidebarOpen && (
-            <div className="text-white/30 text-[11px] font-bold uppercase px-3 py-6 tracking-wider">
+            <div className="text-white/30 text-[11px] font-bold uppercase px-3 py-3 tracking-wider">
               Platform
             </div>
           )}
-          {financialItems.map((item) => (
+          {financialItems?.map((item) => (
             <Link
               key={item.label}
               to={item.path}

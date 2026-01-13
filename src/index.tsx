@@ -1,10 +1,11 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
+import "./index.css";
 import { RouterProvider } from "react-router-dom";
 import { Provider } from "react-redux";
 import { Toaster } from "sonner";
-import router from "./src/routes/routes";
-import { store } from "./src/redux/store";
+import router from "./routes/routes";
+import { store } from "./redux/store";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>

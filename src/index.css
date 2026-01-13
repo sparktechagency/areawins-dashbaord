@@ -1,0 +1,101 @@
+@import url("https://fonts.googleapis.com/css2?family=Barlow:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Fira+Code&family=Hind+Siliguri:wght@300;400;500;600;700&family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Nunito:ital,wght@0,200..1000;1,200..1000&family=Oswald:wght@200..700&family=PT+Sans:ital,wght@0,400;0,700;1,400;1,700&family=Pixelify+Sans:wght@400..700&family=Roboto:ital,wght@0,100..900;1,100..900&family=Rubik:ital,wght@0,300..900;1,300..900&family=Tinos:ital,wght@0,400;0,700;1,400;1,700&family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap");
+@import "tailwindcss";
+
+@theme {
+  --color-primary: #141414;
+  --color-accent: #00d65c;
+  --color-background-light: #f7f7f7;
+  --color-background-dark: #191919;
+
+  /* Light mode variables */
+  --color-bg-light: #f5f5f5;
+  --color-bg-white: #ffffff;
+  --color-text-light: #000000;
+  --color-text-secondary-light: #6b7280;
+  --color-border-light: #e5e7eb;
+  --color-sidebar-light: #2c2c2c;
+
+  /* Dark mode variables */
+  --color-bg-dark: #0e0813;
+  --color-bg-dark-secondary: #1a1a1a;
+  --color-text-dark: #ffffff;
+  --color-text-secondary-dark: #9ca3af;
+  --color-border-dark: #374151;
+  --color-sidebar-dark: #1f1f1f;
+}
+
+body {
+  top: 0 !important;
+  font-family: "Oswald", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Base styles & custom scrollbar / selection */
+@layer base {
+  body {
+    background-color: var(--color-bg-light);
+    color: var(--color-text-light);
+    font-family: "Plus Jakarta Sans", sans-serif;
+  }
+
+  ::selection {
+    background-color: #00d65c;
+    color: #141414;
+  }
+
+  /* Scrollbar base styles */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: #e2e8f0;
+    border-radius: 20px;
+    transition: all 0.3s ease;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: #cbd5e1;
+  }
+
+  /* Firefox support */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: #e2e8f0 transparent;
+  }
+}
+
+/* Custom scrollbar variants */
+@layer utilities {
+  .custom-scrollbar {
+    &::-webkit-scrollbar {
+      width: 4px;
+      height: 4px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background: rgba(0, 0, 0, 0.1);
+    }
+
+    .dark &::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.1);
+    }
+  }
+
+  .no-scrollbar {
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+  }
+
+  .no-scrollbar::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Opera */
+  }
+}
