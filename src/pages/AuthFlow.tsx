@@ -1,9 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import {
-    Button,
-    Input
-} from "../components/ui";
+import { Input } from "../components/ui/input";
+import { Button } from "../components/ui/button";
 
 type Step = "LOGIN" | "FORGOT" | "OTP" | "RESET";
 
