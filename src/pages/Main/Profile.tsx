@@ -55,7 +55,7 @@ const Profile: React.FC = () => {
               </div>
             </div>
             <h2 className="text-2xl font-black text-primary">{user?.name}</h2>
-            <p className="text-accent font-black uppercase text-[10px] tracking-widest mt-1 bg-accent/10 px-3 py-1 rounded-full">
+            <p className="text-accent font-black uppercase text-[10px] tracking-widest mt-1 bg-secondary/10 px-3 py-1 rounded-full">
               {user?.role}
             </p>
 

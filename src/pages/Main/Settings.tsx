@@ -70,7 +70,7 @@ const GatewayCard = ({ title, icon, status, color }: any) => (
       <div>
         <h4 className="font-bold text-slate-800">{title}</h4>
         <div className="flex items-center gap-1.5 mt-0.5">
-          <span className={`size-1.5 rounded-full ${status === 'Active' ? 'bg-accent' : 'bg-slate-300'}`}></span>
+          <span className={`size-1.5 rounded-full ${status === 'Active' ? 'bg-secondary' : 'bg-slate-300'}`}></span>
           <span className="text-[10px] font-black uppercase tracking-tighter text-slate-400">{status}</span>
         </div>
       </div>

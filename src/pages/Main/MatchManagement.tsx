@@ -1,12 +1,12 @@
-import React, { useState } from "react";
-import { Match, Team } from "@/types";
+import { Badge } from "@/src/components/ui/badge";
 import { Button } from "@/src/components/ui/button";
 import { Card } from "@/src/components/ui/card";
-import { Badge } from "@/src/components/ui/badge";
 import { Dialog } from "@/src/components/ui/dialog";
+import { Input } from "@/src/components/ui/input";
 import { Label } from "@/src/components/ui/label";
 import { Select } from "@/src/components/ui/select";
-import { Input } from "@/src/components/ui/input";
+import { Match, Team } from "@/types";
+import React, { useState } from "react";
 
 const mockTeams: Team[] = [
   {
@@ -179,7 +179,7 @@ const MatchManagement: React.FC = () => {
               </Badge>
               <div className="flex items-center gap-2">
                 {match.isLive && (
-                  <span className="size-2 rounded-full bg-accent animate-pulse"></span>
+                  <span className="size-2 rounded-full bg-secondary animate-pulse"></span>
                 )}
                 <span
                   className={`text-[10px] font-black uppercase tracking-widest ${

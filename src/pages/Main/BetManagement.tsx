@@ -89,7 +89,7 @@ const BetManagement: React.FC = () => {
                     onClick={() =>
                       overrideBetResult(selectedBet.id, status as Bet["status"])
                     }
-                    className="py-3 px-4 bg-gray-50 hover:bg-accent hover:text-primary transition-all rounded-xl text-xs font-bold uppercase tracking-wider text-gray-600"
+                    className="py-3 px-4 bg-gray-50 hover:bg-secondary hover:text-primary transition-all rounded-xl text-xs font-bold uppercase tracking-wider text-gray-600"
                   >
                     {status}
                   </button>

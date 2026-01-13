@@ -57,7 +57,7 @@ const Layout: React.FC = () => {
       {/* Sidebar Drawer */}
       <aside
         className={`
-        fixed inset-y-0 left-0 z-50 bg-primary flex flex-col h-full shrink-0 transition-transform duration-300 ease-in-out
+        fixed inset-y-0 left-0 z-50 bg-secondary flex flex-col h-full shrink-0 transition-transform duration-300 ease-in-out
         lg:relative lg:translate-x-0
         ${
           isSidebarOpen
@@ -69,7 +69,7 @@ const Layout: React.FC = () => {
         {/* Sidebar Header */}
         <div className="p-6 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="size-10 bg-accent rounded-lg flex items-center justify-center shrink-0">
+            <div className="size-10 bg-primary rounded-lg flex items-center justify-center shrink-0">
               <MdPayments />
             </div>
             {(isSidebarOpen || window.innerWidth < 1024) && (
@@ -106,7 +106,7 @@ const Layout: React.FC = () => {
               onClick={handleMobileNavClick}
               className={`flex items-center gap-3 px-3 py-3 rounded-xl transition-all group ${
                 isActive(item.path)
-                  ? "bg-accent text-primary"
+                  ? "bg-primary text-primary"
                   : "text-white/70 hover:text-white hover:bg-white/5"
               }`}
             >
@@ -135,7 +135,7 @@ const Layout: React.FC = () => {
               onClick={handleMobileNavClick}
               className={`flex items-center gap-3 px-3 py-3 rounded-xl transition-all group ${
                 isActive(item.path)
-                  ? "bg-accent/20 text-accent"
+                  ? "bg-black/80 text-white"
                   : "text-white/70 hover:text-white hover:bg-white/5"
               }`}
             >
@@ -158,7 +158,7 @@ const Layout: React.FC = () => {
               onClick={handleMobileNavClick}
               className={`flex items-center gap-3 px-3 py-3 rounded-xl transition-all ${
                 isActive("/settings")
-                  ? "bg-accent/20 text-accent"
+                  ? "bg-secondary/20 text-accent"
                   : "text-white/70 hover:text-white hover:bg-white/5"
               }`}
             >

@@ -35,11 +35,11 @@ const RevenueChart = () => {
           </CardDescription>
         </div>
         <div className="flex gap-2 w-full sm:w-auto">
-          <Button variant="default" size="sm" className="flex-1 sm:flex-none">
-            WEEKLY
+          <Button variant="ghost" size="sm" className="flex-1 sm:flex-none">
+            Weekly
           </Button>
           <Button variant="default" size="sm" className="flex-1 sm:flex-none">
-            MONTHLY
+            Monthly
           </Button>
         </div>
       </CardHeader>

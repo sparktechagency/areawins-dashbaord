@@ -1,3 +1,9 @@
+import { Badge } from "@/src/components/ui/badge";
+import { Button } from "@/src/components/ui/button";
+import { Checkbox } from "@/src/components/ui/checkbox";
+import { Dialog } from "@/src/components/ui/dialog";
+import { Input } from "@/src/components/ui/input";
+import { Label } from "@/src/components/ui/label";
 import React, { useState } from "react";
 import { Category } from "../../../types";
 import {
@@ -6,12 +12,6 @@ import {
   CardHeader,
   CardTitle,
 } from "../../components/ui/card";
-import { Button } from "@/src/components/ui/button";
-import { Badge } from "@/src/components/ui/badge";
-import { Dialog } from "@/src/components/ui/dialog";
-import { Label } from "@/src/components/ui/label";
-import { Input } from "@/src/components/ui/input";
-import { Checkbox } from "@/src/components/ui/checkbox";
 
 const initialCategories: Category[] = [
   {
@@ -122,7 +122,7 @@ const Categories: React.FC = () => {
             }`}
           >
             <CardHeader className="flex flex-row items-center justify-between pb-4">
-              <div className="size-16 rounded-2xl bg-slate-50 flex items-center justify-center group-hover:bg-accent group-hover:text-primary transition-all duration-500 overflow-hidden border border-slate-100">
+              <div className="size-16 rounded-2xl bg-slate-50 flex items-center justify-center group-hover:bg-secondary group-hover:text-primary transition-all duration-500 overflow-hidden border border-slate-100">
                 {cat.imageUrl ? (
                   <img
                     src={cat.imageUrl}

@@ -52,7 +52,7 @@ const UserManagement: React.FC = () => {
             Manage accounts, monitor balances, and update platform roles.
           </p>
         </div>
-        <button className="bg-accent hover:brightness-110 text-primary font-bold py-2.5 px-6 rounded-lg flex items-center gap-2 shadow-lg shadow-green-500/20 transition-all active:scale-95">
+        <button className="bg-secondary hover:brightness-110 text-primary font-bold py-2.5 px-6 rounded-lg flex items-center gap-2 shadow-lg shadow-green-500/20 transition-all active:scale-95">
           <span className="material-symbols-outlined text-[20px]">
             person_add
           </span>
@@ -145,7 +145,7 @@ const UserManagement: React.FC = () => {
                     >
                       <span
                         className={`w-1.5 h-1.5 rounded-full ${
-                          user.status === "ACTIVE" ? "bg-accent" : "bg-red-500"
+                          user.status === "ACTIVE" ? "bg-secondary" : "bg-red-500"
                         }`}
                       ></span>
                       <span className="text-[10px] font-extrabold uppercase">

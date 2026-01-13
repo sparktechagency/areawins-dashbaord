@@ -15,7 +15,7 @@ const Promotions: React.FC = () => {
           <h1 className="text-4xl font-black tracking-tight mb-2">Promotions & Campaigns</h1>
           <p className="text-gray-500">Create incentives to drive user engagement and volume.</p>
         </div>
-        <button className="bg-accent text-primary px-6 py-2.5 rounded-lg text-sm font-black shadow-lg shadow-green-500/10 hover:brightness-110">
+        <button className="bg-secondary text-primary px-6 py-2.5 rounded-lg text-sm font-black shadow-lg shadow-green-500/10 hover:brightness-110">
            New Campaign
         </button>
       </div>

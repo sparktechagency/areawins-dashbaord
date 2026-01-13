@@ -32,7 +32,7 @@ const TeamManagement: React.FC = () => {
         </div>
         <button 
           onClick={() => { setCurrentTeam({}); setIsEditing(true); }}
-          className="flex items-center gap-2 bg-accent text-primary rounded-lg px-6 py-2.5 text-sm font-black hover:brightness-110 transition-all shadow-lg shadow-green-500/10"
+          className="flex items-center gap-2 bg-secondary text-primary rounded-lg px-6 py-2.5 text-sm font-black hover:brightness-110 transition-all shadow-lg shadow-green-500/10"
         >
           <span className="material-symbols-outlined">add_circle</span> Add Team
         </button>

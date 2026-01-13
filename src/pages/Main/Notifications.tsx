@@ -1,9 +1,9 @@
 
-import React, { useState } from 'react';
-import { Notification } from '../../../types';
+import { Badge } from '@/src/components/ui/badge';
 import { Button } from '@/src/components/ui/button';
 import { Card, CardContent } from '@/src/components/ui/card';
-import { Badge } from '@/src/components/ui/badge';
+import React, { useState } from 'react';
+import { Notification } from '../../../types';
 
 const initialNotifications: Notification[] = [
   {
@@ -147,7 +147,7 @@ const Notifications: React.FC = () => {
           filteredNotifications.map((n) => (
             <Card 
               key={n.id} 
-              className={`transition-all hover:shadow-md ${!n.isRead ? 'border-l-4 border-l-accent bg-accent/5' : 'bg-white'}`}
+              className={`transition-all hover:shadow-md ${!n.isRead ? 'border-l-4 border-l-accent bg-secondary/5' : 'bg-white'}`}
             >
               <CardContent className="p-4 md:p-6 flex gap-4">
                 <div className="shrink-0 mt-1">

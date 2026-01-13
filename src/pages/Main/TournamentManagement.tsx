@@ -47,7 +47,7 @@ const TournamentManagement: React.FC = () => {
             </div>
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2 mb-1">
-                <span className={`size-2 rounded-full ${tournament.status === 'ACTIVE' ? 'bg-accent' : 'bg-gray-300'}`}></span>
+                <span className={`size-2 rounded-full ${tournament.status === 'ACTIVE' ? 'bg-secondary' : 'bg-gray-300'}`}></span>
                 <span className="text-[10px] font-black uppercase text-gray-400 tracking-widest">{tournament.status}</span>
               </div>
               <h3 className="text-xl font-bold text-primary truncate">{tournament.name}</h3>

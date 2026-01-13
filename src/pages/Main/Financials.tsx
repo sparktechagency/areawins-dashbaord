@@ -54,7 +54,7 @@ const FinanceCard = ({ label, value, trend, subValue, isAlert }: any) => (
     <div className="flex items-end justify-between mt-2">
       <h3 className="text-2xl font-black">{value}</h3>
       {trend ? (
-        <span className="text-xs font-bold text-accent bg-accent/10 px-2 py-1 rounded">{trend}</span>
+        <span className="text-xs font-bold text-accent bg-secondary/10 px-2 py-1 rounded">{trend}</span>
       ) : (
         <span className="text-xs font-bold text-red-600 bg-red-50 px-2 py-1 rounded">{subValue}</span>
       )}
@@ -77,7 +77,7 @@ const PayoutRow = ({ name, id, amount, method, score, status, canApprove = true 
     </div>
     <div className="flex items-center gap-2 min-w-[120px]">
       <div className="w-16 h-1.5 bg-gray-200 rounded-full overflow-hidden">
-        <div className={`h-full ${score > 80 ? 'bg-accent' : score > 50 ? 'bg-yellow-500' : 'bg-red-500'}`} style={{ width: `${score}%` }}></div>
+        <div className={`h-full ${score > 80 ? 'bg-secondary' : score > 50 ? 'bg-yellow-500' : 'bg-red-500'}`} style={{ width: `${score}%` }}></div>
       </div>
       <span className={`text-xs font-bold ${score > 80 ? 'text-accent' : score > 50 ? 'text-yellow-600' : 'text-red-600'}`}>{score}</span>
     </div>
