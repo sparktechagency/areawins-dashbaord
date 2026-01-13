@@ -1,4 +1,18 @@
 
+// Define RootState interface
+export interface RootState {
+  auth: {
+    token: string | null;
+    user: any;
+  };
+  dashboard: {
+    isSidebarOpen: boolean;
+    user: { name: string; role: string } | null;
+    notifications: number;
+  };
+  talenzyApi: any; // This corresponds to the reducerPath in baseApi
+}
+
 export interface Bet {
   id: string;
   user: string;

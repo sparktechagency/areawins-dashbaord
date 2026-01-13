@@ -1,14 +1,16 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, Outlet, useLocation } from "react-router-dom";
-import { RootState, toggleSidebar } from "../../index";
+import { toggleSidebar } from "../redux/features/dashboard/dashboardSlice";
+import { RootState } from "../../types";
 
 const Layout: React.FC = () => {
+  const dashboardState = useSelector((state: RootState) => state.dashboard) || {};
   const {
-    isSidebarOpen,
-    user,
-    notifications: notificationCount,
-  } = useSelector((state: RootState) => state.dashboard);
+    isSidebarOpen = true,
+    user = { name: "Admin", role: "Super Admin" },
+    notifications: notificationCount = 0,
+  } = dashboardState;
   const dispatch = useDispatch();
   const location = useLocation();
 
