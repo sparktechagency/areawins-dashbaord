@@ -33,7 +33,7 @@ const ResetPassword: React.FC = () => {
   const navigate = useNavigate();
 
   const form = useForm<ResetPasswordValues>({
-    resolver: zodResolver(resetPasswordSchema),
+    resolver: zodResolver(resetPasswordSchema) as any,
     defaultValues: {
       password: "",
       confirmPassword: "",

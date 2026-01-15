@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Link, Outlet, useLocation } from "react-router-dom";
 import { RootState } from "../../types";
 import { toggleSidebar } from "../redux/features/dashboard/dashboardSlice";
+import logo from "../assets/logo/logo.png";
 
 const Layout: React.FC = () => {
   const dashboardState =
@@ -70,17 +71,11 @@ const Layout: React.FC = () => {
         {/* Sidebar Header */}
         <div className="p-6 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="size-10 bg-primary rounded-lg flex items-center justify-center shrink-0">
-              <MdPayments />
-            </div>
             {(isSidebarOpen || window.innerWidth < 1024) && (
               <div className={`${!isSidebarOpen && "lg:hidden"}`}>
-                <h1 className="text-white text-lg font-bold leading-none tracking-tight text-nowrap">
-                  AreaWins Bet
-                </h1>
-                <p className="text-white/50 text-[10px] uppercase tracking-widest font-bold mt-1 text-nowrap text-left">
-                  Admin Panel
-                </p>
+                <Link to="/">
+                  <img src={logo} alt="logo" className="w-full h-12 mx-auto" />
+                </Link>
               </div>
             )}
           </div>

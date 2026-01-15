@@ -49,7 +49,7 @@ const tournamentSchema = z.object({
   country: z.string().optional(),
   logo: z.string().optional(),
   isFeatured: z.boolean(),
-  displayOrder: z.coerce.number().int().min(0),
+  displayOrder: z.coerce.number(),
   isActive: z.boolean(),
 });
 
@@ -62,7 +62,7 @@ const TournamentManagement: React.FC = () => {
   const [editingId, setEditingId] = useState<string | null>(null);
 
   const form = useForm<TournamentFormValues>({
-    resolver: zodResolver(tournamentSchema),
+    resolver: zodResolver(tournamentSchema) as any,
     defaultValues: {
       tournamentId: "",
       name: "",

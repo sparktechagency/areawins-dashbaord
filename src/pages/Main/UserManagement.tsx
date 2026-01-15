@@ -1,5 +1,5 @@
-import { User } from "@/types";
 import React from "react";
+import { User } from "../../../types";
 
 const users: User[] = [
   {
@@ -52,16 +52,10 @@ const UserManagement: React.FC = () => {
             Manage accounts, monitor balances, and update platform roles.
           </p>
         </div>
-        <button className="bg-secondary hover:brightness-110 text-primary font-bold py-2.5 px-6 rounded-lg flex items-center gap-2 shadow-lg shadow-green-500/20 transition-all active:scale-95">
-          <span className="material-symbols-outlined text-[20px]">
-            person_add
-          </span>
-          <span>Create New User</span>
-        </button>
       </div>
 
       <div className="bg-white p-4 rounded-xl border border-gray-200 flex flex-wrap gap-4 items-center shadow-sm">
-        <div className="flex-1 min-w-[300px]">
+        <div className="flex-1 min-w-75">
           <div className="relative group">
             <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-primary">
               search
@@ -145,7 +139,9 @@ const UserManagement: React.FC = () => {
                     >
                       <span
                         className={`w-1.5 h-1.5 rounded-full ${
-                          user.status === "ACTIVE" ? "bg-secondary" : "bg-red-500"
+                          user.status === "ACTIVE"
+                            ? "bg-secondary"
+                            : "bg-red-500"
                         }`}
                       ></span>
                       <span className="text-[10px] font-extrabold uppercase">

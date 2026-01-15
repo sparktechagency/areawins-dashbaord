@@ -46,10 +46,10 @@ const matchSchema = z
     awayTeam: z.string().min(1, "Away Team is required"),
     scheduledStartTime: z.string().min(1, "Start Time is required"),
     status: z.enum(["scheduled", "live", "finished", "cancelled", "postponed"]),
-    isFeatured: z.boolean().default(false),
-    isResultVerified: z.boolean().default(false),
-    homeScore: z.coerce.number().int().min(0).default(0),
-    awayScore: z.coerce.number().int().min(0).default(0),
+    isFeatured: z.boolean(),
+    isResultVerified: z.boolean(),
+    homeScore: z.coerce.number(),
+    awayScore: z.coerce.number(),
   })
   .refine((data) => data.homeTeam !== data.awayTeam, {
     message: "Home and Away teams cannot be the same",
@@ -67,7 +67,7 @@ const MatchManagement: React.FC = () => {
   const [editingId, setEditingId] = useState<string | null>(null);
 
   const form = useForm<MatchFormValues>({
-    resolver: zodResolver(matchSchema),
+    resolver: zodResolver(matchSchema) as any,
     defaultValues: {
       matchId: "",
       sport: "",
@@ -124,7 +124,18 @@ const MatchManagement: React.FC = () => {
       createdBy: "admin_user",
       finalResult:
         data.status === "finished"
-          ? `${data.homeScore}-${data.awayScore}`
+          ? {
+              homeScore: data.homeScore,
+              awayScore: data.awayScore,
+              winner:
+                data.homeScore > data.awayScore
+                  ? data.homeTeam
+                  : data.awayScore > data.homeScore
+                  ? data.awayTeam
+                  : null,
+              isDraw: data.homeScore === data.awayScore,
+              resultByBetType: [],
+            }
           : undefined,
     } as any; // Allow partial mock structure
 

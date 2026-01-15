@@ -83,7 +83,7 @@ const Promotions: React.FC = () => {
   const [editingId, setEditingId] = useState<string | null>(null);
 
   const form = useForm<PromotionFormValues>({
-    resolver: zodResolver(promotionSchema),
+    resolver: zodResolver(promotionSchema) as any,
     defaultValues: {
       title: "",
       type: "New User",

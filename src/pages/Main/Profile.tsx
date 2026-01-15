@@ -33,9 +33,10 @@ const profileSchema = z.object({
 type ProfileFormValues = z.infer<typeof profileSchema>;
 
 const Profile: React.FC = () => {
-  const dashboardState =
-    useSelector((state: RootState) => state.dashboard) || {};
-  const { user = { name: "Admin", role: "Super Admin" } } = dashboardState;
+  const dashboardState = useSelector(
+    (state: RootState) => state.dashboard
+  ) as any;
+  const user = dashboardState?.user || { name: "Admin", role: "Super Admin" };
   const dispatch = useDispatch();
   const [isEditing, setIsEditing] = useState(false);
 

@@ -40,7 +40,7 @@ import { BetType, Sport } from "../../types/schema";
 const outcomeSchema = z.object({
   outcomeId: z.string().min(1, "ID is required"),
   label: z.string().min(1, "Label is required"),
-  displayOrder: z.coerce.number().int().min(0, "Order must be positive"),
+  displayOrder: z.coerce.number(),
 });
 
 const betTypeSchema = z.object({
@@ -49,9 +49,9 @@ const betTypeSchema = z.object({
   name: z.string().min(1, "Name is required"),
   slug: z.string().min(1, "Slug is required"),
   outcomes: z.array(outcomeSchema).min(1, "At least one outcome is required"),
-  isDefault: z.boolean().default(false),
-  displayOrder: z.coerce.number().int().min(0, "Order must be positive"),
-  isActive: z.boolean().default(true),
+  isDefault: z.boolean(),
+  displayOrder: z.coerce.number(),
+  isActive: z.boolean(),
 });
 
 type BetTypeFormValues = z.infer<typeof betTypeSchema>;
@@ -63,7 +63,7 @@ const BetTypes: React.FC = () => {
   const [editingId, setEditingId] = useState<string | null>(null);
 
   const form = useForm<BetTypeFormValues>({
-    resolver: zodResolver(betTypeSchema),
+    resolver: zodResolver(betTypeSchema) as any,
     defaultValues: {
       betTypeId: "",
       sport: "",
@@ -401,7 +401,7 @@ const BetTypes: React.FC = () => {
                       control={form.control}
                       name={`outcomes.${index}.label`}
                       render={({ field }) => (
-                        <FormItem className="flex-[2] space-y-1">
+                        <FormItem className="flex-2 space-y-1">
                           <FormLabel className="text-xs text-slate-400">
                             Label
                           </FormLabel>

@@ -36,9 +36,9 @@ const sportSchema = z.object({
   sportId: z.string().min(1, "Sport ID is required"),
   name: z.string().min(1, "Name is required"),
   slug: z.string().min(1, "Slug is required"),
-  icon: z.string().optional(),
+  icon: z.string().min(1, "Icon is required"),
   displayOrder: z.number().int().min(0),
-  isActive: z.boolean().default(true),
+  isActive: z.boolean(),
 });
 
 type SportFormValues = z.infer<typeof sportSchema>;
@@ -49,7 +49,7 @@ const Categories: React.FC = () => {
   const [editingId, setEditingId] = useState<string | null>(null);
 
   const form = useForm<SportFormValues>({
-    resolver: zodResolver(sportSchema),
+    resolver: zodResolver(sportSchema) as any,
     defaultValues: {
       sportId: "",
       name: "",

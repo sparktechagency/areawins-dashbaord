@@ -47,7 +47,7 @@ const teamSchema = z.object({
   shortName: z.string().min(1, "Short Name is required"),
   country: z.string().min(1, "Country is required"),
   logo: z.string().optional(),
-  isActive: z.boolean().default(true),
+  isActive: z.boolean(),
 });
 
 type TeamFormValues = z.infer<typeof teamSchema>;
@@ -59,7 +59,7 @@ const TeamManagement: React.FC = () => {
   const [editingId, setEditingId] = useState<string | null>(null);
 
   const form = useForm<TeamFormValues>({
-    resolver: zodResolver(teamSchema),
+    resolver: zodResolver(teamSchema) as any,
     defaultValues: {
       teamId: "",
       name: "",
