@@ -1,9 +1,9 @@
 import React from "react";
+import { MdPayments } from "react-icons/md";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, Outlet, useLocation } from "react-router-dom";
-import { toggleSidebar } from "../redux/features/dashboard/dashboardSlice";
 import { RootState } from "../../types";
-import { MdPayments } from "react-icons/md";
+import { toggleSidebar } from "../redux/features/dashboard/dashboardSlice";
 
 const Layout: React.FC = () => {
   const dashboardState =
@@ -20,6 +20,7 @@ const Layout: React.FC = () => {
     { label: "Overview", icon: "grid_view", path: "/" },
     { label: "User Management", icon: "group", path: "/users" },
     { label: "Categories", icon: "category", path: "/categories" },
+    { label: "Bet Types", icon: "style", path: "/bet-types" },
     { label: "Sports Events", icon: "sports_soccer", path: "/matches" },
     { label: "Teams", icon: "shield", path: "/teams" },
     { label: "Tournaments", icon: "emoji_events", path: "/tournaments" },
@@ -75,7 +76,7 @@ const Layout: React.FC = () => {
             {(isSidebarOpen || window.innerWidth < 1024) && (
               <div className={`${!isSidebarOpen && "lg:hidden"}`}>
                 <h1 className="text-white text-lg font-bold leading-none tracking-tight text-nowrap">
-                  Easy Bet
+                  AreaWins Bet
                 </h1>
                 <p className="text-white/50 text-[10px] uppercase tracking-widest font-bold mt-1 text-nowrap text-left">
                   Admin Panel

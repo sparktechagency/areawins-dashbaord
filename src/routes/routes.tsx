@@ -1,18 +1,19 @@
 import { createBrowserRouter } from "react-router-dom";
 import Layout from "../layout/Layout";
 import AuthFlow from "../pages/AuthFlow";
+import BetManagement from "../pages/Main/BetManagement";
+import BetTypes from "../pages/Main/BetTypes";
 import Categories from "../pages/Main/Categories";
 import Dashboard from "../pages/Main/Dashboard";
 import Financials from "../pages/Main/Financials";
+import MatchManagement from "../pages/Main/MatchManagement";
 import Notifications from "../pages/Main/Notifications";
 import Profile from "../pages/Main/Profile";
+import Promotions from "../pages/Main/Promotions";
 import Settings from "../pages/Main/Settings";
-import UserManagement from "../pages/Main/UserManagement";
-import MatchManagement from "../pages/Main/MatchManagement";
 import TeamManagement from "../pages/Main/TeamManagement";
 import TournamentManagement from "../pages/Main/TournamentManagement";
-import BetManagement from "../pages/Main/BetManagement";
-import Promotions from "../pages/Main/Promotions";
+import UserManagement from "../pages/Main/UserManagement";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -35,6 +36,10 @@ const router = createBrowserRouter([
       {
         path: "categories",
         element: <Categories />,
+      },
+      {
+        path: "bet-types",
+        element: <BetTypes />,
       },
       {
         path: "teams",

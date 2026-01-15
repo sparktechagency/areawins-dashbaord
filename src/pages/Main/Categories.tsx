@@ -1,90 +1,105 @@
-import React, { useState } from "react";
-import { Category } from "../../../types";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import Modal from "@/components/ui/modal";
+import React, { useEffect, useState } from "react";
+import { toast } from "sonner";
 import {
   Card,
   CardContent,
   CardHeader,
   CardTitle,
 } from "../../components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
-import Modal from "@/components/ui/modal";
-import { Checkbox } from "@/components/ui/checkbox";
-
-const initialCategories: Category[] = [
-  {
-    id: "1",
-    name: "Football",
-    icon: "sports_soccer",
-    matchCount: 124,
-    isActive: true,
-  },
-  {
-    id: "2",
-    name: "Cricket",
-    icon: "sports_cricket",
-    matchCount: 82,
-    isActive: true,
-  },
-  {
-    id: "3",
-    name: "Basketball",
-    icon: "sports_basketball",
-    matchCount: 45,
-    isActive: true,
-  },
-  {
-    id: "4",
-    name: "Tennis",
-    icon: "sports_tennis",
-    matchCount: 30,
-    isActive: false,
-  },
-  {
-    id: "5",
-    name: "Horse Racing",
-    imageUrl:
-      "https://images.unsplash.com/photo-1599058917765-a780eda07a3e?w=100&h=100&fit=crop",
-    matchCount: 12,
-    isActive: true,
-  },
-];
+import { sportService } from "../../services/mockData";
+import { Sport } from "../../types/schema";
 
 const Categories: React.FC = () => {
-  const [categories, setCategories] = useState<Category[]>(initialCategories);
+  const [sports, setSports] = useState<Sport[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [editingCategory, setEditingCategory] =
-    useState<Partial<Category> | null>(null);
+  const [editingSport, setEditingSport] = useState<Partial<Sport> | null>(null);
+
+  useEffect(() => {
+    loadSports();
+  }, []);
+
+  const loadSports = () => {
+    setSports(sportService.getAll());
+  };
 
   const handleSave = (e: React.FormEvent) => {
     e.preventDefault();
-    if (editingCategory?.id) {
-      setCategories((prev) =>
-        prev.map((c) =>
-          c.id === editingCategory.id ? (editingCategory as Category) : c
-        )
-      );
+    if (!editingSport) return;
+
+    // Basic validation
+    if (!editingSport.sportId || !editingSport.name || !editingSport.slug) {
+      toast.error("Please fill in all required fields");
+      return;
+    }
+
+    if (editingSport._id) {
+      // Update
+      const updated = sportService.update(editingSport._id, editingSport);
+      if (updated) {
+        toast.success("Sport updated successfully");
+        loadSports();
+      } else {
+        toast.error("Failed to update sport");
+      }
     } else {
-      setCategories((prev) => [
-        ...prev,
-        {
-          ...editingCategory,
-          id: Date.now().toString(),
-          matchCount: 0,
-          isActive: true,
-        } as Category,
-      ]);
+      // Create
+      // Check for unique requirements (mock check)
+      const exists = sports.some(
+        (s) =>
+          s.sportId === editingSport.sportId ||
+          s.name === editingSport.name ||
+          s.slug === editingSport.slug
+      );
+      if (exists) {
+        toast.error("Sport ID, Name, or Slug must be unique");
+        return;
+      }
+
+      const newSport = sportService.add({
+        sportId: editingSport.sportId!,
+        name: editingSport.name!,
+        slug: editingSport.slug!,
+        icon: editingSport.icon || "sports",
+        displayOrder: editingSport.displayOrder || 0,
+        isActive: editingSport.isActive ?? true,
+      });
+
+      if (newSport) {
+        toast.success("Sport created successfully");
+        loadSports();
+      }
     }
     setIsModalOpen(false);
-    setEditingCategory(null);
+    setEditingSport(null);
   };
 
   const handleDelete = (id: string) => {
-    if (confirm("Are you sure you want to delete this category?")) {
-      setCategories((prev) => prev.filter((c) => c.id !== id));
+    if (confirm("Are you sure you want to delete this sport?")) {
+      const success = sportService.delete(id);
+      if (success) {
+        toast.success("Sport deleted successfully");
+        loadSports();
+      } else {
+        toast.error("Failed to delete sport");
+      }
     }
+  };
+
+  const openNewModal = () => {
+    setEditingSport({
+      sportId: `SPORT-${Math.floor(Math.random() * 1000)
+        .toString()
+        .padStart(3, "0")}`,
+      displayOrder: 0,
+      isActive: true,
+    });
+    setIsModalOpen(true);
   };
 
   return (
@@ -92,45 +107,43 @@ const Categories: React.FC = () => {
       <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 mb-10">
         <div>
           <h1 className="text-3xl md:text-5xl font-black tracking-tighter mb-2">
-            Sports Categories
+            Sports Collection
           </h1>
           <p className="text-slate-500 font-medium">
-            Define and manage available sports markets on the platform.
+            Manage sports categories, icons, and visibility.
           </p>
         </div>
         <Button
-          onClick={() => {
-            setEditingCategory({ isActive: true });
-            setIsModalOpen(true);
-          }}
+          onClick={openNewModal}
+          className="bg-primary text-secondary hover:bg-primary/90"
         >
-          <span className="material-symbols-outlined text-lg">add_circle</span>{" "}
-          New Category
+          <span className="material-symbols-outlined text-lg mr-2">
+            add_circle
+          </span>
+          New Sport
         </Button>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-6">
-        {categories.map((cat) => (
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        {sports.map((sport) => (
           <Card
-            key={cat.id}
+            key={sport._id}
             className={`group hover:border-accent transition-all duration-300 ${
-              !cat.isActive
+              !sport.isActive
                 ? "opacity-60 grayscale"
                 : "hover:shadow-xl hover:shadow-accent/5"
             }`}
           >
             <CardHeader className="flex flex-row items-center justify-between pb-4">
-              <div className="size-16 rounded-2xl bg-slate-50 flex items-center justify-center group-hover:bg-secondary group-hover:text-primary transition-all duration-500 overflow-hidden border border-slate-100">
-                {cat.imageUrl ? (
+              <div className="size-16 rounded-2xl bg-slate-50 flex items-center justify-center group-hover:bg-secondary group-hover:text-primary transition-all duration-500 overflow-hidden border border-slate-100 text-3xl">
+                {sport.icon.startsWith("http") ? (
                   <img
-                    src={cat.imageUrl}
-                    alt={cat.name}
+                    src={sport.icon}
+                    alt={sport.name}
                     className="w-full h-full object-cover"
                   />
                 ) : (
-                  <span className="material-symbols-outlined text-3xl">
-                    {cat.icon || "sports"}
-                  </span>
+                  sport.icon
                 )}
               </div>
               <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
@@ -139,7 +152,7 @@ const Categories: React.FC = () => {
                   size="icon"
                   className="size-8"
                   onClick={() => {
-                    setEditingCategory(cat);
+                    setEditingSport(sport);
                     setIsModalOpen(true);
                   }}
                 >
@@ -151,7 +164,7 @@ const Categories: React.FC = () => {
                   variant="ghost"
                   size="icon"
                   className="size-8 text-red-500 hover:text-red-600 hover:bg-red-50"
-                  onClick={() => handleDelete(cat.id)}
+                  onClick={() => handleDelete(sport._id)}
                 >
                   <span className="material-symbols-outlined text-lg">
                     delete
@@ -161,14 +174,17 @@ const Categories: React.FC = () => {
             </CardHeader>
             <CardContent>
               <CardTitle className="mb-1 text-2xl font-black">
-                {cat.name}
+                {sport.name}
               </CardTitle>
-              <div className="flex items-center justify-between mt-6">
+              <div className="text-xs text-slate-400 font-mono mb-4">
+                {sport.sportId}
+              </div>
+              <div className="flex items-center justify-between mt-2">
                 <span className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">
-                  {cat.matchCount} Events
+                  Order: {sport.displayOrder}
                 </span>
-                <Badge variant={cat.isActive ? "success" : "outline"}>
-                  {cat.isActive ? "Active" : "Disabled"}
+                <Badge variant={sport.isActive ? "default" : "secondary"}>
+                  {sport.isActive ? "Active" : "Disabled"}
                 </Badge>
               </div>
             </CardContent>
@@ -179,79 +195,92 @@ const Categories: React.FC = () => {
       <Modal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
-        title={editingCategory?.id ? "Edit Category" : "Create New Category"}
+        title={editingSport?._id ? "Edit Sport" : "Create New Sport"}
       >
-        <form onSubmit={handleSave} className="space-y-8 py-2">
+        <form onSubmit={handleSave} className="space-y-6 py-4">
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="sportId">Sport ID</Label>
+              <Input
+                id="sportId"
+                required
+                value={editingSport?.sportId || ""}
+                onChange={(e) =>
+                  setEditingSport({ ...editingSport, sportId: e.target.value })
+                }
+                placeholder="SPORT-001"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="displayOrder">Display Order</Label>
+              <Input
+                id="displayOrder"
+                type="number"
+                value={editingSport?.displayOrder || 0}
+                onChange={(e) =>
+                  setEditingSport({
+                    ...editingSport,
+                    displayOrder: parseInt(e.target.value),
+                  })
+                }
+              />
+            </div>
+          </div>
+
           <div className="space-y-2">
-            <Label>Sport Display Name</Label>
+            <Label htmlFor="name">Name</Label>
             <Input
+              id="name"
               required
-              value={editingCategory?.name || ""}
-              onChange={(e) =>
-                setEditingCategory({
-                  ...editingCategory,
-                  name: e.target.value,
-                })
-              }
-              placeholder="e.g. Cricket, Soccer"
-              className="text-base font-bold"
+              value={editingSport?.name || ""}
+              onChange={(e) => {
+                const name = e.target.value;
+                setEditingSport({
+                  ...editingSport,
+                  name,
+                  slug: name.toLowerCase().replace(/ /g, "_"),
+                });
+              }}
+              placeholder="e.g. Football"
             />
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="space-y-2">
-              <Label>Material Icon</Label>
-              <Input
-                value={editingCategory?.icon || ""}
-                onChange={(e) =>
-                  setEditingCategory({
-                    ...editingCategory,
-                    icon: e.target.value,
-                    imageUrl: "",
-                  })
-                }
-                placeholder="sports_soccer"
-                className="font-mono"
-              />
-            </div>
-            <div className="space-y-2">
-              <Label>Or Image URL</Label>
-              <Input
-                value={editingCategory?.imageUrl || ""}
-                onChange={(e) =>
-                  setEditingCategory({
-                    ...editingCategory,
-                    imageUrl: e.target.value,
-                    icon: "",
-                  })
-                }
-                placeholder="https://..."
-              />
-            </div>
+          <div className="space-y-2">
+            <Label htmlFor="slug">Slug</Label>
+            <Input
+              id="slug"
+              required
+              value={editingSport?.slug || ""}
+              onChange={(e) =>
+                setEditingSport({ ...editingSport, slug: e.target.value })
+              }
+              placeholder="e.g. football"
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="icon">Icon (Emoji or URL)</Label>
+            <Input
+              id="icon"
+              value={editingSport?.icon || ""}
+              onChange={(e) =>
+                setEditingSport({ ...editingSport, icon: e.target.value })
+              }
+              placeholder="⚽ or https://..."
+            />
           </div>
 
           <div className="flex items-center gap-4 bg-slate-50 p-4 rounded-xl border border-slate-100">
             <Checkbox
               id="isActive"
-              checked={editingCategory?.isActive !== false}
+              checked={editingSport?.isActive ?? true}
               onCheckedChange={(checked) =>
-                setEditingCategory({
-                  ...editingCategory,
-                  isActive: Boolean(checked),
-                })
+                setEditingSport({ ...editingSport, isActive: checked === true })
               }
             />
-            <div className="grid gap-0.5">
-              <label
-                htmlFor="isActive"
-                className="text-sm font-bold text-primary cursor-pointer leading-none"
-              >
-                Category Visibility
-            </label>
-              <p className="text-[10px] text-slate-400 font-medium">
-                When disabled, this sport will be hidden from the user panel.
-              </p>
-            </div>
+            <Label htmlFor="isActive" className="cursor-pointer">
+              Is Active?
+            </Label>
           </div>
 
           <div className="flex gap-4 pt-4">
@@ -261,10 +290,10 @@ const Categories: React.FC = () => {
               className="flex-1"
               onClick={() => setIsModalOpen(false)}
             >
-              Discard
+              Cancel
             </Button>
-            <Button type="submit" variant="accent" className="flex-1">
-              Save Changes
+            <Button type="submit" className="flex-1">
+              Save Sport
             </Button>
           </div>
         </form>

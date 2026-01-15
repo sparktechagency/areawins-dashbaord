@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Input } from "../components/ui/input";
 import { Button } from "../components/ui/button";
+import { Input } from "../components/ui/input";
 
 type Step = "LOGIN" | "FORGOT" | "OTP" | "RESET";
 
@@ -35,7 +35,7 @@ const AuthFlow: React.FC = () => {
                   required
                   type="email"
                   className="bg-white/5 border-white/10 h-12 text-white placeholder:text-white/20 focus-visible:ring-accent"
-                  placeholder="admin@easybet.com"
+                  placeholder="admin@AreaWinsbet.com"
                   onChange={(e) => setEmail(e.target.value)}
                 />
               </div>
@@ -187,7 +187,7 @@ const AuthFlow: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-primary flex items-center justify-center p-6 font-sans">
+    <div className="min-h-screen bg-secondary flex items-center justify-center p-6 font-sans">
       <div className="absolute top-10 left-10 flex items-center gap-3">
         <div className="size-10 bg-[#00D65C] rounded-lg flex items-center justify-center">
           <span className="material-symbols-outlined text-black font-bold">
@@ -195,14 +195,14 @@ const AuthFlow: React.FC = () => {
           </span>
         </div>
         <span className="text-white font-black text-xl tracking-tight">
-          Easy Bet
+          AreaWins Bet
         </span>
       </div>
 
       <div className="w-full max-w-md">{renderStep()}</div>
 
       <div className="absolute bottom-10 text-white/20 text-[10px] font-bold tracking-widest uppercase">
-        © 2023 Easy Bet Internal Systems • Level 4 Security Active
+        © 2023 AreaWins Bet Internal Systems • Level 4 Security Active
       </div>
     </div>
   );

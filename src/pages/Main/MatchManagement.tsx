@@ -1,380 +1,535 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import Modal from "@/components/ui/modal";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import React, { useState } from "react";
-import { Match, Team } from "../../../types";
-import { Select } from "@/components/ui/select";
-
-const mockTeams: Team[] = [
-  {
-    id: "t1",
-    name: "Arsenal",
-    sport: "Soccer",
-    country: "UK",
-    logo: "https://api.dicebear.com/7.x/initials/svg?seed=AR",
-  },
-  {
-    id: "t2",
-    name: "Liverpool",
-    sport: "Soccer",
-    country: "UK",
-    logo: "https://api.dicebear.com/7.x/initials/svg?seed=LV",
-  },
-  {
-    id: "t3",
-    name: "Celtics",
-    sport: "Basketball",
-    country: "USA",
-    logo: "https://api.dicebear.com/7.x/initials/svg?seed=BC",
-  },
-  {
-    id: "t4",
-    name: "Warriors",
-    sport: "Basketball",
-    country: "USA",
-    logo: "https://api.dicebear.com/7.x/initials/svg?seed=GW",
-  },
-  {
-    id: "t5",
-    name: "Man City",
-    sport: "Soccer",
-    country: "UK",
-    logo: "https://api.dicebear.com/7.x/initials/svg?seed=MC",
-  },
-  {
-    id: "t6",
-    name: "Man Utd",
-    sport: "Soccer",
-    country: "UK",
-    logo: "https://api.dicebear.com/7.x/initials/svg?seed=MU",
-  },
-];
-
-const mockCategories: string[] = ["Soccer", "Basketball", "Cricket", "Tennis"];
-
-const initialMatches: Match[] = [
-  {
-    id: "1",
-    sport: "Soccer",
-    homeTeam: "Arsenal",
-    awayTeam: "Liverpool",
-    homeLogo: "https://api.dicebear.com/7.x/initials/svg?seed=AR",
-    awayLogo: "https://api.dicebear.com/7.x/initials/svg?seed=LV",
-    score: "2 - 1",
-    league: "Premier League",
-    status: "Live 74'",
-    isLive: true,
-    pot: 145280,
-    startTime: "2023-11-20T20:00",
-  },
-  {
-    id: "2",
-    sport: "Basketball",
-    homeTeam: "Celtics",
-    awayTeam: "Warriors",
-    homeLogo: "https://api.dicebear.com/7.x/initials/svg?seed=BC",
-    awayLogo: "https://api.dicebear.com/7.x/initials/svg?seed=GW",
-    score: "0 - 0",
-    league: "NBA • Regular Season",
-    status: "Upcoming",
-    isLive: false,
-    pot: 82000,
-    startTime: "2023-11-21T04:30",
-  },
-];
+import Modal from "@/components/ui/modal";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import React, { useEffect, useState } from "react";
+import { toast } from "sonner";
+import { Card, CardContent, CardHeader } from "../../components/ui/card";
+import {
+  matchService,
+  sportService,
+  teamService,
+  tournamentService,
+} from "../../services/mockData";
+import {
+  Match,
+  MatchStatus,
+  Sport,
+  Team,
+  Tournament,
+} from "../../types/schema";
 
 const MatchManagement: React.FC = () => {
-  const [matches, setMatches] = useState<Match[]>(initialMatches);
+  const [matches, setMatches] = useState<Match[]>([]);
+  const [sports, setSports] = useState<Sport[]>([]);
+  const [tournaments, setTournaments] = useState<Tournament[]>([]);
+  const [teams, setTeams] = useState<Team[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingMatch, setEditingMatch] = useState<Partial<Match> | null>(null);
 
+  useEffect(() => {
+    loadData();
+  }, []);
+
+  const loadData = () => {
+    setMatches(matchService.getAll());
+    setSports(sportService.getAll());
+    setTournaments(tournamentService.getAll());
+    setTeams(teamService.getAll());
+  };
+
+  const getSportName = (id: string) =>
+    sports.find((s) => s._id === id)?.name || "Unknown";
+  const getTournamentName = (id?: string) =>
+    id ? tournaments.find((t) => t._id === id)?.name : "Friendly/Other";
+  const getTeamName = (id: string) =>
+    teams.find((t) => t._id === id)?.name || "Unknown";
+  const getTeam = (id: string) => teams.find((t) => t._id === id);
+
   const handleSave = (e: React.FormEvent) => {
     e.preventDefault();
-    const hTeam = mockTeams.find((t) => t.name === editingMatch?.homeTeam);
-    const aTeam = mockTeams.find((t) => t.name === editingMatch?.awayTeam);
+    if (!editingMatch) return;
 
-    const matchData = {
-      ...editingMatch,
-      homeLogo:
-        hTeam?.logo || "https://api.dicebear.com/7.x/initials/svg?seed=H",
-      awayLogo:
-        aTeam?.logo || "https://api.dicebear.com/7.x/initials/svg?seed=A",
-    };
+    if (
+      !editingMatch.matchId ||
+      !editingMatch.sport ||
+      !editingMatch.homeTeam ||
+      !editingMatch.awayTeam ||
+      !editingMatch.scheduledStartTime
+    ) {
+      toast.error("Please fill in all required fields");
+      return;
+    }
 
-    if (editingMatch?.id) {
-      setMatches((prev) =>
-        prev.map((m) => (m.id === editingMatch.id ? (matchData as Match) : m))
-      );
+    if (editingMatch.homeTeam === editingMatch.awayTeam) {
+      toast.error("Home and Away teams cannot be the same");
+      return;
+    }
+
+    if (editingMatch._id) {
+      const updated = matchService.update(editingMatch._id, editingMatch);
+      if (updated) {
+        toast.success("Match updated successfully");
+        loadData();
+      } else {
+        toast.error("Failed to update match");
+      }
     } else {
-      setMatches((prev) => [
-        ...prev,
-        {
-          ...matchData,
-          id: Date.now().toString(),
-          score: "0 - 0",
-          isLive: false,
-          pot: 0,
-          status: "Scheduled",
-        } as Match,
-      ]);
+      const exists = matches.some((m) => m.matchId === editingMatch.matchId);
+      if (exists) {
+        toast.error("Match ID must be unique");
+        return;
+      }
+
+      const newMatch = matchService.add({
+        matchId: editingMatch.matchId!,
+        sport: editingMatch.sport!,
+        tournament: editingMatch.tournament,
+        homeTeam: editingMatch.homeTeam!,
+        awayTeam: editingMatch.awayTeam!,
+        scheduledStartTime: new Date(editingMatch.scheduledStartTime!),
+        status: editingMatch.status || "scheduled",
+        source: editingMatch.source || "manual",
+        availableBetTypes: editingMatch.availableBetTypes || [],
+        isResultVerified: editingMatch.isResultVerified ?? false,
+        totalBetsCount: 0,
+        isFeatured: editingMatch.isFeatured ?? false,
+        createdBy: "admin_user", // Mock
+        VENUE: editingMatch.venue,
+        city: editingMatch.city,
+        country: editingMatch.country,
+        liveStatus: editingMatch.liveStatus,
+        finalResult: editingMatch.finalResult,
+      } as any); // Casting as any due to partial mismatches in mock vs schema strictly, but mockService handles strict types
+
+      if (newMatch) {
+        toast.success("Match created successfully");
+        loadData();
+      }
     }
     setIsModalOpen(false);
     setEditingMatch(null);
   };
 
-  const formatDate = (dateStr?: string) => {
-    if (!dateStr) return "N/A";
-    return new Date(dateStr).toLocaleString([], {
-      month: "short",
-      day: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
+  const handleDelete = (id: string) => {
+    if (confirm("Are you sure you want to delete this match?")) {
+      const success = matchService.delete(id);
+      if (success) {
+        toast.success("Match deleted successfully");
+        loadData();
+      } else {
+        toast.error("Failed to delete match");
+      }
+    }
+  };
+
+  const openNewModal = () => {
+    setEditingMatch({
+      matchId: `MATCH-${Math.floor(Math.random() * 10000)
+        .toString()
+        .padStart(5, "0")}`,
+      status: "scheduled",
+      isFeatured: false,
+      isResultVerified: false,
+      source: "manual",
+      liveStatus: { homeScore: 0, awayScore: 0, lastUpdated: new Date() },
     });
+    setIsModalOpen(true);
+  };
+
+  const formatDate = (date: Date) => {
+    return new Date(date).toLocaleString();
   };
 
   return (
     <div className="p-4 md:p-8">
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-10">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 mb-10">
         <div>
           <h1 className="text-3xl md:text-5xl font-black tracking-tighter mb-2">
-            Match Events
+            Match Management
           </h1>
           <p className="text-slate-500 font-medium">
-            Oversee real-time sports data and market entries.
+            Schedule and manage match events and results.
           </p>
         </div>
-        <div className="flex gap-3 w-full md:w-auto">
-          <Button variant="outline" className="flex-1 md:flex-none gap-2 px-6">
-            <span className="material-symbols-outlined text-lg">sync</span>{" "}
-            Refresh
-          </Button>
-          <Button
-            variant="accent"
-            onClick={() => {
-              setEditingMatch({ sport: "Soccer", status: "Upcoming" });
-              setIsModalOpen(true);
-            }}
-            className="flex-1 md:flex-none gap-2 px-8"
-          >
-            <span className="material-symbols-outlined text-lg">
-              add_circle
-            </span>{" "}
-            Schedule Event
-          </Button>
-        </div>
+        <Button
+          onClick={openNewModal}
+          className="bg-primary text-secondary hover:bg-primary/90"
+        >
+          <span className="material-symbols-outlined text-lg mr-2">
+            add_circle
+          </span>
+          Schedule Match
+        </Button>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
-        {matches.map((match) => (
-          <Card
-            key={match.id}
-            className="group hover:border-accent transition-all duration-300 hover:shadow-2xl hover:shadow-accent/5 overflow-hidden border-slate-100"
-          >
-            <div className="px-6 py-4 bg-slate-50/50 border-b border-slate-100 flex justify-between items-center">
-              <Badge variant="secondary" className="bg-white border-slate-200">
-                {match.sport} • {match.league}
-              </Badge>
-              <div className="flex items-center gap-2">
-                {match.isLive && (
-                  <span className="size-2 rounded-full bg-secondary animate-pulse"></span>
-                )}
-                <span
-                  className={`text-[10px] font-black uppercase tracking-widest ${
-                    match.isLive ? "text-accent" : "text-slate-400"
-                  }`}
-                >
-                  {match.status}
-                </span>
-              </div>
-            </div>
-            <div className="p-8">
-              <div className="flex justify-between items-center mb-8">
-                <div className="flex flex-col items-center gap-3 w-1/3">
-                  <div className="size-16 rounded-full bg-white border border-slate-100 flex items-center justify-center p-2 shadow-sm group-hover:scale-110 transition-transform">
-                    <img
-                      className="w-12 h-12 object-contain"
-                      src={match.homeLogo}
-                      alt={match.homeTeam}
-                    />
-                  </div>
-                  <span className="text-xs font-black leading-tight text-center">
-                    {match.homeTeam}
-                  </span>
-                </div>
-                <div className="flex flex-col items-center px-4">
-                  <span className="text-4xl font-black tabular-nums tracking-tighter text-slate-900">
-                    {match.score}
-                  </span>
-                  {!match.isLive && (
-                    <span className="text-[9px] font-black text-slate-400 mt-2 uppercase tracking-widest">
-                      {formatDate(match.startTime)}
-                    </span>
-                  )}
-                </div>
-                <div className="flex flex-col items-center gap-3 w-1/3">
-                  <div className="size-16 rounded-full bg-white border border-slate-100 flex items-center justify-center p-2 shadow-sm group-hover:scale-110 transition-transform">
-                    <img
-                      className="w-12 h-12 object-contain"
-                      src={match.awayLogo}
-                      alt={match.awayTeam}
-                    />
-                  </div>
-                  <span className="text-xs font-black leading-tight text-center">
-                    {match.awayTeam}
-                  </span>
-                </div>
-              </div>
-              <div className="flex items-center justify-between pt-6 border-t border-slate-50">
-                <div>
-                  <p className="text-[10px] uppercase font-black text-slate-400 mb-0.5 tracking-widest">
-                    Prize Pool
-                  </p>
-                  <p className="text-xl font-black text-slate-900">
-                    ${match.pot.toLocaleString()}
-                  </p>
-                </div>
-                <div className="flex gap-2">
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="size-9 rounded-full"
-                    onClick={() => {
-                      setEditingMatch(match);
-                      setIsModalOpen(true);
-                    }}
+      <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
+        {matches.map((m) => {
+          const home = getTeam(m.homeTeam);
+          const away = getTeam(m.awayTeam);
+          return (
+            <Card
+              key={m._id}
+              className={m.status === "finished" ? "opacity-80" : ""}
+            >
+              <CardHeader className="pb-2">
+                <div className="flex justify-between items-center mb-2">
+                  <Badge variant="outline">{getSportName(m.sport)}</Badge>
+                  <Badge
+                    className={
+                      m.status === "live"
+                        ? "bg-red-500 animate-pulse text-white"
+                        : "bg-slate-100 text-slate-600"
+                    }
                   >
-                    <span className="material-symbols-outlined text-slate-400 group-hover:text-primary">
-                      edit
-                    </span>
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="size-9 rounded-full"
-                  >
-                    <span className="material-symbols-outlined text-slate-400 group-hover:text-accent">
-                      monitoring
-                    </span>
-                  </Button>
+                    {m.status.toUpperCase()}
+                  </Badge>
                 </div>
-              </div>
-            </div>
-          </Card>
-        ))}
+                <div className="text-xs text-center text-slate-400 font-bold uppercase tracking-wider mb-4">
+                  {getTournamentName(m.tournament)}
+                </div>
+                <div className="flex justify-between items-center px-4">
+                  <div className="flex flex-col items-center gap-2 w-1/3">
+                    <div className="size-12 rounded-full bg-slate-50 flex items-center justify-center p-2 border">
+                      {home?.logo ? (
+                        <img
+                          src={home.logo}
+                          className="w-full h-full object-contain"
+                        />
+                      ) : (
+                        "🏠"
+                      )}
+                    </div>
+                    <span className="text-xs font-black text-center leading-tight">
+                      {home?.name}
+                    </span>
+                  </div>
+                  <div className="flex flex-col items-center">
+                    <div className="text-3xl font-black tabular-nums">
+                      {m.status === "live" || m.status === "finished"
+                        ? `${m.liveStatus?.homeScore ?? 0} - ${
+                            m.liveStatus?.awayScore ?? 0
+                          }`
+                        : "VS"}
+                    </div>
+                    <div className="text-[10px] text-slate-400 mt-1">
+                      {formatDate(m.scheduledStartTime)}
+                    </div>
+                  </div>
+                  <div className="flex flex-col items-center gap-2 w-1/3">
+                    <div className="size-12 rounded-full bg-slate-50 flex items-center justify-center p-2 border">
+                      {away?.logo ? (
+                        <img
+                          src={away.logo}
+                          className="w-full h-full object-contain"
+                        />
+                      ) : (
+                        "✈️"
+                      )}
+                    </div>
+                    <span className="text-xs font-black text-center leading-tight">
+                      {away?.name}
+                    </span>
+                  </div>
+                </div>
+              </CardHeader>
+              <CardContent>
+                <div className="flex items-center justify-between mt-4 pt-4 border-t border-slate-50">
+                  <div className="text-xs text-slate-400 font-mono">
+                    {m.matchId}
+                  </div>
+                  <div className="flex gap-2">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => {
+                        setEditingMatch(m);
+                        setIsModalOpen(true);
+                      }}
+                    >
+                      Edit
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="text-red-500"
+                      onClick={() => handleDelete(m._id)}
+                    >
+                      Delete
+                    </Button>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          );
+        })}
       </div>
 
       <Modal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
-        title={editingMatch?.id ? "Edit Match" : "Schedule New Match"}
+        title={editingMatch?.id ? "Edit Match" : "Schedule Match"}
       >
-        <form onSubmit={handleSave} className="space-y-6 py-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <form
+          onSubmit={handleSave}
+          className="space-y-6 py-4 px-1 max-h-[80vh] overflow-y-auto"
+        >
+          <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label>Sport Category</Label>
-              <Select
-                required
-                value={editingMatch?.sport || ""}
-                onChange={(e) =>
-                  setEditingMatch({ ...editingMatch, sport: e.target.value })
-                }
-              >
-                {mockCategories.map((cat) => (
-                  <option key={cat} value={cat}>
-                    {cat}
-                  </option>
-                ))}
-              </Select>
-            </div>
-            <div className="space-y-2">
-              <Label>League Title</Label>
+              <Label>Match ID</Label>
               <Input
                 required
-                value={editingMatch?.league || ""}
+                value={editingMatch?.matchId || ""}
                 onChange={(e) =>
-                  setEditingMatch({ ...editingMatch, league: e.target.value })
+                  setEditingMatch({ ...editingMatch, matchId: e.target.value })
                 }
-                placeholder="e.g. NBA Finals"
+                placeholder="MATCH-123456"
               />
             </div>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="space-y-2">
-              <Label>Home Competitor</Label>
+              <Label>Status</Label>
               <Select
-                required
-                value={editingMatch?.homeTeam || ""}
-                onChange={(e) =>
-                  setEditingMatch({ ...editingMatch, homeTeam: e.target.value })
-                }
-              >
-                <option value="">Select Team</option>
-                {mockTeams
-                  .filter((t) => t.sport === editingMatch?.sport)
-                  .map((t) => (
-                    <option key={t.id} value={t.name}>
-                      {t.name}
-                    </option>
-                  ))}
-              </Select>
-            </div>
-            <div className="space-y-2">
-              <Label>Away Competitor</Label>
-              <Select
-                required
-                value={editingMatch?.awayTeam || ""}
-                onChange={(e) =>
-                  setEditingMatch({ ...editingMatch, awayTeam: e.target.value })
-                }
-              >
-                <option value="">Select Team</option>
-                {mockTeams
-                  .filter(
-                    (t) =>
-                      t.sport === editingMatch?.sport &&
-                      t.name !== editingMatch?.homeTeam
-                  )
-                  .map((t) => (
-                    <option key={t.id} value={t.name}>
-                      {t.name}
-                    </option>
-                  ))}
-              </Select>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="space-y-2">
-              <Label>Scheduled Date & Time</Label>
-              <Input
-                type="datetime-local"
-                required
-                value={editingMatch?.startTime || ""}
-                onChange={(e) =>
+                value={editingMatch?.status || "scheduled"}
+                onValueChange={(val) =>
                   setEditingMatch({
                     ...editingMatch,
-                    startTime: e.target.value,
+                    status: val as MatchStatus,
+                  })
+                }
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Select Status" />
+                </SelectTrigger>
+                <SelectContent>
+                  {[
+                    "scheduled",
+                    "live",
+                    "finished",
+                    "cancelled",
+                    "postponed",
+                  ].map((s) => (
+                    <SelectItem key={s} value={s} className="capitalize">
+                      {s}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label>Sport</Label>
+              <Select
+                value={editingMatch?.sport || ""}
+                onValueChange={(val) =>
+                  setEditingMatch({ ...editingMatch, sport: val })
+                }
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Select Sport" />
+                </SelectTrigger>
+                <SelectContent>
+                  {sports.map((s) => (
+                    <SelectItem key={s._id} value={s._id}>
+                      {s.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="space-y-2">
+              <Label>Tournament</Label>
+              <Select
+                value={editingMatch?.tournament || "none"}
+                onValueChange={(val) =>
+                  setEditingMatch({
+                    ...editingMatch,
+                    tournament: val === "none" ? undefined : val,
+                  })
+                }
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Select Tournament" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="none">None / Friendly</SelectItem>
+                  {tournaments
+                    .filter(
+                      (t) =>
+                        !editingMatch?.sport || t.sport === editingMatch.sport
+                    )
+                    .map((t) => (
+                      <SelectItem key={t._id} value={t._id}>
+                        {t.name}
+                      </SelectItem>
+                    ))}
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label>Home Team</Label>
+              <Select
+                value={editingMatch?.homeTeam || ""}
+                onValueChange={(val) =>
+                  setEditingMatch({ ...editingMatch, homeTeam: val })
+                }
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Select Home Team" />
+                </SelectTrigger>
+                <SelectContent>
+                  {teams
+                    .filter(
+                      (t) =>
+                        !editingMatch?.sport || t.sport === editingMatch.sport
+                    )
+                    .map((t) => (
+                      <SelectItem key={t._id} value={t._id}>
+                        {t.name}
+                      </SelectItem>
+                    ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="space-y-2">
+              <Label>Away Team</Label>
+              <Select
+                value={editingMatch?.awayTeam || ""}
+                onValueChange={(val) =>
+                  setEditingMatch({ ...editingMatch, awayTeam: val })
+                }
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Select Away Team" />
+                </SelectTrigger>
+                <SelectContent>
+                  {teams
+                    .filter(
+                      (t) =>
+                        (!editingMatch?.sport ||
+                          t.sport === editingMatch.sport) &&
+                        t._id !== editingMatch?.homeTeam
+                    )
+                    .map((t) => (
+                      <SelectItem key={t._id} value={t._id}>
+                        {t.name}
+                      </SelectItem>
+                    ))}
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+
+          <div className="space-y-2">
+            <Label>Scheduled Start Time</Label>
+            <Input
+              type="datetime-local"
+              required
+              value={
+                editingMatch?.scheduledStartTime
+                  ? new Date(editingMatch.scheduledStartTime)
+                      .toISOString()
+                      .slice(0, 16)
+                  : ""
+              }
+              onChange={(e) =>
+                setEditingMatch({
+                  ...editingMatch,
+                  scheduledStartTime: new Date(e.target.value),
+                })
+              }
+            />
+          </div>
+
+          {/* Live Status Section */}
+          {(editingMatch?.status === "live" ||
+            editingMatch?.status === "finished") && (
+            <div className="p-4 bg-slate-50 rounded-xl space-y-4 border">
+              <Label className="uppercase text-xs font-bold text-slate-400">
+                Scores
+              </Label>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label>Home Score</Label>
+                  <Input
+                    type="number"
+                    value={editingMatch.liveStatus?.homeScore ?? 0}
+                    onChange={(e) =>
+                      setEditingMatch({
+                        ...editingMatch,
+                        liveStatus: {
+                          ...editingMatch.liveStatus!,
+                          homeScore: parseInt(e.target.value),
+                          lastUpdated: new Date(),
+                        },
+                      })
+                    }
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label>Away Score</Label>
+                  <Input
+                    type="number"
+                    value={editingMatch.liveStatus?.awayScore ?? 0}
+                    onChange={(e) =>
+                      setEditingMatch({
+                        ...editingMatch,
+                        liveStatus: {
+                          ...editingMatch.liveStatus!,
+                          awayScore: parseInt(e.target.value),
+                          lastUpdated: new Date(),
+                        },
+                      })
+                    }
+                  />
+                </div>
+              </div>
+            </div>
+          )}
+
+          <div className="flex gap-6">
+            <div className="flex items-center gap-2">
+              <Checkbox
+                id="isFeatured"
+                checked={editingMatch?.isFeatured ?? false}
+                onCheckedChange={(checked) =>
+                  setEditingMatch({
+                    ...editingMatch,
+                    isFeatured: checked === true,
                   })
                 }
               />
+              <Label htmlFor="isFeatured">Featured?</Label>
             </div>
-            <div className="space-y-2">
-              <Label>Event Status</Label>
-              <Input
-                value={editingMatch?.status || ""}
-                onChange={(e) =>
-                  setEditingMatch({ ...editingMatch, status: e.target.value })
+            <div className="flex items-center gap-2">
+              <Checkbox
+                id="isResultVerified"
+                checked={editingMatch?.isResultVerified ?? false}
+                onCheckedChange={(checked) =>
+                  setEditingMatch({
+                    ...editingMatch,
+                    isResultVerified: checked === true,
+                  })
                 }
-                placeholder="Upcoming / Postponed"
               />
+              <Label htmlFor="isResultVerified">Result Verified?</Label>
             </div>
           </div>
 
-          <div className="flex gap-4 pt-6">
+          <div className="flex gap-4 pt-4">
             <Button
               type="button"
               variant="outline"
@@ -383,8 +538,8 @@ const MatchManagement: React.FC = () => {
             >
               Cancel
             </Button>
-            <Button type="submit" variant="accent" className="flex-1">
-              Schedule Event
+            <Button type="submit" className="flex-1">
+              Save Match
             </Button>
           </div>
         </form>

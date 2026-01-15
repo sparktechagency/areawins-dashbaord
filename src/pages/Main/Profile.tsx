@@ -105,7 +105,7 @@ const Profile: React.FC = () => {
                   <input
                     disabled={!isEditing}
                     className="w-full bg-slate-50 border-none rounded-xl p-4 text-sm focus:ring-1 ring-primary font-bold disabled:opacity-60"
-                    value="alex.morgan@easybet.com"
+                    value="alex.morgan@AreaWinsbet.com"
                     readOnly
                   />
                 </div>

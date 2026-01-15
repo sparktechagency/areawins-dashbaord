@@ -1,61 +1,47 @@
-
-import React, { useState } from "react";
-import { Bet } from "../../../types";
-
-const initialBets: Bet[] = [
-  {
-    id: "#BT-98210",
-    user: "john_doe92",
-    sport: "Soccer",
-    event: "Liverpool vs Real Madrid",
-    stake: 450,
-    status: "OPEN",
-    type: "BACK",
-    timestamp: "Today, 21:00",
-  },
-  {
-    id: "#BT-98192",
-    user: "sam_smith",
-    sport: "NBA",
-    event: "Lakers vs Warriors",
-    stake: 1200,
-    status: "MATCHED",
-    type: "LAY",
-    timestamp: "Today, 04:30",
-  },
-  {
-    id: "#BT-98155",
-    user: "emma_v",
-    sport: "Tennis",
-    event: "Djokovic vs Alcaraz",
-    stake: 80,
-    status: "SETTLED",
-    type: "BACK",
-    timestamp: "Yesterday",
-  },
-  {
-    id: "#BT-98100",
-    user: "lucas_p",
-    sport: "Soccer",
-    event: "Arsenal vs Chelsea",
-    stake: 300,
-    status: "PENDING",
-    type: "BACK",
-    timestamp: "Today, 18:00",
-  },
-];
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import Modal from "@/components/ui/modal";
+import React, { useEffect, useState } from "react";
+import { toast } from "sonner";
+import {
+  betService,
+  betTypeService,
+  matchService,
+} from "../../services/mockData";
+import { Bet, BetStatus, BetType, Match } from "../../types/schema";
 
 const BetManagement: React.FC = () => {
-  const [bets, setBets] = useState<Bet[]>(initialBets);
+  const [bets, setBets] = useState<Bet[]>([]);
+  const [matches, setMatches] = useState<Match[]>([]);
+  const [betTypes, setBetTypes] = useState<BetType[]>([]);
   const [selectedBet, setSelectedBet] = useState<Bet | null>(null);
 
-  const overrideBetResult = (betId: string, newStatus: Bet["status"]) => {
-    setBets((prev) =>
-      prev.map((bet) =>
-        bet.id === betId ? { ...bet, status: newStatus } : bet
-      )
-    );
-    setSelectedBet(null);
+  useEffect(() => {
+    loadData();
+  }, []);
+
+  const loadData = () => {
+    setBets(betService.getAll());
+    setMatches(matchService.getAll());
+    setBetTypes(betTypeService.getAll());
+  };
+
+  const getMatchDetails = (id: string) => matches.find((m) => m._id === id);
+  const getBetTypeName = (id: string) =>
+    betTypes.find((b) => b._id === id)?.name || "Unknown";
+
+  const overrideBetResult = (betId: string, newStatus: BetStatus) => {
+    const updated = betService.update(betId, {
+      status: newStatus,
+      settledAt: new Date(),
+    });
+    if (updated) {
+      toast.success(`Bet status updated to ${newStatus}`);
+      loadData();
+      setSelectedBet(null);
+    } else {
+      toast.error("Failed to update bet status");
+    }
   };
 
   return (
@@ -69,44 +55,42 @@ const BetManagement: React.FC = () => {
         </p>
       </div>
 
-      {/* Override Modal (Simulated) */}
-      {selectedBet && (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[100] flex items-center justify-center p-4">
-          <div className="bg-white rounded-2xl p-8 max-w-md w-full shadow-2xl animate-in fade-in zoom-in duration-200">
-            <h3 className="text-xl font-bold mb-2">Override Result</h3>
-            <p className="text-gray-500 text-sm mb-6">
-              You are about to manually change the result for bet{" "}
-              <span className="font-mono text-primary font-bold">
-                {selectedBet.id}
-              </span>
-              . This action will be logged.
-            </p>
-
-            <div className="grid grid-cols-2 gap-3 mb-8">
-              {["WON", "LOST", "CANCELLED", "SETTLED", "PENDING"].map(
-                (status) => (
-                  <button
-                    key={status}
-                    onClick={() =>
-                      overrideBetResult(selectedBet.id, status as Bet["status"])
-                    }
-                    className="py-3 px-4 bg-gray-50 hover:bg-secondary hover:text-primary transition-all rounded-xl text-xs font-bold uppercase tracking-wider text-gray-600"
-                  >
-                    {status}
-                  </button>
-                )
-              )}
-            </div>
-
-            <button
-              onClick={() => setSelectedBet(null)}
-              className="w-full py-3 text-gray-400 font-bold hover:text-red-500 transition-colors"
-            >
-              Cancel
-            </button>
+      <Modal
+        isOpen={!!selectedBet}
+        onClose={() => setSelectedBet(null)}
+        title="Override Bet Result"
+      >
+        <div className="space-y-4">
+          <p className="text-gray-500 text-sm">
+            You are about to manually change the result for bet{" "}
+            <span className="font-mono text-primary font-bold">
+              {selectedBet?.betId}
+            </span>
+            . This action will be logged.
+          </p>
+          <div className="grid grid-cols-2 gap-3">
+            {["matched", "cancelled", "settled", "refunded"].map((status) => (
+              <Button
+                key={status}
+                variant={status === selectedBet?.status ? "default" : "outline"}
+                onClick={() =>
+                  overrideBetResult(selectedBet!._id, status as BetStatus)
+                }
+                className="capitalize"
+              >
+                {status}
+              </Button>
+            ))}
           </div>
+          <Button
+            variant="ghost"
+            onClick={() => setSelectedBet(null)}
+            className="w-full text-red-500 hover:text-red-600 hover:bg-red-50"
+          >
+            Cancel
+          </Button>
         </div>
-      )}
+      </Modal>
 
       <div className="bg-white rounded-xl border border-gray-200 overflow-hidden shadow-sm">
         <div className="overflow-x-auto">
@@ -117,10 +101,10 @@ const BetManagement: React.FC = () => {
                   Bet ID
                 </th>
                 <th className="px-6 py-4 text-xs font-black text-gray-400 uppercase tracking-wider">
-                  Match & Event
+                  Match & Type
                 </th>
                 <th className="px-6 py-4 text-xs font-black text-gray-400 uppercase tracking-wider">
-                  Type
+                  Selection
                 </th>
                 <th className="px-6 py-4 text-xs font-black text-gray-400 uppercase tracking-wider text-right">
                   Stake
@@ -134,55 +118,76 @@ const BetManagement: React.FC = () => {
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
-              {bets.map((bet) => (
-                <tr
-                  key={bet.id}
-                  className="hover:bg-slate-50 transition-colors group"
-                >
-                  <td className="px-6 py-4 font-mono text-xs font-bold text-slate-500">
-                    {bet.id}
-                  </td>
-                  <td className="px-6 py-4">
-                    <p className="text-sm font-bold text-primary leading-tight">
-                      {bet.event}
-                    </p>
-                    <p className="text-xs text-gray-400">
-                      {bet.sport} • {bet.timestamp}
-                    </p>
-                  </td>
-                  <td className="px-6 py-4">
-                    <span className="bg-slate-100 px-2 py-1 rounded text-[10px] font-black uppercase text-gray-600">
-                      {bet.type}
-                    </span>
-                  </td>
-                  <td className="px-6 py-4 font-bold text-sm text-slate-900 text-right">
-                    ${bet.stake.toFixed(2)}
-                  </td>
-                  <td className="px-6 py-4">
-                    <span
-                      className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase ${
-                        bet.status === "WON"
-                          ? "bg-green-100 text-green-700"
-                          : bet.status === "LOST"
-                          ? "bg-red-100 text-red-700"
-                          : bet.status === "CANCELLED"
-                          ? "bg-gray-100 text-gray-700"
-                          : "bg-blue-100 text-blue-700"
-                      }`}
-                    >
-                      {bet.status}
-                    </span>
-                  </td>
-                  <td className="px-6 py-4 text-center">
-                    <button
-                      onClick={() => setSelectedBet(bet)}
-                      className="text-xs font-bold bg-primary text-accent px-3 py-1.5 rounded hover:bg-black transition-all"
-                    >
-                      OVERRIDE
-                    </button>
+              {bets.length === 0 ? (
+                <tr>
+                  <td
+                    colSpan={6}
+                    className="text-center py-8 text-slate-400 font-medium"
+                  >
+                    No bets found.
                   </td>
                 </tr>
-              ))}
+              ) : (
+                bets.map((bet) => {
+                  const match = getMatchDetails(bet.match);
+                  return (
+                    <tr
+                      key={bet._id}
+                      className="hover:bg-slate-50 transition-colors group"
+                    >
+                      <td className="px-6 py-4 font-mono text-xs font-bold text-slate-500">
+                        {bet.betId}
+                        <div className="text-[10px] text-slate-300 font-normal">
+                          {new Date(bet.createdAt).toLocaleDateString()}
+                        </div>
+                      </td>
+                      <td className="px-6 py-4">
+                        <p className="text-sm font-bold text-primary leading-tight">
+                          {match ? match.matchId : "Unknown Match"}
+                        </p>
+                        <p className="text-xs text-gray-400">
+                          {getBetTypeName(bet.betType)}
+                        </p>
+                      </td>
+                      <td className="px-6 py-4">
+                        <Badge
+                          variant="secondary"
+                          className="uppercase font-bold text-[10px]"
+                        >
+                          {bet.selectedOutcome}
+                        </Badge>
+                      </td>
+                      <td className="px-6 py-4 font-bold text-sm text-slate-900 text-right">
+                        ${bet.stakeAmount.toFixed(2)}
+                      </td>
+                      <td className="px-6 py-4">
+                        <Badge
+                          variant={
+                            bet.status === "settled" || bet.status === "matched"
+                              ? "default"
+                              : bet.status === "open"
+                              ? "secondary"
+                              : "destructive"
+                          }
+                          className="uppercase text-[10px]"
+                        >
+                          {bet.status}
+                        </Badge>
+                      </td>
+                      <td className="px-6 py-4 text-center">
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          onClick={() => setSelectedBet(bet)}
+                          className="text-xs font-bold text-primary hover:bg-primary/10"
+                        >
+                          Override
+                        </Button>
+                      </td>
+                    </tr>
+                  );
+                })
+              )}
             </tbody>
           </table>
         </div>
