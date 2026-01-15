@@ -1,9 +1,21 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import Modal from "@/components/ui/modal";
 import {
   Select,
   SelectContent,
@@ -11,8 +23,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { zodResolver } from "@hookform/resolvers/zod";
 import React, { useEffect, useState } from "react";
+import { useFieldArray, useForm } from "react-hook-form";
 import { toast } from "sonner";
+import * as z from "zod";
 import {
   Card,
   CardContent,
@@ -20,15 +35,51 @@ import {
   CardTitle,
 } from "../../components/ui/card";
 import { betTypeService, sportService } from "../../services/mockData";
-import { BetOutcome, BetType, Sport } from "../../types/schema";
+import { BetType, Sport } from "../../types/schema";
+
+const outcomeSchema = z.object({
+  outcomeId: z.string().min(1, "ID is required"),
+  label: z.string().min(1, "Label is required"),
+  displayOrder: z.coerce.number().int().min(0, "Order must be positive"),
+});
+
+const betTypeSchema = z.object({
+  betTypeId: z.string().min(1, "Bet Type ID is required"),
+  sport: z.string().min(1, "Sport is required"),
+  name: z.string().min(1, "Name is required"),
+  slug: z.string().min(1, "Slug is required"),
+  outcomes: z.array(outcomeSchema).min(1, "At least one outcome is required"),
+  isDefault: z.boolean().default(false),
+  displayOrder: z.coerce.number().int().min(0, "Order must be positive"),
+  isActive: z.boolean().default(true),
+});
+
+type BetTypeFormValues = z.infer<typeof betTypeSchema>;
 
 const BetTypes: React.FC = () => {
   const [betTypes, setBetTypes] = useState<BetType[]>([]);
   const [sports, setSports] = useState<Sport[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [editingBetType, setEditingBetType] = useState<Partial<BetType> | null>(
-    null
-  );
+  const [editingId, setEditingId] = useState<string | null>(null);
+
+  const form = useForm<BetTypeFormValues>({
+    resolver: zodResolver(betTypeSchema),
+    defaultValues: {
+      betTypeId: "",
+      sport: "",
+      name: "",
+      slug: "",
+      outcomes: [],
+      isDefault: false,
+      displayOrder: 0,
+      isActive: true,
+    },
+  });
+
+  const { fields, append, remove } = useFieldArray({
+    control: form.control,
+    name: "outcomes",
+  });
 
   useEffect(() => {
     loadData();
@@ -43,61 +94,30 @@ const BetTypes: React.FC = () => {
     return sports.find((s) => s._id === id)?.name || "Unknown Sport";
   };
 
-  const handleSave = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!editingBetType) return;
-
-    if (
-      !editingBetType.betTypeId ||
-      !editingBetType.name ||
-      !editingBetType.slug ||
-      !editingBetType.sport
-    ) {
-      toast.error("Please fill in all required fields");
-      return;
-    }
-
-    if (!editingBetType.outcomes || editingBetType.outcomes.length === 0) {
-      toast.error("Please add at least one outcome");
-      return;
-    }
-
-    if (editingBetType._id) {
-      const updated = betTypeService.update(editingBetType._id, editingBetType);
+  const onSubmit = (data: BetTypeFormValues) => {
+    if (editingId) {
+      const updated = betTypeService.update(editingId, data);
       if (updated) {
         toast.success("Bet Type updated successfully");
         loadData();
+        setIsModalOpen(false);
       } else {
         toast.error("Failed to update bet type");
       }
     } else {
-      // Mock check for unique betTypeId
-      const exists = betTypes.some(
-        (b) => b.betTypeId === editingBetType.betTypeId
-      );
-      if (exists) {
-        toast.error("Bet Type ID must be unique");
+      // Check uniqueness
+      if (betTypes.some((b) => b.betTypeId === data.betTypeId)) {
+        form.setError("betTypeId", { message: "ID must be unique" });
         return;
       }
 
-      const newBetType = betTypeService.add({
-        betTypeId: editingBetType.betTypeId!,
-        sport: editingBetType.sport!,
-        name: editingBetType.name!,
-        slug: editingBetType.slug!,
-        outcomes: editingBetType.outcomes!,
-        isDefault: editingBetType.isDefault ?? false,
-        displayOrder: editingBetType.displayOrder || 0,
-        isActive: editingBetType.isActive ?? true,
-      });
-
+      const newBetType = betTypeService.add(data);
       if (newBetType) {
         toast.success("Bet Type created successfully");
         loadData();
+        setIsModalOpen(false);
       }
     }
-    setIsModalOpen(false);
-    setEditingBetType(null);
   };
 
   const handleDelete = (id: string) => {
@@ -112,11 +132,15 @@ const BetTypes: React.FC = () => {
     }
   };
 
-  const openNewModal = () => {
-    setEditingBetType({
+  const handleCreate = () => {
+    setEditingId(null);
+    form.reset({
       betTypeId: `BET-TYPE-${Math.floor(Math.random() * 1000)
         .toString()
         .padStart(3, "0")}`,
+      sport: "",
+      name: "",
+      slug: "",
       outcomes: [],
       displayOrder: 0,
       isActive: true,
@@ -125,34 +149,19 @@ const BetTypes: React.FC = () => {
     setIsModalOpen(true);
   };
 
-  const addOutcome = () => {
-    if (!editingBetType) return;
-    const newOutcome: BetOutcome = {
-      outcomeId: `outcome_${Date.now()}`,
-      label: "",
-      displayOrder: (editingBetType.outcomes?.length || 0) + 1,
-    };
-    setEditingBetType({
-      ...editingBetType,
-      outcomes: [...(editingBetType.outcomes || []), newOutcome],
+  const handleEdit = (betType: BetType) => {
+    setEditingId(betType._id);
+    form.reset({
+      betTypeId: betType.betTypeId,
+      sport: betType.sport,
+      name: betType.name,
+      slug: betType.slug,
+      outcomes: betType.outcomes,
+      isDefault: betType.isDefault,
+      displayOrder: betType.displayOrder,
+      isActive: betType.isActive,
     });
-  };
-
-  const updateOutcome = (
-    index: number,
-    field: keyof BetOutcome,
-    value: any
-  ) => {
-    if (!editingBetType || !editingBetType.outcomes) return;
-    const newOutcomes = [...editingBetType.outcomes];
-    newOutcomes[index] = { ...newOutcomes[index], [field]: value };
-    setEditingBetType({ ...editingBetType, outcomes: newOutcomes });
-  };
-
-  const removeOutcome = (index: number) => {
-    if (!editingBetType || !editingBetType.outcomes) return;
-    const newOutcomes = editingBetType.outcomes.filter((_, i) => i !== index);
-    setEditingBetType({ ...editingBetType, outcomes: newOutcomes });
+    setIsModalOpen(true);
   };
 
   return (
@@ -167,7 +176,7 @@ const BetTypes: React.FC = () => {
           </p>
         </div>
         <Button
-          onClick={openNewModal}
+          onClick={handleCreate}
           className="bg-primary text-secondary hover:bg-primary/90"
         >
           <span className="material-symbols-outlined text-lg mr-2">
@@ -195,10 +204,7 @@ const BetTypes: React.FC = () => {
                   variant="ghost"
                   size="icon"
                   className="size-8"
-                  onClick={() => {
-                    setEditingBetType(bt);
-                    setIsModalOpen(true);
-                  }}
+                  onClick={() => handleEdit(bt)}
                 >
                   <span className="material-symbols-outlined text-lg">
                     edit
@@ -251,191 +257,253 @@ const BetTypes: React.FC = () => {
         ))}
       </div>
 
-      <Modal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        title={editingBetType?._id ? "Edit Bet Type" : "Create New Bet Type"}
-      >
-        <form
-          onSubmit={handleSave}
-          className="space-y-6 py-4 max-h-[80vh] overflow-y-auto px-1"
-        >
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label>Bet Type ID</Label>
-              <Input
-                required
-                value={editingBetType?.betTypeId || ""}
-                onChange={(e) =>
-                  setEditingBetType({
-                    ...editingBetType,
-                    betTypeId: e.target.value,
-                  })
-                }
-                placeholder="BET-TYPE-001"
-              />
-            </div>
-            <div className="space-y-2">
-              <Label>Sport</Label>
-              <Select
-                value={editingBetType?.sport || ""}
-                onValueChange={(val) =>
-                  setEditingBetType({ ...editingBetType, sport: val })
-                }
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Select Sport" />
-                </SelectTrigger>
-                <SelectContent>
-                  {sports.map((s) => (
-                    <SelectItem key={s._id} value={s._id}>
-                      {s.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
+      <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
+        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>
+              {editingId ? "Edit Bet Type" : "Create New Bet Type"}
+            </DialogTitle>
+          </DialogHeader>
 
-          <div className="space-y-2">
-            <Label>Name</Label>
-            <Input
-              required
-              value={editingBetType?.name || ""}
-              onChange={(e) => {
-                const name = e.target.value;
-                setEditingBetType({
-                  ...editingBetType,
-                  name,
-                  slug: name.toLowerCase().replace(/ /g, "_"),
-                });
-              }}
-              placeholder="e.g. Match Winner"
-            />
-          </div>
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+              <div className="grid grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="betTypeId"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Bet Type ID</FormLabel>
+                      <FormControl>
+                        <Input placeholder="BET-TYPE-001" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-          <div className="space-y-2">
-            <Label>Slug</Label>
-            <Input
-              required
-              value={editingBetType?.slug || ""}
-              onChange={(e) =>
-                setEditingBetType({ ...editingBetType, slug: e.target.value })
-              }
-              placeholder="e.g. match_winner"
-            />
-          </div>
+                <FormField
+                  control={form.control}
+                  name="sport"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Sport</FormLabel>
+                      <Select
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}
+                      >
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select Sport" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {sports.map((s) => (
+                            <SelectItem key={s._id} value={s._id}>
+                              {s.name}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
 
-          <div className="space-y-4 border rounded-xl p-4 bg-slate-50">
-            <div className="flex justify-between items-center">
-              <Label>Outcomes</Label>
-              <Button
-                type="button"
-                size="sm"
-                variant="outline"
-                onClick={addOutcome}
-              >
-                + Add Outcome
-              </Button>
-            </div>
-            {editingBetType?.outcomes?.map((outcome, idx) => (
-              <div key={idx} className="flex gap-2 items-end">
-                <div className="flex-1 space-y-1">
-                  <Label className="text-xs text-slate-400">ID</Label>
-                  <Input
-                    value={outcome.outcomeId}
-                    onChange={(e) =>
-                      updateOutcome(idx, "outcomeId", e.target.value)
+              <div className="grid grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="name"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Name</FormLabel>
+                      <FormControl>
+                        <Input
+                          placeholder="Match Winner"
+                          {...field}
+                          onChange={(e) => {
+                            field.onChange(e);
+                            const slug = e.target.value
+                              .toLowerCase()
+                              .replace(/ /g, "_");
+                            form.setValue("slug", slug);
+                          }}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="slug"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Slug</FormLabel>
+                      <FormControl>
+                        <Input placeholder="match_winner" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              {/* Outcomes Section */}
+              <div className="space-y-4 border rounded-xl p-4 bg-slate-50/50">
+                <div className="flex justify-between items-center">
+                  <FormLabel>Outcomes</FormLabel>
+                  <Button
+                    type="button"
+                    size="sm"
+                    variant="outline"
+                    onClick={() =>
+                      append({
+                        outcomeId: `outcome_${Date.now()}`,
+                        label: "",
+                        displayOrder: fields.length + 1,
+                      })
                     }
-                    className="h-8 text-xs"
-                    placeholder="home_win"
-                  />
+                  >
+                    + Add Outcome
+                  </Button>
                 </div>
-                <div className="flex-2 space-y-1">
-                  <Label className="text-xs text-slate-400">Label</Label>
-                  <Input
-                    value={outcome.label}
-                    onChange={(e) =>
-                      updateOutcome(idx, "label", e.target.value)
-                    }
-                    className="h-8 text-xs font-bold"
-                    placeholder="Home Win"
-                  />
-                </div>
-                <div className="w-16 space-y-1">
-                  <Label className="text-xs text-slate-400">Order</Label>
-                  <Input
-                    type="number"
-                    value={outcome.displayOrder}
-                    onChange={(e) =>
-                      updateOutcome(
-                        idx,
-                        "displayOrder",
-                        parseInt(e.target.value)
-                      )
-                    }
-                    className="h-8 text-xs"
-                  />
-                </div>
+                {form.formState.errors.outcomes && (
+                  <p className="text-sm font-medium text-destructive">
+                    {form.formState.errors.outcomes.message ||
+                      form.formState.errors.outcomes.root?.message}
+                  </p>
+                )}
+
+                {fields.map((field, index) => (
+                  <div key={field.id} className="flex gap-2 items-start">
+                    <FormField
+                      control={form.control}
+                      name={`outcomes.${index}.outcomeId`}
+                      render={({ field }) => (
+                        <FormItem className="flex-1 space-y-1">
+                          <FormLabel className="text-xs text-slate-400">
+                            ID
+                          </FormLabel>
+                          <FormControl>
+                            <Input
+                              {...field}
+                              className="h-8 text-xs"
+                              placeholder="home_win"
+                            />
+                          </FormControl>
+                          <FormMessage className="text-[10px]" />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name={`outcomes.${index}.label`}
+                      render={({ field }) => (
+                        <FormItem className="flex-[2] space-y-1">
+                          <FormLabel className="text-xs text-slate-400">
+                            Label
+                          </FormLabel>
+                          <FormControl>
+                            <Input
+                              {...field}
+                              className="h-8 text-xs font-bold"
+                              placeholder="Home Win"
+                            />
+                          </FormControl>
+                          <FormMessage className="text-[10px]" />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name={`outcomes.${index}.displayOrder`}
+                      render={({ field }) => (
+                        <FormItem className="w-20 space-y-1">
+                          <FormLabel className="text-xs text-slate-400">
+                            Order
+                          </FormLabel>
+                          <FormControl>
+                            <Input
+                              type="number"
+                              {...field}
+                              className="h-8 text-xs"
+                            />
+                          </FormControl>
+                          <FormMessage className="text-[10px]" />
+                        </FormItem>
+                      )}
+                    />
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="icon"
+                      className="h-8 w-8 mt-6 text-destructive hover:bg-destructive/10"
+                      onClick={() => remove(index)}
+                    >
+                      <span className="material-symbols-outlined text-sm">
+                        close
+                      </span>
+                    </Button>
+                  </div>
+                ))}
+              </div>
+
+              <div className="flex gap-6">
+                <FormField
+                  control={form.control}
+                  name="isDefault"
+                  render={({ field }) => (
+                    <FormItem className="flex flex-row items-start space-x-3 space-y-0">
+                      <FormControl>
+                        <Checkbox
+                          checked={field.value}
+                          onCheckedChange={field.onChange}
+                        />
+                      </FormControl>
+                      <div className="space-y-1 leading-none">
+                        <FormLabel>Default Bet Type?</FormLabel>
+                      </div>
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="isActive"
+                  render={({ field }) => (
+                    <FormItem className="flex flex-row items-start space-x-3 space-y-0">
+                      <FormControl>
+                        <Checkbox
+                          checked={field.value}
+                          onCheckedChange={field.onChange}
+                        />
+                      </FormControl>
+                      <div className="space-y-1 leading-none">
+                        <FormLabel>Active?</FormLabel>
+                      </div>
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <div className="flex gap-4 pt-4">
                 <Button
                   type="button"
-                  variant="ghost"
-                  size="icon"
-                  className="h-8 w-8 text-red-500"
-                  onClick={() => removeOutcome(idx)}
+                  variant="outline"
+                  className="flex-1"
+                  onClick={() => setIsModalOpen(false)}
                 >
-                  <span className="material-symbols-outlined text-sm">
-                    close
-                  </span>
+                  Cancel
+                </Button>
+                <Button type="submit" className="flex-1">
+                  Save Bet Type
                 </Button>
               </div>
-            ))}
-          </div>
-
-          <div className="flex gap-6">
-            <div className="flex items-center gap-2">
-              <Checkbox
-                id="isDefault"
-                checked={editingBetType?.isDefault ?? false}
-                onCheckedChange={(checked) =>
-                  setEditingBetType({
-                    ...editingBetType,
-                    isDefault: checked === true,
-                  })
-                }
-              />
-              <Label htmlFor="isDefault">Default Bet Type?</Label>
-            </div>
-            <div className="flex items-center gap-2">
-              <Checkbox
-                id="isActive"
-                checked={editingBetType?.isActive ?? true}
-                onCheckedChange={(checked) =>
-                  setEditingBetType({
-                    ...editingBetType,
-                    isActive: checked === true,
-                  })
-                }
-              />
-              <Label htmlFor="isActive">Active?</Label>
-            </div>
-          </div>
-
-          <div className="flex gap-4 pt-4">
-            <Button
-              type="button"
-              variant="outline"
-              className="flex-1"
-              onClick={() => setIsModalOpen(false)}
-            >
-              Cancel
-            </Button>
-            <Button type="submit" className="flex-1">
-              Save Bet Type
-            </Button>
-          </div>
-        </form>
-      </Modal>
+            </form>
+          </Form>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

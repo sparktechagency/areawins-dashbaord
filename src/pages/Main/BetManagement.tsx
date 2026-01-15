@@ -1,6 +1,11 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import Modal from "@/components/ui/modal";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import React, { useEffect, useState } from "react";
 import { toast } from "sonner";
 import {
@@ -45,7 +50,7 @@ const BetManagement: React.FC = () => {
   };
 
   return (
-    <div className="p-8">
+    <div className="p-4 md:p-8">
       <div className="flex flex-col gap-1 mb-8">
         <h2 className="text-3xl font-black tracking-tight text-primary">
           Bet Oversight
@@ -55,42 +60,45 @@ const BetManagement: React.FC = () => {
         </p>
       </div>
 
-      <Modal
-        isOpen={!!selectedBet}
-        onClose={() => setSelectedBet(null)}
-        title="Override Bet Result"
-      >
-        <div className="space-y-4">
-          <p className="text-gray-500 text-sm">
-            You are about to manually change the result for bet{" "}
-            <span className="font-mono text-primary font-bold">
-              {selectedBet?.betId}
-            </span>
-            . This action will be logged.
-          </p>
-          <div className="grid grid-cols-2 gap-3">
-            {["matched", "cancelled", "settled", "refunded"].map((status) => (
-              <Button
-                key={status}
-                variant={status === selectedBet?.status ? "default" : "outline"}
-                onClick={() =>
-                  overrideBetResult(selectedBet!._id, status as BetStatus)
-                }
-                className="capitalize"
-              >
-                {status}
-              </Button>
-            ))}
+      <Dialog open={!!selectedBet} onOpenChange={() => setSelectedBet(null)}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Override Bet Result</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <p className="text-muted-foreground text-sm">
+              You are about to manually change the result for bet{" "}
+              <span className="font-mono text-primary font-bold">
+                {selectedBet?.betId}
+              </span>
+              . This action will be logged.
+            </p>
+            <div className="grid grid-cols-2 gap-3">
+              {["matched", "cancelled", "settled", "refunded"].map((status) => (
+                <Button
+                  key={status}
+                  variant={
+                    status === selectedBet?.status ? "default" : "outline"
+                  }
+                  onClick={() =>
+                    overrideBetResult(selectedBet!._id, status as BetStatus)
+                  }
+                  className="capitalize"
+                >
+                  {status}
+                </Button>
+              ))}
+            </div>
+            <Button
+              variant="ghost"
+              onClick={() => setSelectedBet(null)}
+              className="w-full text-destructive hover:text-destructive hover:bg-destructive/10"
+            >
+              Cancel
+            </Button>
           </div>
-          <Button
-            variant="ghost"
-            onClick={() => setSelectedBet(null)}
-            className="w-full text-red-500 hover:text-red-600 hover:bg-red-50"
-          >
-            Cancel
-          </Button>
-        </div>
-      </Modal>
+        </DialogContent>
+      </Dialog>
 
       <div className="bg-white rounded-xl border border-gray-200 overflow-hidden shadow-sm">
         <div className="overflow-x-auto">

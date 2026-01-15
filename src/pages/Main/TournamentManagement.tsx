@@ -1,9 +1,21 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import Modal from "@/components/ui/modal";
 import {
   Select,
   SelectContent,
@@ -11,23 +23,60 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { zodResolver } from "@hookform/resolvers/zod";
 import React, { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
 import { toast } from "sonner";
+import * as z from "zod";
+import { ImageUpload } from "../../components/common/ImageUpload";
 import {
   Card,
   CardContent,
   CardHeader,
   CardTitle,
 } from "../../components/ui/card";
+import { countries } from "../../constants/countries";
 import { sportService, tournamentService } from "../../services/mockData";
-import { Sport, Tournament, TournamentType } from "../../types/schema";
+import { Sport, Tournament } from "../../types/schema";
+
+const tournamentSchema = z.object({
+  tournamentId: z.string().min(1, "ID is required"),
+  name: z.string().min(1, "Name is required"),
+  slug: z.string().min(1, "Slug is required"),
+  sport: z.string().min(1, "Sport is required"),
+  type: z.enum(["league", "tournament", "cup", "international", "grand_slam"]),
+  year: z.string().optional(),
+  country: z.string().optional(),
+  logo: z.string().optional(),
+  isFeatured: z.boolean(),
+  displayOrder: z.coerce.number().int().min(0),
+  isActive: z.boolean(),
+});
+
+type TournamentFormValues = z.infer<typeof tournamentSchema>;
 
 const TournamentManagement: React.FC = () => {
   const [tournaments, setTournaments] = useState<Tournament[]>([]);
   const [sports, setSports] = useState<Sport[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [editingTournament, setEditingTournament] =
-    useState<Partial<Tournament> | null>(null);
+  const [editingId, setEditingId] = useState<string | null>(null);
+
+  const form = useForm<TournamentFormValues>({
+    resolver: zodResolver(tournamentSchema),
+    defaultValues: {
+      tournamentId: "",
+      name: "",
+      slug: "",
+      sport: "",
+      type: "league",
+      year: "",
+      country: "",
+      logo: "",
+      isFeatured: false,
+      displayOrder: 0,
+      isActive: true,
+    },
+  });
 
   useEffect(() => {
     loadData();
@@ -42,61 +91,28 @@ const TournamentManagement: React.FC = () => {
     return sports.find((s) => s._id === id)?.name || "Unknown Sport";
   };
 
-  const handleSave = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!editingTournament) return;
-
-    if (
-      !editingTournament.tournamentId ||
-      !editingTournament.name ||
-      !editingTournament.slug ||
-      !editingTournament.sport
-    ) {
-      toast.error("Please fill in all required fields");
-      return;
-    }
-
-    if (editingTournament._id) {
-      const updated = tournamentService.update(
-        editingTournament._id,
-        editingTournament
-      );
+  const onSubmit = (data: TournamentFormValues) => {
+    if (editingId) {
+      const updated = tournamentService.update(editingId, data);
       if (updated) {
         toast.success("Tournament updated successfully");
         loadData();
+        setIsModalOpen(false);
       } else {
         toast.error("Failed to update tournament");
       }
     } else {
-      const exists = tournaments.some(
-        (t) => t.tournamentId === editingTournament.tournamentId
-      );
-      if (exists) {
-        toast.error("Tournament ID must be unique");
+      if (tournaments.some((t) => t.tournamentId === data.tournamentId)) {
+        form.setError("tournamentId", { message: "ID must be unique" });
         return;
       }
-
-      const newTournament = tournamentService.add({
-        tournamentId: editingTournament.tournamentId!,
-        name: editingTournament.name!,
-        slug: editingTournament.slug!,
-        sport: editingTournament.sport!,
-        type: editingTournament.type || "league",
-        year: editingTournament.year,
-        country: editingTournament.country,
-        logo: editingTournament.logo,
-        isFeatured: editingTournament.isFeatured ?? false,
-        displayOrder: editingTournament.displayOrder || 0,
-        isActive: editingTournament.isActive ?? true,
-      });
-
+      const newTournament = tournamentService.add(data);
       if (newTournament) {
         toast.success("Tournament created successfully");
         loadData();
+        setIsModalOpen(false);
       }
     }
-    setIsModalOpen(false);
-    setEditingTournament(null);
   };
 
   const handleDelete = (id: string) => {
@@ -111,15 +127,40 @@ const TournamentManagement: React.FC = () => {
     }
   };
 
-  const openNewModal = () => {
-    setEditingTournament({
+  const handleCreate = () => {
+    setEditingId(null);
+    form.reset({
       tournamentId: `TOUR-${Math.floor(Math.random() * 1000)
         .toString()
         .padStart(3, "0")}`,
+      name: "",
+      slug: "",
+      sport: "",
       type: "league",
+      year: "",
+      country: "",
+      logo: "",
+      isFeatured: false,
       displayOrder: 0,
       isActive: true,
-      isFeatured: false,
+    });
+    setIsModalOpen(true);
+  };
+
+  const handleEdit = (t: Tournament) => {
+    setEditingId(t._id);
+    form.reset({
+      tournamentId: t.tournamentId,
+      name: t.name,
+      slug: t.slug,
+      sport: t.sport,
+      type: t.type,
+      year: t.year,
+      country: t.country,
+      logo: t.logo,
+      isFeatured: t.isFeatured,
+      displayOrder: t.displayOrder,
+      isActive: t.isActive,
     });
     setIsModalOpen(true);
   };
@@ -136,7 +177,7 @@ const TournamentManagement: React.FC = () => {
           </p>
         </div>
         <Button
-          onClick={openNewModal}
+          onClick={handleCreate}
           className="bg-primary text-secondary hover:bg-primary/90"
         >
           <span className="material-symbols-outlined text-lg mr-2">
@@ -169,10 +210,7 @@ const TournamentManagement: React.FC = () => {
                   variant="ghost"
                   size="icon"
                   className="size-8"
-                  onClick={() => {
-                    setEditingTournament(t);
-                    setIsModalOpen(true);
-                  }}
+                  onClick={() => handleEdit(t)}
                 >
                   <span className="material-symbols-outlined text-lg">
                     edit
@@ -236,219 +274,271 @@ const TournamentManagement: React.FC = () => {
         ))}
       </div>
 
-      <Modal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        title={editingTournament?._id ? "Edit Tournament" : "New Tournament"}
-      >
-        <form
-          onSubmit={handleSave}
-          className="space-y-6 py-4 px-1 max-h-[80vh] overflow-y-auto"
-        >
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label>Tournament ID</Label>
-              <Input
-                required
-                value={editingTournament?.tournamentId || ""}
-                onChange={(e) =>
-                  setEditingTournament({
-                    ...editingTournament,
-                    tournamentId: e.target.value,
-                  })
-                }
-                placeholder="TOUR-001"
+      <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
+        <DialogContent className="max-h-[80vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>
+              {editingId ? "Edit Tournament" : "New Tournament"}
+            </DialogTitle>
+          </DialogHeader>
+
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+              <div className="grid grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="tournamentId"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Tournament ID</FormLabel>
+                      <FormControl>
+                        <Input placeholder="TOUR-001" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="sport"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Sport</FormLabel>
+                      <Select
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}
+                      >
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select Sport" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {sports.map((s) => (
+                            <SelectItem key={s._id} value={s._id}>
+                              {s.name}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <FormField
+                control={form.control}
+                name="name"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Name</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="Premier League 2024"
+                        {...field}
+                        onChange={(e) => {
+                          field.onChange(e);
+                          const slug = e.target.value
+                            .toLowerCase()
+                            .replace(/ /g, "-")
+                            .replace(/[^\w-]+/g, "");
+                          form.setValue("slug", slug);
+                        }}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
               />
-            </div>
-            <div className="space-y-2">
-              <Label>Sport</Label>
-              <Select
-                value={editingTournament?.sport || ""}
-                onValueChange={(val) =>
-                  setEditingTournament({ ...editingTournament, sport: val })
-                }
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Select Sport" />
-                </SelectTrigger>
-                <SelectContent>
-                  {sports.map((s) => (
-                    <SelectItem key={s._id} value={s._id}>
-                      {s.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
 
-          <div className="space-y-2">
-            <Label>Name</Label>
-            <Input
-              required
-              value={editingTournament?.name || ""}
-              onChange={(e) => {
-                const name = e.target.value;
-                setEditingTournament({
-                  ...editingTournament,
-                  name,
-                  slug: name
-                    .toLowerCase()
-                    .replace(/ /g, "-")
-                    .replace(/[^\w-]+/g, ""),
-                });
-              }}
-              placeholder="e.g. Premier League 2024"
-            />
-          </div>
-
-          <div className="space-y-2">
-            <Label>Slug</Label>
-            <Input
-              required
-              value={editingTournament?.slug || ""}
-              onChange={(e) =>
-                setEditingTournament({
-                  ...editingTournament,
-                  slug: e.target.value,
-                })
-              }
-              placeholder="e.g. premier-league-2024"
-            />
-          </div>
-
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label>Type</Label>
-              <Select
-                value={editingTournament?.type || "league"}
-                onValueChange={(val) =>
-                  setEditingTournament({
-                    ...editingTournament,
-                    type: val as TournamentType,
-                  })
-                }
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Select Type" />
-                </SelectTrigger>
-                <SelectContent>
-                  {[
-                    "league",
-                    "tournament",
-                    "cup",
-                    "international",
-                    "grand_slam",
-                  ].map((t) => (
-                    <SelectItem key={t} value={t} className="capitalize">
-                      {t.replace("_", " ")}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-            <div className="space-y-2">
-              <Label>Year</Label>
-              <Input
-                value={editingTournament?.year || ""}
-                onChange={(e) =>
-                  setEditingTournament({
-                    ...editingTournament,
-                    year: e.target.value,
-                  })
-                }
-                placeholder="e.g. 2026"
+              <FormField
+                control={form.control}
+                name="slug"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Slug</FormLabel>
+                    <FormControl>
+                      <Input placeholder="premier-league-2024" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
               />
-            </div>
-          </div>
 
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label>Country (ISO)</Label>
-              <Input
-                value={editingTournament?.country || ""}
-                onChange={(e) =>
-                  setEditingTournament({
-                    ...editingTournament,
-                    country: e.target.value,
-                  })
-                }
-                placeholder="e.g. GB"
-              />
-            </div>
-            <div className="space-y-2">
-              <Label>Logo (URL/Emoji)</Label>
-              <Input
-                value={editingTournament?.logo || ""}
-                onChange={(e) =>
-                  setEditingTournament({
-                    ...editingTournament,
-                    logo: e.target.value,
-                  })
-                }
-                placeholder="🏆 or https://..."
-              />
-            </div>
-          </div>
+              <div className="grid grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="type"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Type</FormLabel>
+                      <Select
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}
+                      >
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select Type" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {[
+                            "league",
+                            "tournament",
+                            "cup",
+                            "international",
+                            "grand_slam",
+                          ].map((t) => (
+                            <SelectItem
+                              key={t}
+                              value={t}
+                              className="capitalize"
+                            >
+                              {t.replace("_", " ")}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="year"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Year</FormLabel>
+                      <FormControl>
+                        <Input placeholder="2026" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
 
-          <div className="space-y-2">
-            <Label>Display Order</Label>
-            <Input
-              type="number"
-              value={editingTournament?.displayOrder || 0}
-              onChange={(e) =>
-                setEditingTournament({
-                  ...editingTournament,
-                  displayOrder: parseInt(e.target.value),
-                })
-              }
-            />
-          </div>
-
-          <div className="flex gap-6">
-            <div className="flex items-center gap-2">
-              <Checkbox
-                id="isFeatured"
-                checked={editingTournament?.isFeatured ?? false}
-                onCheckedChange={(checked) =>
-                  setEditingTournament({
-                    ...editingTournament,
-                    isFeatured: checked === true,
-                  })
-                }
+              <div className="grid grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="country"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Country</FormLabel>
+                      <Select
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}
+                      >
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select Country" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {countries.map((c) => (
+                            <SelectItem key={c.code} value={c.code}>
+                              {c.name} ({c.code})
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="logo"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Logo</FormLabel>
+                      <FormControl>
+                        <ImageUpload
+                          value={field.value}
+                          onChange={field.onChange}
+                          placeholder="Upload Tournament Logo"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+              <FormField
+                control={form.control}
+                name="displayOrder"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Display Order</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="number"
+                        {...field}
+                        onChange={(e) =>
+                          field.onChange(parseInt(e.target.value))
+                        }
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
               />
-              <Label htmlFor="isFeatured">Featured?</Label>
-            </div>
-            <div className="flex items-center gap-2">
-              <Checkbox
-                id="isActive"
-                checked={editingTournament?.isActive ?? true}
-                onCheckedChange={(checked) =>
-                  setEditingTournament({
-                    ...editingTournament,
-                    isActive: checked === true,
-                  })
-                }
-              />
-              <Label htmlFor="isActive">Active?</Label>
-            </div>
-          </div>
 
-          <div className="flex gap-4 pt-4">
-            <Button
-              type="button"
-              variant="outline"
-              className="flex-1"
-              onClick={() => setIsModalOpen(false)}
-            >
-              Cancel
-            </Button>
-            <Button type="submit" className="flex-1">
-              Save Tournament
-            </Button>
-          </div>
-        </form>
-      </Modal>
+              <div className="flex gap-6">
+                <FormField
+                  control={form.control}
+                  name="isFeatured"
+                  render={({ field }) => (
+                    <FormItem className="flex flex-row items-start space-x-3 space-y-0">
+                      <FormControl>
+                        <Checkbox
+                          checked={field.value}
+                          onCheckedChange={field.onChange}
+                        />
+                      </FormControl>
+                      <div className="space-y-1 leading-none">
+                        <FormLabel>Featured?</FormLabel>
+                      </div>
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="isActive"
+                  render={({ field }) => (
+                    <FormItem className="flex flex-row items-start space-x-3 space-y-0">
+                      <FormControl>
+                        <Checkbox
+                          checked={field.value}
+                          onCheckedChange={field.onChange}
+                        />
+                      </FormControl>
+                      <div className="space-y-1 leading-none">
+                        <FormLabel>Active?</FormLabel>
+                      </div>
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <div className="flex gap-4 pt-4">
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="flex-1"
+                  onClick={() => setIsModalOpen(false)}
+                >
+                  Cancel
+                </Button>
+                <Button type="submit" className="flex-1">
+                  Save Tournament
+                </Button>
+              </div>
+            </form>
+          </Form>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

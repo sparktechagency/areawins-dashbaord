@@ -1,9 +1,21 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import Modal from "@/components/ui/modal";
 import {
   Select,
   SelectContent,
@@ -11,22 +23,54 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { zodResolver } from "@hookform/resolvers/zod";
 import React, { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
 import { toast } from "sonner";
+import * as z from "zod";
+import { ImageUpload } from "../../components/common/ImageUpload";
 import {
   Card,
   CardContent,
   CardHeader,
   CardTitle,
 } from "../../components/ui/card";
+import { countries } from "../../constants/countries";
 import { sportService, teamService } from "../../services/mockData";
 import { Sport, Team } from "../../types/schema";
+
+const teamSchema = z.object({
+  teamId: z.string().min(1, "ID is required"),
+  name: z.string().min(1, "Name is required"),
+  slug: z.string().min(1, "Slug is required"),
+  sport: z.string().min(1, "Sport is required"),
+  shortName: z.string().min(1, "Short Name is required"),
+  country: z.string().min(1, "Country is required"),
+  logo: z.string().optional(),
+  isActive: z.boolean().default(true),
+});
+
+type TeamFormValues = z.infer<typeof teamSchema>;
 
 const TeamManagement: React.FC = () => {
   const [teams, setTeams] = useState<Team[]>([]);
   const [sports, setSports] = useState<Sport[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [editingTeam, setEditingTeam] = useState<Partial<Team> | null>(null);
+  const [editingId, setEditingId] = useState<string | null>(null);
+
+  const form = useForm<TeamFormValues>({
+    resolver: zodResolver(teamSchema),
+    defaultValues: {
+      teamId: "",
+      name: "",
+      slug: "",
+      sport: "",
+      shortName: "",
+      country: "",
+      logo: "",
+      isActive: true,
+    },
+  });
 
   useEffect(() => {
     loadData();
@@ -41,57 +85,28 @@ const TeamManagement: React.FC = () => {
     return sports.find((s) => s._id === id)?.name || "Unknown Sport";
   };
 
-  const handleSave = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!editingTeam) return;
-
-    if (
-      !editingTeam.teamId ||
-      !editingTeam.name ||
-      !editingTeam.slug ||
-      !editingTeam.sport ||
-      !editingTeam.shortName ||
-      !editingTeam.country
-    ) {
-      toast.error(
-        "Please fill in all required fields (Team ID, Name, Slug, Sport, Short Name, Country)"
-      );
-      return;
-    }
-
-    if (editingTeam._id) {
-      const updated = teamService.update(editingTeam._id, editingTeam);
+  const onSubmit = (data: TeamFormValues) => {
+    if (editingId) {
+      const updated = teamService.update(editingId, data);
       if (updated) {
         toast.success("Team updated successfully");
         loadData();
+        setIsModalOpen(false);
       } else {
         toast.error("Failed to update team");
       }
     } else {
-      const exists = teams.some((t) => t.teamId === editingTeam.teamId);
-      if (exists) {
-        toast.error("Team ID must be unique");
+      if (teams.some((t) => t.teamId === data.teamId)) {
+        form.setError("teamId", { message: "ID must be unique" });
         return;
       }
-
-      const newTeam = teamService.add({
-        teamId: editingTeam.teamId!,
-        name: editingTeam.name!,
-        shortName: editingTeam.shortName!,
-        slug: editingTeam.slug!,
-        sport: editingTeam.sport!,
-        country: editingTeam.country!,
-        logo: editingTeam.logo,
-        isActive: editingTeam.isActive ?? true,
-      });
-
+      const newTeam = teamService.add(data);
       if (newTeam) {
         toast.success("Team created successfully");
         loadData();
+        setIsModalOpen(false);
       }
     }
-    setIsModalOpen(false);
-    setEditingTeam(null);
   };
 
   const handleDelete = (id: string) => {
@@ -106,12 +121,34 @@ const TeamManagement: React.FC = () => {
     }
   };
 
-  const openNewModal = () => {
-    setEditingTeam({
+  const handleCreate = () => {
+    setEditingId(null);
+    form.reset({
       teamId: `TEAM-${Math.floor(Math.random() * 1000)
         .toString()
         .padStart(3, "0")}`,
+      name: "",
+      slug: "",
+      sport: "",
+      shortName: "",
+      country: "",
+      logo: "",
       isActive: true,
+    });
+    setIsModalOpen(true);
+  };
+
+  const handleEdit = (t: Team) => {
+    setEditingId(t._id);
+    form.reset({
+      teamId: t.teamId,
+      name: t.name,
+      slug: t.slug,
+      sport: t.sport,
+      shortName: t.shortName,
+      country: t.country,
+      logo: t.logo,
+      isActive: t.isActive,
     });
     setIsModalOpen(true);
   };
@@ -128,7 +165,7 @@ const TeamManagement: React.FC = () => {
           </p>
         </div>
         <Button
-          onClick={openNewModal}
+          onClick={handleCreate}
           className="bg-primary text-secondary hover:bg-primary/90"
         >
           <span className="material-symbols-outlined text-lg mr-2">
@@ -172,17 +209,14 @@ const TeamManagement: React.FC = () => {
                   <Button
                     variant="ghost"
                     size="sm"
-                    onClick={() => {
-                      setEditingTeam(t);
-                      setIsModalOpen(true);
-                    }}
+                    onClick={() => handleEdit(t)}
                   >
                     Edit
                   </Button>
                   <Button
                     variant="ghost"
                     size="sm"
-                    className="text-red-500"
+                    className="text-red-500 hover:text-red-600 hover:bg-red-50"
                     onClick={() => handleDelete(t._id)}
                   >
                     Delete
@@ -197,147 +231,197 @@ const TeamManagement: React.FC = () => {
         ))}
       </div>
 
-      <Modal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        title={editingTeam?._id ? "Edit Team" : "New Team"}
-      >
-        <form
-          onSubmit={handleSave}
-          className="space-y-6 py-4 px-1 max-h-[80vh] overflow-y-auto"
-        >
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label>Team ID</Label>
-              <Input
-                required
-                value={editingTeam?.teamId || ""}
-                onChange={(e) =>
-                  setEditingTeam({ ...editingTeam, teamId: e.target.value })
-                }
-                placeholder="TEAM-001"
-              />
-            </div>
-            <div className="space-y-2">
-              <Label>Sport</Label>
-              <Select
-                value={editingTeam?.sport || ""}
-                onValueChange={(val) =>
-                  setEditingTeam({ ...editingTeam, sport: val })
-                }
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Select Sport" />
-                </SelectTrigger>
-                <SelectContent>
-                  {sports.map((s) => (
-                    <SelectItem key={s._id} value={s._id}>
-                      {s.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
+      <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
+        <DialogContent className="max-h-[80vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>{editingId ? "Edit Team" : "New Team"}</DialogTitle>
+          </DialogHeader>
 
-          <div className="space-y-2">
-            <Label>Name</Label>
-            <Input
-              required
-              value={editingTeam?.name || ""}
-              onChange={(e) => {
-                const name = e.target.value;
-                setEditingTeam({
-                  ...editingTeam,
-                  name,
-                  slug: name
-                    .toLowerCase()
-                    .replace(/ /g, "-")
-                    .replace(/[^\w-]+/g, ""),
-                  shortName: name.substring(0, 3).toUpperCase(),
-                });
-              }}
-              placeholder="e.g. Manchester United"
-            />
-          </div>
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+              <div className="grid grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="teamId"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Team ID</FormLabel>
+                      <FormControl>
+                        <Input placeholder="TEAM-001" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="sport"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Sport</FormLabel>
+                      <Select
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}
+                      >
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select Sport" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {sports.map((s) => (
+                            <SelectItem key={s._id} value={s._id}>
+                              {s.name}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
 
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label>Short Name</Label>
-              <Input
-                required
-                value={editingTeam?.shortName || ""}
-                onChange={(e) =>
-                  setEditingTeam({ ...editingTeam, shortName: e.target.value })
-                }
-                placeholder="e.g. MUN"
+              <FormField
+                control={form.control}
+                name="name"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Name</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="Manchester United"
+                        {...field}
+                        onChange={(e) => {
+                          field.onChange(e);
+                          const val = e.target.value;
+                          const slug = val
+                            .toLowerCase()
+                            .replace(/ /g, "-")
+                            .replace(/[^\w-]+/g, "");
+                          const short = val.substring(0, 3).toUpperCase();
+                          form.setValue("slug", slug);
+                          if (!form.getValues("shortName")) {
+                            form.setValue("shortName", short);
+                          }
+                        }}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
               />
-            </div>
-            <div className="space-y-2">
-              <Label>Slug</Label>
-              <Input
-                required
-                value={editingTeam?.slug || ""}
-                onChange={(e) =>
-                  setEditingTeam({ ...editingTeam, slug: e.target.value })
-                }
-                placeholder="e.g. man-utd"
-              />
-            </div>
-          </div>
 
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label>Country (ISO)</Label>
-              <Input
-                required
-                value={editingTeam?.country || ""}
-                onChange={(e) =>
-                  setEditingTeam({ ...editingTeam, country: e.target.value })
-                }
-                placeholder="e.g. GB"
-              />
-            </div>
-            <div className="space-y-2">
-              <Label>Logo (URL)</Label>
-              <Input
-                value={editingTeam?.logo || ""}
-                onChange={(e) =>
-                  setEditingTeam({ ...editingTeam, logo: e.target.value })
-                }
-                placeholder="https://..."
-              />
-            </div>
-          </div>
+              <div className="grid grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="shortName"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Short Name</FormLabel>
+                      <FormControl>
+                        <Input placeholder="MUN" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="slug"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Slug</FormLabel>
+                      <FormControl>
+                        <Input placeholder="man-utd" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
 
-          <div className="flex items-center gap-4 bg-slate-50 p-4 rounded-xl border border-slate-100">
-            <Checkbox
-              id="isActive"
-              checked={editingTeam?.isActive ?? true}
-              onCheckedChange={(checked) =>
-                setEditingTeam({ ...editingTeam, isActive: checked === true })
-              }
-            />
-            <Label htmlFor="isActive" className="cursor-pointer">
-              Is Active?
-            </Label>
-          </div>
+              <div className="grid grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="country"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Country</FormLabel>
+                      <Select
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}
+                      >
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select Country" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {countries.map((c) => (
+                            <SelectItem key={c.code} value={c.code}>
+                              {c.name} ({c.code})
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="logo"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Logo</FormLabel>
+                      <FormControl>
+                        <ImageUpload
+                          value={field.value}
+                          onChange={field.onChange}
+                          placeholder="Upload Team Logo"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+              <FormField
+                control={form.control}
+                name="isActive"
+                render={({ field }) => (
+                  <FormItem className="flex flex-row items-start space-x-3 space-y-0 p-4 border rounded-md">
+                    <FormControl>
+                      <Checkbox
+                        checked={field.value}
+                        onCheckedChange={field.onChange}
+                      />
+                    </FormControl>
+                    <div className="space-y-1 leading-none">
+                      <FormLabel>Active?</FormLabel>
+                    </div>
+                  </FormItem>
+                )}
+              />
 
-          <div className="flex gap-4 pt-4">
-            <Button
-              type="button"
-              variant="outline"
-              className="flex-1"
-              onClick={() => setIsModalOpen(false)}
-            >
-              Cancel
-            </Button>
-            <Button type="submit" className="flex-1">
-              Save Team
-            </Button>
-          </div>
-        </form>
-      </Modal>
+              <div className="flex gap-4 pt-4">
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="flex-1"
+                  onClick={() => setIsModalOpen(false)}
+                >
+                  Cancel
+                </Button>
+                <Button type="submit" className="flex-1">
+                  Save Team
+                </Button>
+              </div>
+            </form>
+          </Form>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

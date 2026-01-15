@@ -1,9 +1,21 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import Modal from "@/components/ui/modal";
 import {
   Select,
   SelectContent,
@@ -11,8 +23,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { zodResolver } from "@hookform/resolvers/zod";
 import React, { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
 import { toast } from "sonner";
+import * as z from "zod";
 import { Card, CardContent, CardHeader } from "../../components/ui/card";
 import {
   matchService,
@@ -20,13 +35,28 @@ import {
   teamService,
   tournamentService,
 } from "../../services/mockData";
-import {
-  Match,
-  MatchStatus,
-  Sport,
-  Team,
-  Tournament,
-} from "../../types/schema";
+import { Match, Sport, Team, Tournament } from "../../types/schema";
+
+const matchSchema = z
+  .object({
+    matchId: z.string().min(1, "ID is required"),
+    sport: z.string().min(1, "Sport is required"),
+    tournament: z.string().optional(),
+    homeTeam: z.string().min(1, "Home Team is required"),
+    awayTeam: z.string().min(1, "Away Team is required"),
+    scheduledStartTime: z.string().min(1, "Start Time is required"),
+    status: z.enum(["scheduled", "live", "finished", "cancelled", "postponed"]),
+    isFeatured: z.boolean().default(false),
+    isResultVerified: z.boolean().default(false),
+    homeScore: z.coerce.number().int().min(0).default(0),
+    awayScore: z.coerce.number().int().min(0).default(0),
+  })
+  .refine((data) => data.homeTeam !== data.awayTeam, {
+    message: "Home and Away teams cannot be the same",
+    path: ["awayTeam"],
+  });
+
+type MatchFormValues = z.infer<typeof matchSchema>;
 
 const MatchManagement: React.FC = () => {
   const [matches, setMatches] = useState<Match[]>([]);
@@ -34,7 +64,24 @@ const MatchManagement: React.FC = () => {
   const [tournaments, setTournaments] = useState<Tournament[]>([]);
   const [teams, setTeams] = useState<Team[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [editingMatch, setEditingMatch] = useState<Partial<Match> | null>(null);
+  const [editingId, setEditingId] = useState<string | null>(null);
+
+  const form = useForm<MatchFormValues>({
+    resolver: zodResolver(matchSchema),
+    defaultValues: {
+      matchId: "",
+      sport: "",
+      tournament: "",
+      homeTeam: "",
+      awayTeam: "",
+      scheduledStartTime: "",
+      status: "scheduled",
+      isFeatured: false,
+      isResultVerified: false,
+      homeScore: 0,
+      awayScore: 0,
+    },
+  });
 
   useEffect(() => {
     loadData();
@@ -51,73 +98,57 @@ const MatchManagement: React.FC = () => {
     sports.find((s) => s._id === id)?.name || "Unknown";
   const getTournamentName = (id?: string) =>
     id ? tournaments.find((t) => t._id === id)?.name : "Friendly/Other";
-  const getTeamName = (id: string) =>
-    teams.find((t) => t._id === id)?.name || "Unknown";
   const getTeam = (id: string) => teams.find((t) => t._id === id);
 
-  const handleSave = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!editingMatch) return;
+  const onSubmit = (data: MatchFormValues) => {
+    const payload = {
+      matchId: data.matchId,
+      sport: data.sport,
+      tournament: data.tournament === "none" ? undefined : data.tournament,
+      homeTeam: data.homeTeam,
+      awayTeam: data.awayTeam,
+      scheduledStartTime: new Date(data.scheduledStartTime),
+      status: data.status,
+      isFeatured: data.isFeatured,
+      isResultVerified: data.isResultVerified,
+      liveStatus:
+        data.status === "live" || data.status === "finished"
+          ? {
+              homeScore: data.homeScore,
+              awayScore: data.awayScore,
+              lastUpdated: new Date(),
+            }
+          : undefined,
+      source: "manual",
+      totalBetsCount: 0,
+      createdBy: "admin_user",
+      finalResult:
+        data.status === "finished"
+          ? `${data.homeScore}-${data.awayScore}`
+          : undefined,
+    } as any; // Allow partial mock structure
 
-    if (
-      !editingMatch.matchId ||
-      !editingMatch.sport ||
-      !editingMatch.homeTeam ||
-      !editingMatch.awayTeam ||
-      !editingMatch.scheduledStartTime
-    ) {
-      toast.error("Please fill in all required fields");
-      return;
-    }
-
-    if (editingMatch.homeTeam === editingMatch.awayTeam) {
-      toast.error("Home and Away teams cannot be the same");
-      return;
-    }
-
-    if (editingMatch._id) {
-      const updated = matchService.update(editingMatch._id, editingMatch);
+    if (editingId) {
+      const updated = matchService.update(editingId, payload);
       if (updated) {
         toast.success("Match updated successfully");
         loadData();
+        setIsModalOpen(false);
       } else {
         toast.error("Failed to update match");
       }
     } else {
-      const exists = matches.some((m) => m.matchId === editingMatch.matchId);
-      if (exists) {
-        toast.error("Match ID must be unique");
+      if (matches.some((m) => m.matchId === data.matchId)) {
+        form.setError("matchId", { message: "ID must be unique" });
         return;
       }
-
-      const newMatch = matchService.add({
-        matchId: editingMatch.matchId!,
-        sport: editingMatch.sport!,
-        tournament: editingMatch.tournament,
-        homeTeam: editingMatch.homeTeam!,
-        awayTeam: editingMatch.awayTeam!,
-        scheduledStartTime: new Date(editingMatch.scheduledStartTime!),
-        status: editingMatch.status || "scheduled",
-        source: editingMatch.source || "manual",
-        availableBetTypes: editingMatch.availableBetTypes || [],
-        isResultVerified: editingMatch.isResultVerified ?? false,
-        totalBetsCount: 0,
-        isFeatured: editingMatch.isFeatured ?? false,
-        createdBy: "admin_user", // Mock
-        VENUE: editingMatch.venue,
-        city: editingMatch.city,
-        country: editingMatch.country,
-        liveStatus: editingMatch.liveStatus,
-        finalResult: editingMatch.finalResult,
-      } as any); // Casting as any due to partial mismatches in mock vs schema strictly, but mockService handles strict types
-
+      const newMatch = matchService.add(payload);
       if (newMatch) {
         toast.success("Match created successfully");
         loadData();
+        setIsModalOpen(false);
       }
     }
-    setIsModalOpen(false);
-    setEditingMatch(null);
   };
 
   const handleDelete = (id: string) => {
@@ -132,16 +163,42 @@ const MatchManagement: React.FC = () => {
     }
   };
 
-  const openNewModal = () => {
-    setEditingMatch({
+  const handleCreate = () => {
+    setEditingId(null);
+    form.reset({
       matchId: `MATCH-${Math.floor(Math.random() * 10000)
         .toString()
         .padStart(5, "0")}`,
+      sport: "",
+      tournament: "",
+      homeTeam: "",
+      awayTeam: "",
+      scheduledStartTime: "",
       status: "scheduled",
       isFeatured: false,
       isResultVerified: false,
-      source: "manual",
-      liveStatus: { homeScore: 0, awayScore: 0, lastUpdated: new Date() },
+      homeScore: 0,
+      awayScore: 0,
+    });
+    setIsModalOpen(true);
+  };
+
+  const handleEdit = (m: Match) => {
+    setEditingId(m._id);
+    form.reset({
+      matchId: m.matchId,
+      sport: m.sport,
+      tournament: m.tournament || "none",
+      homeTeam: m.homeTeam,
+      awayTeam: m.awayTeam,
+      scheduledStartTime: m.scheduledStartTime
+        ? new Date(m.scheduledStartTime).toISOString().slice(0, 16)
+        : "",
+      status: m.status,
+      isFeatured: m.isFeatured,
+      isResultVerified: m.isResultVerified,
+      homeScore: m.liveStatus?.homeScore || 0,
+      awayScore: m.liveStatus?.awayScore || 0,
     });
     setIsModalOpen(true);
   };
@@ -149,6 +206,10 @@ const MatchManagement: React.FC = () => {
   const formatDate = (date: Date) => {
     return new Date(date).toLocaleString();
   };
+
+  // Watch sport to filter tournaments and teams
+  const selectedSport = form.watch("sport");
+  const selectedStatus = form.watch("status");
 
   return (
     <div className="p-4 md:p-8">
@@ -162,7 +223,7 @@ const MatchManagement: React.FC = () => {
           </p>
         </div>
         <Button
-          onClick={openNewModal}
+          onClick={handleCreate}
           className="bg-primary text-secondary hover:bg-primary/90"
         >
           <span className="material-symbols-outlined text-lg mr-2">
@@ -251,17 +312,14 @@ const MatchManagement: React.FC = () => {
                     <Button
                       variant="ghost"
                       size="sm"
-                      onClick={() => {
-                        setEditingMatch(m);
-                        setIsModalOpen(true);
-                      }}
+                      onClick={() => handleEdit(m)}
                     >
                       Edit
                     </Button>
                     <Button
                       variant="ghost"
                       size="sm"
-                      className="text-red-500"
+                      className="text-red-500 hover:text-red-600 hover:bg-red-50"
                       onClick={() => handleDelete(m._id)}
                     >
                       Delete
@@ -274,276 +332,314 @@ const MatchManagement: React.FC = () => {
         })}
       </div>
 
-      <Modal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        title={editingMatch?.id ? "Edit Match" : "Schedule Match"}
-      >
-        <form
-          onSubmit={handleSave}
-          className="space-y-6 py-4 px-1 max-h-[80vh] overflow-y-auto"
-        >
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label>Match ID</Label>
-              <Input
-                required
-                value={editingMatch?.matchId || ""}
-                onChange={(e) =>
-                  setEditingMatch({ ...editingMatch, matchId: e.target.value })
-                }
-                placeholder="MATCH-123456"
-              />
-            </div>
-            <div className="space-y-2">
-              <Label>Status</Label>
-              <Select
-                value={editingMatch?.status || "scheduled"}
-                onValueChange={(val) =>
-                  setEditingMatch({
-                    ...editingMatch,
-                    status: val as MatchStatus,
-                  })
-                }
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Select Status" />
-                </SelectTrigger>
-                <SelectContent>
-                  {[
-                    "scheduled",
-                    "live",
-                    "finished",
-                    "cancelled",
-                    "postponed",
-                  ].map((s) => (
-                    <SelectItem key={s} value={s} className="capitalize">
-                      {s}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
+      <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
+        <DialogContent className="max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>
+              {editingId ? "Edit Match" : "Schedule Match"}
+            </DialogTitle>
+          </DialogHeader>
 
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label>Sport</Label>
-              <Select
-                value={editingMatch?.sport || ""}
-                onValueChange={(val) =>
-                  setEditingMatch({ ...editingMatch, sport: val })
-                }
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Select Sport" />
-                </SelectTrigger>
-                <SelectContent>
-                  {sports.map((s) => (
-                    <SelectItem key={s._id} value={s._id}>
-                      {s.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-            <div className="space-y-2">
-              <Label>Tournament</Label>
-              <Select
-                value={editingMatch?.tournament || "none"}
-                onValueChange={(val) =>
-                  setEditingMatch({
-                    ...editingMatch,
-                    tournament: val === "none" ? undefined : val,
-                  })
-                }
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Select Tournament" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="none">None / Friendly</SelectItem>
-                  {tournaments
-                    .filter(
-                      (t) =>
-                        !editingMatch?.sport || t.sport === editingMatch.sport
-                    )
-                    .map((t) => (
-                      <SelectItem key={t._id} value={t._id}>
-                        {t.name}
-                      </SelectItem>
-                    ))}
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label>Home Team</Label>
-              <Select
-                value={editingMatch?.homeTeam || ""}
-                onValueChange={(val) =>
-                  setEditingMatch({ ...editingMatch, homeTeam: val })
-                }
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Select Home Team" />
-                </SelectTrigger>
-                <SelectContent>
-                  {teams
-                    .filter(
-                      (t) =>
-                        !editingMatch?.sport || t.sport === editingMatch.sport
-                    )
-                    .map((t) => (
-                      <SelectItem key={t._id} value={t._id}>
-                        {t.name}
-                      </SelectItem>
-                    ))}
-                </SelectContent>
-              </Select>
-            </div>
-            <div className="space-y-2">
-              <Label>Away Team</Label>
-              <Select
-                value={editingMatch?.awayTeam || ""}
-                onValueChange={(val) =>
-                  setEditingMatch({ ...editingMatch, awayTeam: val })
-                }
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Select Away Team" />
-                </SelectTrigger>
-                <SelectContent>
-                  {teams
-                    .filter(
-                      (t) =>
-                        (!editingMatch?.sport ||
-                          t.sport === editingMatch.sport) &&
-                        t._id !== editingMatch?.homeTeam
-                    )
-                    .map((t) => (
-                      <SelectItem key={t._id} value={t._id}>
-                        {t.name}
-                      </SelectItem>
-                    ))}
-                </SelectContent>
-              </Select>
-            </div>
-          </div>
-
-          <div className="space-y-2">
-            <Label>Scheduled Start Time</Label>
-            <Input
-              type="datetime-local"
-              required
-              value={
-                editingMatch?.scheduledStartTime
-                  ? new Date(editingMatch.scheduledStartTime)
-                      .toISOString()
-                      .slice(0, 16)
-                  : ""
-              }
-              onChange={(e) =>
-                setEditingMatch({
-                  ...editingMatch,
-                  scheduledStartTime: new Date(e.target.value),
-                })
-              }
-            />
-          </div>
-
-          {/* Live Status Section */}
-          {(editingMatch?.status === "live" ||
-            editingMatch?.status === "finished") && (
-            <div className="p-4 bg-slate-50 rounded-xl space-y-4 border">
-              <Label className="uppercase text-xs font-bold text-slate-400">
-                Scores
-              </Label>
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
               <div className="grid grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label>Home Score</Label>
-                  <Input
-                    type="number"
-                    value={editingMatch.liveStatus?.homeScore ?? 0}
-                    onChange={(e) =>
-                      setEditingMatch({
-                        ...editingMatch,
-                        liveStatus: {
-                          ...editingMatch.liveStatus!,
-                          homeScore: parseInt(e.target.value),
-                          lastUpdated: new Date(),
-                        },
-                      })
-                    }
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label>Away Score</Label>
-                  <Input
-                    type="number"
-                    value={editingMatch.liveStatus?.awayScore ?? 0}
-                    onChange={(e) =>
-                      setEditingMatch({
-                        ...editingMatch,
-                        liveStatus: {
-                          ...editingMatch.liveStatus!,
-                          awayScore: parseInt(e.target.value),
-                          lastUpdated: new Date(),
-                        },
-                      })
-                    }
-                  />
-                </div>
+                <FormField
+                  control={form.control}
+                  name="matchId"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Match ID</FormLabel>
+                      <FormControl>
+                        <Input placeholder="MATCH-123456" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="status"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Status</FormLabel>
+                      <Select
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}
+                      >
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select Status" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {[
+                            "scheduled",
+                            "live",
+                            "finished",
+                            "cancelled",
+                            "postponed",
+                          ].map((s) => (
+                            <SelectItem
+                              key={s}
+                              value={s}
+                              className="capitalize"
+                            >
+                              {s}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
               </div>
-            </div>
-          )}
 
-          <div className="flex gap-6">
-            <div className="flex items-center gap-2">
-              <Checkbox
-                id="isFeatured"
-                checked={editingMatch?.isFeatured ?? false}
-                onCheckedChange={(checked) =>
-                  setEditingMatch({
-                    ...editingMatch,
-                    isFeatured: checked === true,
-                  })
-                }
-              />
-              <Label htmlFor="isFeatured">Featured?</Label>
-            </div>
-            <div className="flex items-center gap-2">
-              <Checkbox
-                id="isResultVerified"
-                checked={editingMatch?.isResultVerified ?? false}
-                onCheckedChange={(checked) =>
-                  setEditingMatch({
-                    ...editingMatch,
-                    isResultVerified: checked === true,
-                  })
-                }
-              />
-              <Label htmlFor="isResultVerified">Result Verified?</Label>
-            </div>
-          </div>
+              <div className="grid grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="sport"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Sport</FormLabel>
+                      <Select
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}
+                      >
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select Sport" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {sports.map((s) => (
+                            <SelectItem key={s._id} value={s._id}>
+                              {s.name}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="tournament"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Tournament</FormLabel>
+                      <Select
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}
+                      >
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select Tournament" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="none">None / Friendly</SelectItem>
+                          {tournaments
+                            .filter(
+                              (t) => !selectedSport || t.sport === selectedSport
+                            )
+                            .map((t) => (
+                              <SelectItem key={t._id} value={t._id}>
+                                {t.name}
+                              </SelectItem>
+                            ))}
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
 
-          <div className="flex gap-4 pt-4">
-            <Button
-              type="button"
-              variant="outline"
-              className="flex-1"
-              onClick={() => setIsModalOpen(false)}
-            >
-              Cancel
-            </Button>
-            <Button type="submit" className="flex-1">
-              Save Match
-            </Button>
-          </div>
-        </form>
-      </Modal>
+              <div className="grid grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="homeTeam"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Home Team</FormLabel>
+                      <Select
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}
+                      >
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select Home Team" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {teams
+                            .filter(
+                              (t) => !selectedSport || t.sport === selectedSport
+                            )
+                            .map((t) => (
+                              <SelectItem key={t._id} value={t._id}>
+                                {t.name}
+                              </SelectItem>
+                            ))}
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="awayTeam"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Away Team</FormLabel>
+                      <Select
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}
+                      >
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select Away Team" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {teams
+                            .filter(
+                              (t) =>
+                                (!selectedSport || t.sport === selectedSport) &&
+                                t._id !== form.getValues("homeTeam")
+                            )
+                            .map((t) => (
+                              <SelectItem key={t._id} value={t._id}>
+                                {t.name}
+                              </SelectItem>
+                            ))}
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+              <FormField
+                control={form.control}
+                name="scheduledStartTime"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Scheduled Start Time</FormLabel>
+                    <FormControl>
+                      <Input type="datetime-local" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              {/* Live Status Section */}
+              {(selectedStatus === "live" || selectedStatus === "finished") && (
+                <div className="p-4 bg-slate-50/50 rounded-xl space-y-4 border">
+                  <FormLabel className="uppercase text-xs font-bold text-slate-400">
+                    Scores
+                  </FormLabel>
+                  <div className="grid grid-cols-2 gap-4">
+                    <FormField
+                      control={form.control}
+                      name="homeScore"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Home Score</FormLabel>
+                          <FormControl>
+                            <Input
+                              type="number"
+                              {...field}
+                              onChange={(e) =>
+                                field.onChange(parseInt(e.target.value))
+                              }
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="awayScore"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Away Score</FormLabel>
+                          <FormControl>
+                            <Input
+                              type="number"
+                              {...field}
+                              onChange={(e) =>
+                                field.onChange(parseInt(e.target.value))
+                              }
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                </div>
+              )}
+
+              <div className="flex gap-6">
+                <FormField
+                  control={form.control}
+                  name="isFeatured"
+                  render={({ field }) => (
+                    <FormItem className="flex flex-row items-start space-x-3 space-y-0">
+                      <FormControl>
+                        <Checkbox
+                          checked={field.value}
+                          onCheckedChange={field.onChange}
+                        />
+                      </FormControl>
+                      <div className="space-y-1 leading-none">
+                        <FormLabel>Featured?</FormLabel>
+                      </div>
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="isResultVerified"
+                  render={({ field }) => (
+                    <FormItem className="flex flex-row items-start space-x-3 space-y-0">
+                      <FormControl>
+                        <Checkbox
+                          checked={field.value}
+                          onCheckedChange={field.onChange}
+                        />
+                      </FormControl>
+                      <div className="space-y-1 leading-none">
+                        <FormLabel>Result Verified?</FormLabel>
+                      </div>
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <div className="flex gap-4 pt-4">
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="flex-1"
+                  onClick={() => setIsModalOpen(false)}
+                >
+                  Cancel
+                </Button>
+                <Button type="submit" className="flex-1">
+                  Save Match
+                </Button>
+              </div>
+            </form>
+          </Form>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

@@ -1,23 +1,62 @@
+import { Button } from "@/components/ui/button";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { zodResolver } from "@hookform/resolvers/zod";
 import React, { useState } from "react";
+import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
+import { toast } from "sonner";
+import * as z from "zod";
 import { RootState } from "../../../types";
 import { setUser } from "../../redux/features/dashboard/dashboardSlice";
 
+const profileSchema = z.object({
+  name: z.string().min(1, "Name is required"),
+  email: z.string().email("Invalid email address"),
+  role: z.enum(["Super Admin", "Moderator", "Editor"]),
+});
+
+type ProfileFormValues = z.infer<typeof profileSchema>;
+
 const Profile: React.FC = () => {
-  const dashboardState = useSelector((state: RootState) => state.dashboard) || {};
+  const dashboardState =
+    useSelector((state: RootState) => state.dashboard) || {};
   const { user = { name: "Admin", role: "Super Admin" } } = dashboardState;
   const dispatch = useDispatch();
   const [isEditing, setIsEditing] = useState(false);
-  const [tempUser, setTempUser] = useState(user);
 
-  const handleUpdate = (e: React.FormEvent) => {
-    e.preventDefault();
-    dispatch(setUser(tempUser));
+  const form = useForm<ProfileFormValues>({
+    resolver: zodResolver(profileSchema),
+    defaultValues: {
+      name: user.name,
+      // @ts-ignore
+      email: user.email || "alex.morgan@AreaWinsbet.com", // Mock email default
+      role: user.role as "Super Admin" | "Moderator" | "Editor",
+    },
+  });
+
+  const onSubmit = (data: ProfileFormValues) => {
+    dispatch(setUser({ ...user, name: data.name, role: data.role }));
     setIsEditing(false);
+    toast.success("Profile updated successfully");
   };
 
   return (
-    <div className="p-8 max-w-4xl mx-auto">
+    <div className="p-4 md:p-8 max-w-4xl mx-auto">
       <div className="flex justify-between items-end mb-12">
         <div>
           <h1 className="text-4xl font-black tracking-tight mb-2">
@@ -27,16 +66,21 @@ const Profile: React.FC = () => {
             Manage your administrative details and account security.
           </p>
         </div>
-        <button
-          onClick={() => setIsEditing(!isEditing)}
+        <Button
+          onClick={() => {
+            if (isEditing) {
+              form.reset(); // Cancel
+            }
+            setIsEditing(!isEditing);
+          }}
           className={`px-6 py-2.5 rounded-lg text-sm font-black transition-all ${
             isEditing
-              ? "bg-red-50 text-red-500"
-              : "bg-primary text-accent shadow-lg shadow-primary/20"
+              ? "bg-red-50 text-red-500 hover:bg-red-100"
+              : "bg-primary text-secondary shadow-lg shadow-primary/20 hover:brightness-110"
           }`}
         >
           {isEditing ? "Cancel Editing" : "Edit Profile"}
-        </button>
+        </Button>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -73,73 +117,105 @@ const Profile: React.FC = () => {
         </div>
 
         <div className="md:col-span-2">
-          <form
-            onSubmit={handleUpdate}
-            className="bg-white border border-gray-200 rounded-3xl p-8 shadow-sm h-full"
-          >
+          <div className="bg-white border border-gray-200 rounded-3xl p-8 shadow-sm h-full">
             <h3 className="text-xl font-bold mb-8 flex items-center gap-2">
               <span className="material-symbols-outlined text-primary">
                 person
               </span>
               Personal Information
             </h3>
-            <div className="space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <label className="text-xs font-black text-gray-400 uppercase tracking-widest block mb-2">
-                    Full Name
-                  </label>
-                  <input
-                    disabled={!isEditing}
-                    className="w-full bg-slate-50 border-none rounded-xl p-4 text-sm focus:ring-1 ring-primary font-bold disabled:opacity-60"
-                    value={tempUser?.name || ""}
-                    onChange={(e) =>
-                      setTempUser({ ...tempUser!, name: e.target.value })
-                    }
-                  />
-                </div>
-                <div>
-                  <label className="text-xs font-black text-gray-400 uppercase tracking-widest block mb-2">
-                    Email Address
-                  </label>
-                  <input
-                    disabled={!isEditing}
-                    className="w-full bg-slate-50 border-none rounded-xl p-4 text-sm focus:ring-1 ring-primary font-bold disabled:opacity-60"
-                    value="alex.morgan@AreaWinsbet.com"
-                    readOnly
-                  />
-                </div>
-              </div>
-              <div>
-                <label className="text-xs font-black text-gray-400 uppercase tracking-widest block mb-2">
-                  Administrative Role
-                </label>
-                <select
-                  disabled={!isEditing}
-                  className="w-full bg-slate-50 border-none rounded-xl p-4 text-sm focus:ring-1 ring-primary font-bold disabled:opacity-60"
-                  value={tempUser?.role || ""}
-                  onChange={(e) =>
-                    setTempUser({ ...tempUser!, role: e.target.value })
-                  }
-                >
-                  <option value="Super Admin">Super Admin</option>
-                  <option value="Moderator">Moderator</option>
-                  <option value="Editor">Editor</option>
-                </select>
-              </div>
 
-              {isEditing && (
-                <div className="pt-8 flex justify-end">
-                  <button
-                    type="submit"
-                    className="bg-primary text-accent px-8 py-3 rounded-xl font-black shadow-xl shadow-primary/20 hover:brightness-110 transition-all"
-                  >
-                    Update Profile Data
-                  </button>
+            <Form {...form}>
+              <form
+                onSubmit={form.handleSubmit(onSubmit)}
+                className="space-y-6"
+              >
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <FormField
+                    control={form.control}
+                    name="name"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-xs font-black text-gray-400 uppercase tracking-widest">
+                          Full Name
+                        </FormLabel>
+                        <FormControl>
+                          <Input
+                            disabled={!isEditing}
+                            className="bg-slate-50 border-none rounded-xl p-4 text-sm focus:ring-1 ring-primary font-bold disabled:opacity-60"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="email"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-xs font-black text-gray-400 uppercase tracking-widest">
+                          Email Address
+                        </FormLabel>
+                        <FormControl>
+                          <Input
+                            disabled={!isEditing}
+                            readOnly
+                            className="bg-slate-50 border-none rounded-xl p-4 text-sm focus:ring-1 ring-primary font-bold disabled:opacity-60 cursor-not-allowed"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
                 </div>
-              )}
-            </div>
-          </form>
+
+                <FormField
+                  control={form.control}
+                  name="role"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-xs font-black text-gray-400 uppercase tracking-widest">
+                        Administrative Role
+                      </FormLabel>
+                      <Select
+                        disabled={!isEditing}
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}
+                      >
+                        <FormControl>
+                          <SelectTrigger className="bg-slate-50 border-none rounded-xl p-4 text-sm focus:ring-1 ring-primary font-bold disabled:opacity-60">
+                            <SelectValue />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="Super Admin">
+                            Super Admin
+                          </SelectItem>
+                          <SelectItem value="Moderator">Moderator</SelectItem>
+                          <SelectItem value="Editor">Editor</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                {isEditing && (
+                  <div className="pt-8 flex justify-end">
+                    <Button
+                      type="submit"
+                      className="bg-primary text-secondary px-8 py-6 rounded-xl font-black shadow-xl shadow-primary/20 hover:brightness-110 transition-all"
+                    >
+                      Update Profile Data
+                    </Button>
+                  </div>
+                )}
+              </form>
+            </Form>
+          </div>
         </div>
       </div>
     </div>

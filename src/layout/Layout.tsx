@@ -105,7 +105,7 @@ const Layout: React.FC = () => {
               key={item.path}
               to={item.path}
               onClick={handleMobileNavClick}
-              className={`flex items-center gap-3 px-3 py-3 rounded-lg transition-all group ${
+              className={`flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all group ${
                 isActive(item.path)
                   ? "bg-primary text-white"
                   : "text-white/70 hover:text-white hover:bg-white/5"
@@ -134,7 +134,7 @@ const Layout: React.FC = () => {
               key={item.label}
               to={item.path}
               onClick={handleMobileNavClick}
-              className={`flex items-center gap-3 px-3 py-3 rounded-xl transition-all group ${
+              className={`flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all group ${
                 isActive(item.path)
                   ? "bg-black/80 text-white"
                   : "text-white/70 hover:text-white hover:bg-white/5"
@@ -153,7 +153,7 @@ const Layout: React.FC = () => {
             </Link>
           ))}
 
-          <div className="mt-auto pt-6">
+          <div>
             <Link
               to="/settings"
               onClick={handleMobileNavClick}
