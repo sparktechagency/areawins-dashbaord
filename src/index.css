@@ -1,6 +1,9 @@
 @import url("https://fonts.googleapis.com/css2?family=Barlow:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Fira+Code&family=Hind+Siliguri:wght@300;400;500;600;700&family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Nunito:ital,wght@0,200..1000;1,200..1000&family=Oswald:wght@200..700&family=PT+Sans:ital,wght@0,400;0,700;1,400;1,700&family=Pixelify+Sans:wght@400..700&family=Roboto:ital,wght@0,100..900;1,100..900&family=Rubik:ital,wght@0,300..900;1,300..900&family=Tinos:ital,wght@0,400;0,700;1,400;1,700&family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap");
+
 @import "tailwindcss";
-@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+@plugin "tailwindcss-animate";
 
 @theme {
   --color-primary: var(--primary);
@@ -25,58 +28,88 @@
 
   --radius: var(--radius);
 
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  /* Betting Specific Colors */
+  --color-odds-background: var(--odds-background);
+  --color-odds-hover: var(--odds-hover);
+  --color-odds-selected: var(--odds-selected);
+  --color-odds-text: var(--odds-text);
+
+  --color-live: var(--live);
+  --color-won: var(--won);
+  --color-lost: var(--lost);
+  --color-pending: var(--pending);
+
+  /* Animations */
+  --animate-accordion-down: accordion-down 0.2s ease-out;
+  --animate-accordion-up: accordion-up 0.2s ease-out;
+
+  @keyframes accordion-down {
+    from {
+      height: 0;
+    }
+    to {
+      height: var(--radix-accordion-content-height);
+    }
+  }
+  @keyframes accordion-up {
+    from {
+      height: var(--radix-accordion-content-height);
+    }
+    to {
+      height: 0;
+    }
+  }
+}
+
+/* Container Utility */
+@utility container {
+  margin-inline: auto;
+  padding-inline: 2rem;
+  @media (width >= 1400px) {
+    max-width: 1400px;
+  }
 }
 
 :root {
   /* Primary Brand Colors */
-  --primary: #00d65c; /* Bright Green - Main brand color */
-  --secondary: #112218; 
-  --primary-rgb: 0, 214, 92;
+  --primary: #00d65c;
   --primary-foreground: #ffffff;
- --color-primary: #141414;
-  --color-accent: #00d65c;
+
   /* Secondary Colors */
-  --secondary: #112218; 
-  --secondary-rgb: 26, 26, 26;
+  --secondary: #112218;
   --secondary-foreground: #ffffff;
 
   /* Accent Colors */
-  --accent: #ff3b3b; /* Red - For live/urgent items */
-  --accent-rgb: 255, 59, 59;
-  --accent-foreground: #ffffff;
+  --accent: oklch(0.97 0 0); /* Red - For live/urgent items */
+  --accent-foreground: oklch(0.205 0 0);
 
   /* Background Colors */
-  --background: #ffffff; /* White */
-  --background-rgb: 255, 255, 255;
-  --foreground: #1a1a1a;
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.145 0 0);
 
   /* Card & Surface */
-  --card: #ffffff;
-  --card-foreground: #1a1a1a;
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.145 0 0);
 
   /* Popover */
-  --popover: #ffffff;
-  --popover-foreground: #1a1a1a;
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.145 0 0);
 
   /* Muted */
-  --muted: #f1f5f9;
-  --muted-foreground: #64748b;
+  --muted: oklch(0.97 0 0);
+  --muted-foreground: oklch(0.556 0 0);
 
   /* Destructive */
-  --destructive: #ef4444;
+  --destructive: oklch(0.577 0.245 27.325);
   --destructive-foreground: #ffffff;
 
   /* Border */
-  --border: #e2e8f0;
-  --input: #ebeff5;
-
-  /* Ring */
-  --ring: #00d65c;
+  --border: oklch(0.922 0 0);
+  --input: oklch(0.922 0 0);
+  --ring: oklch(0.708 0 0);
 
   /* Radius */
-  --radius: 0.5rem;
+  --radius: 0.625rem;
 
   /* Betting Specific Colors */
   --odds-background: #ffffff;
@@ -89,67 +122,60 @@
   --won: #00d65c;
   --lost: #64748b;
   --pending: #f59e0b;
-
-  /* Gradients */
-  --gradient-primary: linear-gradient(135deg, #00d65c 0%, #00b84d 100%);
-  --gradient-dark: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
-  --gradient-card: linear-gradient(
-    135deg,
-    rgba(0, 214, 92, 0.1) 0%,
-    rgba(0, 214, 92, 0.05) 100%
-  );
-
-  /* Scrollbar */
-  --scrollbar-thumb: #112218; /* User requested color */
-  --scrollbar-track: transparent;
-  --scrollbar-thumb-hover: #00d65c;
+  --chart-1: oklch(0.646 0.222 41.116);
+  --chart-2: oklch(0.6 0.118 184.704);
+  --chart-3: oklch(0.398 0.07 227.392);
+  --chart-4: oklch(0.828 0.189 84.429);
+  --chart-5: oklch(0.769 0.188 70.08);
+  --sidebar: oklch(0.985 0 0);
+  --sidebar-foreground: oklch(0.145 0 0);
+  --sidebar-primary: oklch(0.205 0 0);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.97 0 0);
+  --sidebar-accent-foreground: oklch(0.205 0 0);
+  --sidebar-border: oklch(0.922 0 0);
+  --sidebar-ring: oklch(0.708 0 0);
 }
 
 .dark {
   /* Primary Brand Colors */
-  --primary: #00d65c; /* Bright Green - Main brand color */
-  --primary-rgb: 0, 214, 92;
+  --primary: #00d65c;
   --primary-foreground: #ffffff;
 
   /* Secondary Colors */
-  --secondary: #112218; /* Lighter dark gray */
-  --secondary-rgb: 45, 45, 45;
+  --secondary: #112218;
   --secondary-foreground: #ffffff;
 
   /* Accent Colors */
-  --accent: #ff5c5c; /* Slightly lighter red for dark mode */
-  --accent-rgb: 255, 92, 92;
-  --accent-foreground: #ffffff;
+  --accent: oklch(0.269 0 0);
+  --accent-foreground: oklch(0.985 0 0);
 
   /* Background Colors */
-  --background: #112218; /* Dark background */
-  --background-rgb: 17, 34, 24;
-  --foreground: #e2e8f0; /* Light gray text */
+  --background: oklch(0.145 0 0);
+  --foreground: oklch(0.985 0 0);
 
   /* Card & Surface */
-  --card: #112218; /* Dark card background */
-  --card-foreground: #e2e8f0;
+  --card: oklch(0.205 0 0);
+  --card-foreground: oklch(0.985 0 0);
 
   /* Popover */
-  --popover: #112218; /* Dark popover background */
-  --popover-foreground: #e2e8f0;
+  --popover: oklch(0.205 0 0);
+  --popover-foreground: oklch(0.985 0 0);
 
   /* Muted */
-  --muted: #2d3748; /* Darker muted color */
-  --muted-foreground: #a0aec0;
+  --muted: oklch(0.269 0 0);
+  --muted-foreground: oklch(0.708 0 0);
 
   /* Destructive */
-  --destructive: #fc8181; /* Lighter red for dark mode */
+  --destructive: oklch(0.704 0.191 22.216);
   --destructive-foreground: #1a202c;
 
   /* Border */
-  --border: #244732; /* Darker border */
-  --input: #244732;
+  --border: oklch(1 0 0 / 10%);
+  --input: oklch(1 0 0 / 15%);
+  --ring: oklch(0.556 0 0);
 
-  /* Ring */
-  --ring: #112218;
-
-  /* Betting Specific Colors */
+  /* Betting Specific */
   --odds-background: #112218;
   --odds-hover: #2d3748;
   --odds-selected: #00d65c;
@@ -160,120 +186,98 @@
   --won: #00d65c;
   --lost: #a0aec0;
   --pending: #f6e05e;
-
-  /* Gradients */
-  --gradient-primary: linear-gradient(135deg, #00d65c 0%, #00b84d 100%);
-  --gradient-dark: linear-gradient(135deg, #1a242d 0%, #2d3748 100%);
-  --gradient-card: linear-gradient(
-    135deg,
-    rgba(0, 214, 92, 0.1) 0%,
-    rgba(0, 214, 92, 0.05) 100%
-  );
-
-  /* Scrollbar */
-  --scrollbar-thumb: #2d3748; /* Lighter thumb for dark bg */
-  --scrollbar-track: #112218; /* Dark track matches user color */
-  --scrollbar-thumb-hover: #00d65c;
+  --chart-1: oklch(0.488 0.243 264.376);
+  --chart-2: oklch(0.696 0.17 162.48);
+  --chart-3: oklch(0.769 0.188 70.08);
+  --chart-4: oklch(0.627 0.265 303.9);
+  --chart-5: oklch(0.645 0.246 16.439);
+  --sidebar: oklch(0.205 0 0);
+  --sidebar-foreground: oklch(0.985 0 0);
+  --sidebar-primary: oklch(0.488 0.243 264.376);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.269 0 0);
+  --sidebar-accent-foreground: oklch(0.985 0 0);
+  --sidebar-border: oklch(1 0 0 / 10%);
+  --sidebar-ring: oklch(0.556 0 0);
 }
 
-@theme inline {
-  /* Colors */
-  --color-primary: var(--primary);
-  --color-primary-foreground: var(--primary-foreground);
-  --color-secondary: var(--secondary);
-  --color-secondary-foreground: var(--secondary-foreground);
-  --color-accent: var(--accent);
-  --color-accent-foreground: var(--accent-foreground);
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --color-card: var(--card);
-  --color-card-foreground: var(--card-foreground);
-  --color-popover: var(--popover);
-  --color-popover-foreground: var(--popover-foreground);
-  --color-muted: var(--muted);
-  --color-muted-foreground: var(--muted-foreground);
-  --color-destructive: var(--destructive);
-  --color-destructive-foreground: var(--destructive-foreground);
-  --color-border: var(--border);
-  --color-input: var(--input);
-  --color-ring: var(--ring);
-
-  /* Fonts */
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-body {
-  top: 0 !important;
-  font-family: "Oswald", sans-serif;
-  font-optical-sizing: auto;
-  font-weight: 400;
-  font-style: normal;
-  background-color: #f7f7f7;
-  color: #000000;
-}
-
-/* Base styles & custom scrollbar */
 @layer base {
   body {
-    font-family: "Plus Jakarta Sans", sans-serif;
+    @apply bg-background text-foreground;
+    font-family: "Oswald", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 400;
+    font-style: normal;
   }
 
-  /* Scrollbar base styles */
-  ::-webkit-scrollbar {
+  * {
+    @apply border-border outline-ring/50;
+  }
+}
+
+/* Scrollbar styles */
+@layer utilities {
+  .custom-scrollbar::-webkit-scrollbar {
     width: 6px;
     height: 6px;
   }
-
-  ::-webkit-scrollbar-track {
+  .custom-scrollbar::-webkit-scrollbar-track {
     background: transparent;
   }
-
-  ::-webkit-scrollbar-thumb {
+  .custom-scrollbar::-webkit-scrollbar-thumb {
     background: #e2e8f0;
     border-radius: 20px;
-    transition: all 0.3s ease;
   }
-
-  ::-webkit-scrollbar-thumb:hover {
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
     background: #cbd5e1;
-  }
-
-  /* Firefox support */
-  * {
-    scrollbar-width: thin;
-    scrollbar-color: #e2e8f0 transparent;
-  }
-}
-
-/* Custom scrollbar variants */
-@layer utilities {
-  .custom-scrollbar {
-    &::-webkit-scrollbar {
-      width: 4px;
-      height: 4px;
-    }
-
-    &::-webkit-scrollbar-thumb {
-      background: rgba(0, 0, 0, 0.1);
-    }
   }
 
   .no-scrollbar {
     -ms-overflow-style: none;
     scrollbar-width: none;
   }
-
   .no-scrollbar::-webkit-scrollbar {
     display: none;
   }
 }
 
-@layer base {
-  * {
-    @apply border-border outline-ring/50;
-  }
-  body {
-    @apply bg-background text-foreground;
-  }
+@theme inline {
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 8px);
+  --radius-3xl: calc(var(--radius) + 12px);
+  --radius-4xl: calc(var(--radius) + 16px);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
 }

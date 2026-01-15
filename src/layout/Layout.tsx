@@ -105,9 +105,9 @@ const Layout: React.FC = () => {
               key={item.path}
               to={item.path}
               onClick={handleMobileNavClick}
-              className={`flex items-center gap-3 px-3 py-3 rounded-xl transition-all group ${
+              className={`flex items-center gap-3 px-3 py-3 rounded-lg transition-all group ${
                 isActive(item.path)
-                  ? "bg-primary text-primary"
+                  ? "bg-primary text-white"
                   : "text-white/70 hover:text-white hover:bg-white/5"
               }`}
             >

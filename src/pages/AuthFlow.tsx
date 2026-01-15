@@ -34,7 +34,6 @@ const AuthFlow: React.FC = () => {
                 <Input
                   required
                   type="email"
-                  className="bg-white/5 border-white/10 h-12 text-white placeholder:text-white/20 focus-visible:ring-accent"
                   placeholder="admin@AreaWinsbet.com"
                   onChange={(e) => setEmail(e.target.value)}
                 />
@@ -43,12 +42,7 @@ const AuthFlow: React.FC = () => {
                 <label className="text-xs font-black text-white/40 uppercase tracking-widest ml-1">
                   Security Key
                 </label>
-                <Input
-                  required
-                  type="password"
-                  className="bg-white/5 border-white/10 h-12 text-white placeholder:text-white/20 focus-visible:ring-accent"
-                  placeholder="••••••••"
-                />
+                <Input required type="password" placeholder="••••••••" />
               </div>
               <div className="flex justify-end">
                 <Button
@@ -157,21 +151,13 @@ const AuthFlow: React.FC = () => {
                 <label className="text-xs font-black text-white/40 uppercase tracking-widest ml-1">
                   New Password
                 </label>
-                <Input
-                  type="password"
-                  placeholder="••••••••"
-                  className="bg-white/5 border-white/10 h-12 text-white placeholder:text-white/20 focus-visible:ring-accent"
-                />
+                <Input type="password" placeholder="••••••••" />
               </div>
               <div className="space-y-2">
                 <label className="text-xs font-black text-white/40 uppercase tracking-widest ml-1">
                   Confirm New Password
                 </label>
-                <Input
-                  type="password"
-                  placeholder="••••••••"
-                  className="bg-white/5 border-white/10 h-12 text-white placeholder:text-white/20 focus-visible:ring-accent"
-                />
+                <Input type="password" placeholder="••••••••" />
               </div>
               <Button
                 variant="accent"

@@ -1,6 +1,10 @@
 import { createBrowserRouter } from "react-router-dom";
 import Layout from "../layout/Layout";
-import AuthFlow from "../pages/AuthFlow";
+import AuthLayout from "../pages/Auth/AuthLayout";
+import ForgotPassword from "../pages/Auth/ForgotPassword";
+import Login from "../pages/Auth/Login";
+import OTPVerification from "../pages/Auth/OTPVerification";
+import ResetPassword from "../pages/Auth/ResetPassword";
 import BetManagement from "../pages/Main/BetManagement";
 import BetTypes from "../pages/Main/BetTypes";
 import Categories from "../pages/Main/Categories";
@@ -77,11 +81,24 @@ const router = createBrowserRouter([
   },
   {
     path: "/auth",
+    element: <AuthLayout />,
     errorElement: <h1>Auth Error</h1>,
     children: [
       {
-        index: true,
-        element: <AuthFlow />,
+        path: "login",
+        element: <Login />,
+      },
+      {
+        path: "forgot-password",
+        element: <ForgotPassword />,
+      },
+      {
+        path: "otp",
+        element: <OTPVerification />,
+      },
+      {
+        path: "reset-password",
+        element: <ResetPassword />,
       },
     ],
   },
