@@ -14,7 +14,6 @@ import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import * as z from "zod";
-
 const loginSchema = z.object({
   email: z.string().email({ message: "Invalid email address" }),
   password: z
@@ -43,11 +42,11 @@ const Login: React.FC = () => {
 
   return (
     <div className="space-y-6 animate-in fade-in slide-in-from-top-4 duration-500 border border-white/10 p-6 rounded-lg">
-      <div className="space-y-2">
+      <div>
         <h2 className="text-4xl font-black text-white tracking-tight">
           Welcome Back
         </h2>
-        <p className="text-white/40 font-bold uppercase text-[11px] tracking-widest">
+        <p className="text-white/40 font-bold  text-[11px] tracking-widest">
           Admin Control Center
         </p>
       </div>
@@ -58,8 +57,8 @@ const Login: React.FC = () => {
             control={form.control}
             name="email"
             render={({ field }) => (
-              <FormItem className="space-y-2">
-                <FormLabel className="text-xs font-black text-white/40 uppercase tracking-widest ml-1">
+              <FormItem>
+                <FormLabel className="text-xs font-black text-white/40  tracking-widest ml-1">
                   Work Email
                 </FormLabel>
                 <FormControl>
@@ -78,8 +77,8 @@ const Login: React.FC = () => {
             control={form.control}
             name="password"
             render={({ field }) => (
-              <FormItem className="space-y-2">
-                <FormLabel className="text-xs font-black text-white/40 uppercase tracking-widest ml-1">
+              <FormItem>
+                <FormLabel className="text-xs font-black text-white/40  tracking-widest ml-1">
                   Security Key
                 </FormLabel>
                 <FormControl>
