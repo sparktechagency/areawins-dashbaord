@@ -14,8 +14,8 @@ const ProfileSkeleton: React.FC = () => {
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
         <div className="md:col-span-1 space-y-6">
-          <div className="bg-white border border-gray-100 rounded-2xl p-8 flex flex-col items-center text-center shadow-sm">
-            <Skeleton className="size-32 rounded-full mb-6 border-4 border-slate-50 shadow-inner" />
+          <div className="bg-white border border-gray-100 rounded-2xl p-8 flex flex-col items-center text-center ">
+            <Skeleton className="size-32 rounded-full mb-6 border-4 border-slate-50" />
             <Skeleton className="h-8 w-40 mb-3 rounded-lg" />
             <Skeleton className="h-6 w-24 rounded-full border border-gray-100" />
 
@@ -38,7 +38,7 @@ const ProfileSkeleton: React.FC = () => {
         </div>
 
         <div className="md:col-span-2">
-          <div className="bg-white border border-gray-100 rounded-2xl p-8 h-fit shadow-sm">
+          <div className="bg-white border border-gray-100 rounded-2xl p-8 h-fit ">
             <div className="flex items-center gap-3 mb-10">
               <Skeleton className="size-6 rounded bg-primary/10" />
               <Skeleton className="h-7 w-52 rounded-lg" />
