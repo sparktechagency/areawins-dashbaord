@@ -35,6 +35,7 @@ const Login: React.FC = () => {
     data: LoginFormValues,
     e?: React.BaseSyntheticEvent,
   ) => {
+    console.log("Submit triggered:", data);
     e?.preventDefault();
     try {
       const res = await login(data).unwrap();
