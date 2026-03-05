@@ -1,10 +1,11 @@
+import { getDecryptedToken } from "@/utils/token.utils";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 const baseUrl = import.meta.env.VITE_BASE_URL;
 
 const baseQuery = fetchBaseQuery({
   baseUrl,
-  prepareHeaders: (headers, { getState }) => {
-    const token = getState().auth.token;
+  prepareHeaders: (headers) => {
+    const token = getDecryptedToken("accessToken");
     if (token) {
       headers.set("Authorization", `Bearer ${token}`);
     }

@@ -9,7 +9,6 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { useLoginMutation } from "@/redux/features/auth/authApi";
-import { loggedUser } from "@/redux/features/auth/authSlice";
 import { setEncryptedToken } from "@/utils/token.utils";
 import {
   LoginFormValues,
@@ -18,14 +17,12 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 import React from "react";
 import { useForm } from "react-hook-form";
-import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 
 const Login: React.FC = () => {
   const [login, { isLoading }] = useLoginMutation();
   const navigate = useNavigate();
-  const dispatch = useDispatch();
   const form = useForm<LoginFormValues>({
     resolver: zodResolver(loginValidationSchema),
     defaultValues: {
@@ -45,14 +42,6 @@ const Login: React.FC = () => {
       if (res?.data?.tokens) {
         setEncryptedToken("accessToken", res.data.tokens.accessToken);
         setEncryptedToken("refreshToken", res.data.tokens.refreshToken);
-
-        // Update Redux state
-        dispatch(
-          loggedUser({
-            token: res.data.tokens.accessToken,
-            user: res.data.user,
-          }),
-        );
       }
 
       toast.success("Login successful");
