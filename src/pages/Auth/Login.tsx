@@ -9,6 +9,8 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { useLoginMutation } from "@/redux/features/auth/authApi";
+import { loggedUser } from "@/redux/features/auth/authSlice";
+import { setEncryptedToken } from "@/utils/token.utils";
 import {
   LoginFormValues,
   loginValidationSchema,
@@ -16,12 +18,14 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 import React from "react";
 import { useForm } from "react-hook-form";
+import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 
 const Login: React.FC = () => {
   const [login, { isLoading }] = useLoginMutation();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const form = useForm<LoginFormValues>({
     resolver: zodResolver(loginValidationSchema),
     defaultValues: {
@@ -30,16 +34,32 @@ const Login: React.FC = () => {
     },
   });
 
-  const onSubmit = async (data: LoginFormValues) => {
+  const onSubmit = async (
+    data: LoginFormValues,
+    e?: React.BaseSyntheticEvent,
+  ) => {
+    e?.preventDefault();
     try {
       const res = await login(data).unwrap();
-      console.log(res);
+
+      if (res?.data?.tokens) {
+        setEncryptedToken("accessToken", res.data.tokens.accessToken);
+        setEncryptedToken("refreshToken", res.data.tokens.refreshToken);
+
+        // Update Redux state
+        dispatch(
+          loggedUser({
+            token: res.data.tokens.accessToken,
+            user: res.data.user,
+          }),
+        );
+      }
 
       toast.success("Login successful");
       navigate("/");
     } catch (error: any) {
       console.log(error);
-      toast.error(error.data.message || "Login failed");
+      toast.error(error.data?.message || "Login failed");
     }
   };
 
@@ -62,7 +82,7 @@ const Login: React.FC = () => {
             render={({ field }) => (
               <FormItem>
                 <FormLabel className="text-xs font-black text-white/40  tracking-widest ml-1">
-                  Work Email
+                  Email
                 </FormLabel>
                 <FormControl>
                   <Input
