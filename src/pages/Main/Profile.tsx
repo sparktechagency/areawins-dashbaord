@@ -6,21 +6,17 @@ import {
   useGetMyProfileQuery,
   useUpdateMyProfileMutation,
 } from "@/redux/features/profile/profileApi";
+import {
+  ProfileFormValues,
+  profileSchema,
+} from "@/validation/profile.validation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import dayjs from "dayjs";
+import { Camera } from "lucide-react";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import Swal from "sweetalert2";
-import * as z from "zod";
-
-const profileSchema = z.object({
-  name: z.string().min(1, "Name is required"),
-  email: z.string().email("Invalid email address"),
-  role: z.enum(["Super Admin", "Moderator", "Editor"]),
-});
-
-type ProfileFormValues = z.infer<typeof profileSchema>;
 
 const Profile: React.FC = () => {
   const { data: profileRes } = useGetMyProfileQuery({});
@@ -28,6 +24,8 @@ const Profile: React.FC = () => {
   const [updateProfile] = useUpdateMyProfileMutation();
   const profileData = profileRes?.data;
   const [isEditing, setIsEditing] = useState(false);
+  const [preview, setPreview] = useState<string | null>(null);
+  const fileInputRef = React.useRef<HTMLInputElement>(null);
 
   const form = useForm<ProfileFormValues>({
     resolver: zodResolver(profileSchema),
@@ -35,6 +33,7 @@ const Profile: React.FC = () => {
       name: "",
       email: "",
       role: "Super Admin",
+      profileImage: undefined, 
     },
   });
 
@@ -45,9 +44,30 @@ const Profile: React.FC = () => {
         name: profileData.fullName,
         email: profileData.email,
         role: profileData.role === "admin" ? "Super Admin" : "Moderator",
+        profileImage: undefined,
       });
+      if (profileData.profileImage) {
+        setPreview(profileData.profileImage);
+      } else {
+        setPreview(null);
+      }
     }
   }, [profileData, form]);
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      form.setValue("profileImage", file);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setPreview(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    } else {
+      form.setValue("profileImage", undefined);
+      setPreview(null);
+    }
+  };
 
   const handleDeleteAccount = async () => {
     const result = await Swal.fire({
@@ -74,9 +94,15 @@ const Profile: React.FC = () => {
 
   const onSubmit = async (data: ProfileFormValues) => {
     try {
-      await updateProfile({
-        fullName: data.name,
-      }).unwrap();
+      const formData = new FormData();
+      formData.append("fullName", data.name);
+      formData.append("email", data.email);
+
+      if (data.profileImage instanceof File) {
+        formData.append("profileImage", data.profileImage);
+      }
+
+      await updateProfile(formData).unwrap();
       setIsEditing(false);
       toast.success("Profile updated successfully");
     } catch (error: any) {
@@ -98,7 +124,18 @@ const Profile: React.FC = () => {
         <Button
           onClick={() => {
             if (isEditing) {
-              form.reset();
+              form.reset({
+                name: profileData?.fullName,
+                email: profileData?.email,
+                role:
+                  profileData?.role === "admin" ? "Super Admin" : "Moderator",
+                profileImage: undefined,
+              });
+              if (profileData?.profileImage) {
+                setPreview(profileData.profileImage);
+              } else {
+                setPreview(null);
+              }
             }
             setIsEditing(!isEditing);
           }}
@@ -115,20 +152,34 @@ const Profile: React.FC = () => {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
         <div className="md:col-span-1 space-y-6">
           <div className="bg-white border border-gray-200 rounded-lg p-8 flex flex-col items-center text-center">
-            <div className="relative group">
+            <div
+              className={`relative group ${isEditing ? "cursor-pointer" : ""}`}
+              onClick={() => isEditing && fileInputRef.current?.click()}
+            >
               <img
-                className="size-32 rounded-full border-4 border-slate-50 shadow-inner mb-6 group-hover:brightness-75 transition-all cursor-pointer object-cover"
+                className={`size-32 rounded-full border-4 border-slate-50 shadow-inner mb-6 transition-all object-cover ${
+                  isEditing ? "group-hover:brightness-75" : ""
+                }`}
                 src={
-                  profileData?.profileImage ||
+                  preview ||
                   `https://api.dicebear.com/7.x/avataaars/svg?seed=${profileData?.fullName || "Admin"}`
                 }
                 alt="Avatar"
               />
-              <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
-                <span className="material-symbols-outlined text-white text-3xl">
-                  photo_camera
-                </span>
-              </div>
+              {isEditing && (
+                <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                  <div className="bg-black/40 p-2 rounded-full text-white">
+                    <Camera size={24} />
+                  </div>
+                </div>
+              )}
+              <input
+                type="file"
+                ref={fileInputRef}
+                onChange={handleImageChange}
+                accept="image/*"
+                className="hidden"
+              />
             </div>
             <h2 className="text-2xl font-black text-primary">
               {profileData?.fullName || "Loading..."}
@@ -137,7 +188,7 @@ const Profile: React.FC = () => {
               {profileData?.role}
             </p>
 
-            <div className="w-full mt-8 pt-8 border-t border-gray-50 space-y-4">
+            <div className="w-full mt-8 pt-4 border-t border-gray-50 space-y-4">
               <div className="flex justify-between text-xs font-bold">
                 <span className="text-gray-400">Customer ID</span>
                 <span className="text-primary">{profileData?.customerId}</span>

@@ -96,7 +96,7 @@ const EditProfile: React.FC = () => {
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
             <div className="flex flex-col items-center mb-8">
-              <div className="relative group">
+              <div className="relative">
                 <div className="size-32 rounded-full border-4 border-slate-50 overflow-hidden bg-slate-100 shadow-inner">
                   {preview ? (
                     <img
@@ -112,9 +112,9 @@ const EditProfile: React.FC = () => {
                 </div>
                 <label
                   htmlFor="profileImage"
-                  className="absolute inset-0 flex items-center justify-center bg-black/40 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer"
+                  className="absolute bottom-0 right-0 size-9 bg-primary text-white rounded-full flex items-center justify-center shadow-lg cursor-pointer hover:bg-primary/90 transition-colors border-2 border-white"
                 >
-                  <Camera size={24} />
+                  <Camera size={18} />
                 </label>
                 <input
                   id="profileImage"
@@ -124,7 +124,7 @@ const EditProfile: React.FC = () => {
                   className="hidden"
                 />
               </div>
-              <p className="mt-2 text-xs font-bold text-gray-400 uppercase tracking-widest">
+              <p className="mt-4 text-xs font-bold text-gray-400 uppercase tracking-widest">
                 Profile Photo
               </p>
             </div>
