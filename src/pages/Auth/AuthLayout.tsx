@@ -6,7 +6,6 @@ const AuthLayout: React.FC = () => {
   const location = useLocation();
 
   useEffect(() => {
-    // Redirect /auth to /auth/login by default
     if (location.pathname === "/auth" || location.pathname === "/auth/") {
       navigate("/auth/login", { replace: true });
     }
@@ -19,7 +18,7 @@ const AuthLayout: React.FC = () => {
       </div>
 
       <div className="absolute bottom-10 text-white/20 text-[10px] font-bold tracking-widest uppercase">
-        © 2023 AreaWins Bet Internal Systems • Level 4 Security Active
+        © {new Date().getFullYear()} AreaWins Bet Internal Systems • Level 4 Security Active
       </div>
     </div>
   );

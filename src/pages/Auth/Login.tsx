@@ -8,36 +8,39 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { useLoginMutation } from "@/redux/features/auth/authApi";
+import {
+  LoginFormValues,
+  loginValidationSchema,
+} from "@/validation/auth.validation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import React from "react";
 import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
-import * as z from "zod";
-const loginSchema = z.object({
-  email: z.string().email({ message: "Invalid email address" }),
-  password: z
-    .string()
-    .min(6, { message: "Password must be at least 6 characters" }),
-});
-
-type LoginFormValues = z.infer<typeof loginSchema>;
 
 const Login: React.FC = () => {
+  const [login, { isLoading }] = useLoginMutation();
   const navigate = useNavigate();
   const form = useForm<LoginFormValues>({
-    resolver: zodResolver(loginSchema),
+    resolver: zodResolver(loginValidationSchema),
     defaultValues: {
       email: "",
       password: "",
     },
   });
 
-  const onSubmit = (data: LoginFormValues) => {
-    // Mock login logic
-    console.log("Login Data:", data);
-    toast.success("Welcome back!");
-    navigate("/");
+  const onSubmit = async (data: LoginFormValues) => {
+    try {
+      const res = await login(data).unwrap();
+      console.log(res);
+
+      toast.success("Login successful");
+      navigate("/");
+    } catch (error: any) {
+      console.log(error);
+      toast.error(error.data.message || "Login failed");
+    }
   };
 
   return (
@@ -79,7 +82,7 @@ const Login: React.FC = () => {
             render={({ field }) => (
               <FormItem>
                 <FormLabel className="text-xs font-black text-white/40  tracking-widest ml-1">
-                  Security Key
+                  Password
                 </FormLabel>
                 <FormControl>
                   <Input
@@ -105,9 +108,10 @@ const Login: React.FC = () => {
 
           <Button
             type="submit"
+            disabled={isLoading}
             className="w-full h-12 cursor-pointer bg-primary text-secondary hover:bg-primary/90"
           >
-            Enter Dashboard
+            {isLoading ? "Logging in..." : "Enter Dashboard"}
           </Button>
         </form>
       </Form>
