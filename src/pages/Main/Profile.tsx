@@ -15,13 +15,18 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  useDeleteMyProfileMutation,
+  useGetMyProfileQuery,
+} from "@/redux/features/profile/profileApi";
 import { zodResolver } from "@hookform/resolvers/zod";
+import dayjs from "dayjs";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { toast } from "sonner";
+import Swal from "sweetalert2";
 import * as z from "zod";
-import { RootState } from "../../../types";
 import { setUser } from "../../redux/features/dashboard/dashboardSlice";
 
 const profileSchema = z.object({
@@ -33,22 +38,55 @@ const profileSchema = z.object({
 type ProfileFormValues = z.infer<typeof profileSchema>;
 
 const Profile: React.FC = () => {
-  const dashboardState = useSelector(
-    (state: RootState) => state.dashboard
-  ) as any;
-  const user = dashboardState?.user || { name: "Admin", role: "Super Admin" };
+  const { data: profileRes, isLoading } = useGetMyProfileQuery({});
+  const [deleteProfile] = useDeleteMyProfileMutation();
+  const profileData = profileRes?.data;
+
   const dispatch = useDispatch();
   const [isEditing, setIsEditing] = useState(false);
 
   const form = useForm<ProfileFormValues>({
     resolver: zodResolver(profileSchema),
     defaultValues: {
-      name: user.name,
-      // @ts-ignore
-      email: user.email || "alex.morgan@AreaWinsbet.com", // Mock email default
-      role: user.role as "Super Admin" | "Moderator" | "Editor",
+      name: "",
+      email: "",
+      role: "Super Admin",
     },
   });
+
+  // Update form when data is loaded
+  React.useEffect(() => {
+    if (profileData) {
+      form.reset({
+        name: profileData.fullName,
+        email: profileData.email,
+        role: profileData.role === "admin" ? "Super Admin" : "Moderator",
+      });
+    }
+  }, [profileData, form]);
+
+  const handleDeleteAccount = async () => {
+    const result = await Swal.fire({
+      title: "Are you sure?",
+      text: "This action will permanently delete your account!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+      confirmButtonText: "Yes, delete it!",
+    });
+
+    if (result.isConfirmed) {
+      try {
+        await deleteProfile({}).unwrap();
+        toast.success("Account deleted successfully");
+        // Logic to logout and redirect
+        window.location.href = "/auth/login";
+      } catch (error: any) {
+        toast.error(error?.data?.message || "Failed to delete account");
+      }
+    }
+  };
 
   const onSubmit = (data: ProfileFormValues) => {
     dispatch(setUser({ ...user, name: data.name, role: data.role }));
@@ -99,21 +137,52 @@ const Profile: React.FC = () => {
                 </span>
               </div>
             </div>
-            <h2 className="text-2xl font-black text-primary">{user?.name}</h2>
+            <h2 className="text-2xl font-black text-primary">
+              {profileData?.fullName || "Loading..."}
+            </h2>
             <p className="text-accent font-black uppercase text-[10px] tracking-widest mt-1 bg-secondary/10 px-3 py-1 rounded-full">
-              {user?.role}
+              {profileData?.role}
             </p>
 
             <div className="w-full mt-8 pt-8 border-t border-gray-50 space-y-4">
+              <div className="flex justify-between text-xs font-bold">
+                <span className="text-gray-400">Customer ID</span>
+                <span className="text-primary">{profileData?.customerId}</span>
+              </div>
+              <div className="flex justify-between text-xs font-bold">
+                <span className="text-gray-400">Referral Code</span>
+                <span className="text-primary">
+                  {profileData?.referralCode}
+                </span>
+              </div>
               <div className="flex justify-between text-xs font-bold">
                 <span className="text-gray-400">Account Status</span>
                 <span className="text-green-500">Verified</span>
               </div>
               <div className="flex justify-between text-xs font-bold">
                 <span className="text-gray-400">Member Since</span>
-                <span className="text-primary">Oct 2023</span>
+                <span className="text-primary">
+                  {profileData?.createdAt
+                    ? dayjs(profileData?.createdAt).format("MMM YYYY")
+                    : "..."}
+                </span>
               </div>
             </div>
+          </div>
+
+          <div className="bg-red-50 border border-red-100 rounded-3xl p-6 mt-6">
+            <h4 className="text-red-600 font-black text-xs uppercase tracking-widest mb-4">
+              Danger Zone
+            </h4>
+            <p className="text-red-900/60 text-[10px] font-bold mb-4">
+              Deleting your account is permanent and cannot be undone.
+            </p>
+            <Button
+              onClick={handleDeleteAccount}
+              className="w-full bg-white text-red-600 border border-red-200 hover:bg-red-600 hover:text-white transition-all text-xs font-black shadow-none h-10"
+            >
+              Delete My Account
+            </Button>
           </div>
         </div>
 
