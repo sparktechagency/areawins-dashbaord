@@ -1,13 +1,74 @@
-import React from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
+import { useGetActivityQuery } from "@/redux/features/dashboard/dashboardApi";
+import moment from "moment";
 import ActivityItem from "./ActivityItem";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 
 const RecentActivities = () => {
+  const { data: activityRes, isLoading } = useGetActivityQuery({});
+  const activityData = activityRes?.data;
+
+  if (isLoading) {
+    return (
+      <Card className="flex-1">
+        <CardHeader>
+          <CardTitle className="text-sm">Recent Activities</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="flex flex-col gap-6">
+            {[1, 2, 3].map((i) => (
+              <Skeleton key={i} className="h-12 w-full" />
+            ))}
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  // Combine and sort activities
+  const activities: any[] = [];
+
+  if (activityData?.newUsers) {
+    activityData.newUsers.forEach((user: any) => {
+      activities.push({
+        type: "USER_JOINED",
+        icon: "person_add",
+        color: "text-blue-500",
+        text: (
+          <>
+            New user{" "}
+            <span className="font-bold">{user.fullName || user.name}</span>{" "}
+            joined as <span className="capitalize">{user.role}</span>
+          </>
+        ),
+        timestamp: new Date(user.createdAt),
+      });
+    });
+  }
+
+  if (activityData?.recentBets) {
+    activityData.recentBets.forEach((bet: any) => {
+      activities.push({
+        type: "BET_PLACED",
+        icon: "receipt_long",
+        color: "text-[#00D65C]",
+        text: (
+          <>
+            <span className="font-bold">{bet.creator?.name || "User"}</span>{" "}
+            placed a bet of{" "}
+            <span className="font-bold">${bet.stakeAmount}</span> on{" "}
+            <span className="font-bold">
+              {bet.match?.homeTeam?.name} vs {bet.match?.awayTeam?.name}
+            </span>
+          </>
+        ),
+        timestamp: new Date(bet.createdAt),
+      });
+    });
+  }
+
+  activities.sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime());
+
   return (
     <Card className="flex-1">
       <CardHeader>
@@ -15,40 +76,23 @@ const RecentActivities = () => {
       </CardHeader>
       <CardContent>
         <div className="flex flex-col gap-6">
-          <ActivityItem
-            icon="check_circle"
-            color="text-[#00D65C]"
-            text={
-              <>
-                Admin <span className="font-bold">John Doe</span> approved
-                withdrawal{" "}
-                <span className="text-[#00D65C] font-mono">#W7721</span>
-              </>
-            }
-            time="2 MINUTES AGO"
-          />
-          <ActivityItem
-            icon="trending_up"
-            color="text-slate-900"
-            text={
-              <>
-                System updated <span className="font-bold">Premier League</span>{" "}
-                live odds
-              </>
-            }
-            time="14 MINUTES AGO"
-          />
-          <ActivityItem
-            icon="report"
-            color="text-red-500"
-            text={
-              <>
-                Suspicious activity detected on user{" "}
-                <span className="font-bold">#u9921</span>
-              </>
-            }
-            time="1 HOUR AGO"
-          />
+          {activities.length > 0 ? (
+            activities
+              .slice(0, 5)
+              .map((activity, index) => (
+                <ActivityItem
+                  key={index}
+                  icon={activity.icon}
+                  color={activity.color}
+                  text={activity.text}
+                  time={moment(activity.timestamp).fromNow().toUpperCase()}
+                />
+              ))
+          ) : (
+            <p className="text-center text-slate-500 text-sm py-4">
+              No recent activity
+            </p>
+          )}
         </div>
       </CardContent>
     </Card>

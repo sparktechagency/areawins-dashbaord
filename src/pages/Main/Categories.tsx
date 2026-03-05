@@ -80,7 +80,6 @@ const Categories: React.FC = () => {
   const handleEdit = (sport: Sport) => {
     setEditingId(sport._id);
     form.reset({
-      sportId: sport.sportId,
       name: sport.name,
       slug: sport.slug,
       icon: sport.icon,

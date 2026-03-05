@@ -1,58 +1,42 @@
-import React from "react";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { useGetActivityQuery } from "@/redux/features/dashboard/dashboardApi";
 import {
   Card,
   CardContent,
   CardHeader,
   CardTitle,
 } from "../../components/ui/card";
-import { Bet } from "../../../types";
-import { Button } from "@/components/ui/button";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Badge } from "@/components/ui/badge";
 
 const RecentBets = () => {
-  const recentBets: Bet[] = [
-    {
-      id: "#u9283",
-      user: "u9283",
-      sport: "Soccer",
-      event: "Luton vs Man City",
-      stake: 250,
-      status: "WON",
-      type: "BACK",
-      timestamp: "2 mins ago",
-    },
-    {
-      id: "#u1105",
-      user: "u1105",
-      sport: "Tennis",
-      event: "Djokovic vs Alcaraz",
-      stake: 1200,
-      status: "PENDING",
-      type: "BACK",
-      timestamp: "5 mins ago",
-    },
-    {
-      id: "#u8821",
-      user: "u8821",
-      sport: "NBA",
-      event: "Lakers vs Celtics",
-      stake: 50,
-      status: "LOST",
-      type: "LAY",
-      timestamp: "14 mins ago",
-    },
-    {
-      id: "#u3392",
-      user: "u3392",
-      sport: "Soccer",
-      event: "Real Madrid vs Girona",
-      stake: 10,
-      status: "PENDING",
-      type: "BACK",
-      timestamp: "1 hour ago",
-    },
-  ];
+  const { data: activityRes, isLoading } = useGetActivityQuery({});
+  const recentBets = activityRes?.data?.recentBets || [];
+
+  if (isLoading) {
+    return (
+      <Card className="xl:col-span-3 overflow-hidden">
+        <CardHeader className="flex flex-row items-center justify-between">
+          <CardTitle>Recent Bets</CardTitle>
+          <Skeleton className="h-4 w-16" />
+        </CardHeader>
+        <CardContent className="p-0">
+          {[1, 2, 3, 4].map((i) => (
+            <Skeleton key={i} className="h-12 w-full mb-1" />
+          ))}
+        </CardContent>
+      </Card>
+    );
+  }
+
   return (
     <Card className="xl:col-span-3 overflow-hidden">
       <CardHeader className="flex flex-row items-center justify-between">
@@ -69,39 +53,57 @@ const RecentBets = () => {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead className="pl-6">User</TableHead>
-                <TableHead>Sport</TableHead>
+                <TableHead className="pl-6">ID</TableHead>
+                <TableHead>User</TableHead>
                 <TableHead>Event</TableHead>
                 <TableHead className="text-right">Stake</TableHead>
-                <TableHead className="pr-6">Status</TableHead>
+                <TableHead className="pr-6 text-right">Status</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              {recentBets.map((bet) => (
-                <TableRow key={bet.id}>
-                  <TableCell className="pl-6 font-bold">{bet.id}</TableCell>
-                  <TableCell>{bet.sport}</TableCell>
-                  <TableCell className="max-w-[150px] truncate">
-                    {bet.event}
-                  </TableCell>
-                  <TableCell className="text-right font-mono font-bold">
-                    ${bet.stake.toFixed(2)}
-                  </TableCell>
-                  <TableCell className="pr-6">
-                    <Badge
-                      variant={
-                        bet.status === "WON"
-                          ? "success"
-                          : bet.status === "LOST"
-                          ? "destructive"
-                          : "secondary"
-                      }
-                    >
-                      {bet.status}
-                    </Badge>
+              {recentBets.length > 0 ? (
+                recentBets.map((bet: any) => (
+                  <TableRow key={bet._id}>
+                    <TableCell className="pl-6 font-bold truncate max-w-[100px]">
+                      {bet.betId}
+                    </TableCell>
+                    <TableCell className="font-medium">
+                      {bet.creator?.name || "N/A"}
+                    </TableCell>
+                    <TableCell className="max-w-[200px] truncate">
+                      {bet.match
+                        ? `${bet.match.homeTeam?.name || "Team A"} vs ${bet.match.awayTeam?.name || "Team B"}`
+                        : "N/A"}
+                    </TableCell>
+                    <TableCell className="text-right font-mono font-bold">
+                      ${bet.stakeAmount?.toFixed(2)}
+                    </TableCell>
+                    <TableCell className="pr-6 text-right">
+                      <Badge
+                        className="uppercase"
+                        variant={
+                          bet.status === "won" || bet.status === "settled"
+                            ? "success"
+                            : bet.status === "lost"
+                              ? "destructive"
+                              : "secondary"
+                        }
+                      >
+                        {bet.status}
+                      </Badge>
+                    </TableCell>
+                  </TableRow>
+                ))
+              ) : (
+                <TableRow>
+                  <TableCell
+                    colSpan={5}
+                    className="text-center py-8 text-slate-500"
+                  >
+                    No recent bets found
                   </TableCell>
                 </TableRow>
-              ))}
+              )}
             </TableBody>
           </Table>
         </div>
