@@ -3,7 +3,15 @@ import Cookies from "js-cookie";
 
 const SECRET_KEY = import.meta.env.VITE_ENCRYPTION_KEY || "default_secret_key";
 
-// Encrypts a string using AES
+// Obfuscated cookie names
+const COOKIE_NAMES: Record<string, string> = {
+  accessToken: "aw_at_v1",
+  refreshToken: "aw_rt_v1",
+};
+
+/**
+ * Encrypts a string using AES
+ */
 const encrypt = (text: string): string => {
   return CryptoJS.AES.encrypt(text, SECRET_KEY).toString();
 };
@@ -25,22 +33,29 @@ export const setEncryptedToken = (
   token: string,
   expires: number = 7,
 ) => {
+  const obfuscatedName = COOKIE_NAMES[name] || name;
   const encryptedToken = encrypt(token);
-  Cookies.set(name, encryptedToken, {
+  Cookies.set(obfuscatedName, encryptedToken, {
     expires,
     secure: window.location.protocol === "https:",
     sameSite: "strict",
   });
 };
 
-// Gets and decrypts a token from cookies
+/**
+ * Gets and decrypts a token from cookies
+ */
 export const getDecryptedToken = (name: string): string | null => {
-  const encryptedToken = Cookies.get(name);
+  const obfuscatedName = COOKIE_NAMES[name] || name;
+  const encryptedToken = Cookies.get(obfuscatedName);
   if (!encryptedToken) return null;
   return decrypt(encryptedToken);
 };
 
-// Removes a token from cookies
+/**
+ * Removes a token from cookies
+ */
 export const removeToken = (name: string) => {
-  Cookies.remove(name);
+  const obfuscatedName = COOKIE_NAMES[name] || name;
+  Cookies.remove(obfuscatedName);
 };
