@@ -1,46 +1,20 @@
-import React from "react";
-import { User } from "../../../types";
-
-const users: User[] = [
-  {
-    id: "#EB-90412",
-    name: 'Alex "TheAce" Rivera',
-    email: "arivera@example.com",
-    role: "VIP Bettor",
-    status: "ACTIVE",
-    balance: 4520,
-    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Alex",
-  },
-  {
-    id: "#EB-88231",
-    name: "Sarah Jenkins",
-    email: "s.jenkins@webmail.com",
-    role: "Standard",
-    status: "BLOCKED",
-    balance: 12.5,
-    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Sarah",
-  },
-  {
-    id: "#EB-92100",
-    name: "Marko Polo",
-    email: "marko.p@bet.io",
-    role: "Moderator",
-    status: "ACTIVE",
-    balance: 0,
-    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Marko",
-  },
-  {
-    id: "#EB-85521",
-    name: "Elena Fisher",
-    email: "fisher.e@example.net",
-    role: "VIP Bettor",
-    status: "ACTIVE",
-    balance: 840.15,
-    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Elena",
-  },
-];
+import { Skeleton } from "@/components/ui/skeleton";
+import { useGetAllUsersQuery } from "@/redux/features/user/userApi";
+import React, { useState } from "react";
 
 const UserManagement: React.FC = () => {
+  const [search, setSearch] = useState("");
+  const [roleFilter, setRoleFilter] = useState("");
+  const [statusFilter, setStatusFilter] = useState("");
+
+  const { data: usersRes, isLoading } = useGetAllUsersQuery({
+    searchTerms: search || undefined,
+    role: roleFilter || undefined,
+    status: statusFilter || undefined,
+  });
+
+  const users = usersRes?.data?.data || [];
+
   return (
     <div className="p-8 space-y-8">
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
@@ -64,22 +38,30 @@ const UserManagement: React.FC = () => {
               className="w-full bg-slate-50 border-none rounded-lg py-2.5 pl-10 text-sm focus:ring-2 focus:ring-primary"
               placeholder="Search by email, ID, or nickname..."
               type="text"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
             />
           </div>
         </div>
         <div className="flex items-center gap-2">
-          <select className="bg-slate-50 border-none rounded-lg px-4 py-2.5 text-sm font-semibold focus:ring-1 focus:ring-primary">
-            <option>All Roles</option>
-            <option>VIP Bettor</option>
-            <option>Moderator</option>
-          </select>
-          <select className="bg-slate-50 border-none rounded-lg px-4 py-2.5 text-sm font-semibold focus:ring-1 focus:ring-primary">
-            <option>Active Status</option>
-            <option>Blocked</option>
-            <option>Pending</option>
+          <select
+            className="bg-slate-50 border-none rounded-lg px-4 py-2.5 text-sm font-semibold focus:ring-1 focus:ring-primary"
+            value={roleFilter}
+            onChange={(e) => setRoleFilter(e.target.value)}
+          >
+            <option value="">All Roles</option>
+            <option value="user">User</option>
+            <option value="admin">Admin</option>
           </select>
         </div>
-        <button className="text-sm font-bold text-gray-400 hover:text-red-500 flex items-center gap-1 transition-colors">
+        <button
+          className="text-sm font-bold text-gray-400 hover:text-red-500 flex items-center gap-1 transition-colors"
+          onClick={() => {
+            setSearch("");
+            setRoleFilter("");
+            setStatusFilter("");
+          }}
+        >
           <span className="material-symbols-outlined text-[18px]">
             filter_alt_off
           </span>
@@ -96,88 +78,90 @@ const UserManagement: React.FC = () => {
                 <th className="px-6 py-4">User ID</th>
                 <th className="px-6 py-4">Role</th>
                 <th className="px-6 py-4">Status</th>
-                <th className="px-6 py-4 text-right">Wallet Balance</th>
                 <th className="px-6 py-4 text-center">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
-              {users.map((user) => (
-                <tr
-                  key={user.id}
-                  className="hover:bg-slate-50 transition-colors"
-                >
-                  <td className="px-6 py-4">
-                    <div className="flex items-center gap-3">
-                      <img
-                        className="w-10 h-10 rounded-full border border-slate-100"
-                        src={user.avatar}
-                        alt={user.name}
-                      />
-                      <div>
-                        <p className="text-sm font-bold leading-tight">
-                          {user.name}
-                        </p>
-                        <p className="text-xs text-gray-500">{user.email}</p>
-                      </div>
-                    </div>
-                  </td>
-                  <td className="px-6 py-4 text-xs font-mono text-gray-400">
-                    {user.id}
-                  </td>
-                  <td className="px-6 py-4">
-                    <span className="px-2.5 py-1 bg-primary/10 text-primary text-[10px] font-bold rounded uppercase">
-                      {user.role}
-                    </span>
-                  </td>
-                  <td className="px-6 py-4">
-                    <div
-                      className={`flex items-center gap-1.5 ${
-                        user.status === "ACTIVE"
-                          ? "text-accent"
-                          : "text-red-500"
-                      }`}
-                    >
-                      <span
-                        className={`w-1.5 h-1.5 rounded-full ${
-                          user.status === "ACTIVE"
-                            ? "bg-secondary"
-                            : "bg-red-500"
-                        }`}
-                      ></span>
-                      <span className="text-[10px] font-extrabold uppercase">
-                        {user.status}
-                      </span>
-                    </div>
-                  </td>
-                  <td className="px-6 py-4 text-right">
-                    <p className="text-sm font-black tabular-nums">
-                      $
-                      {user.balance.toLocaleString("en-US", {
-                        minimumFractionDigits: 2,
-                      })}
-                    </p>
-                  </td>
-                  <td className="px-6 py-4">
-                    <div className="flex items-center justify-center gap-1">
-                      <button className="p-1.5 text-gray-400 hover:text-primary hover:bg-gray-100 rounded-lg transition-all">
-                        <span className="material-symbols-outlined text-[18px]">
-                          visibility
-                        </span>
-                      </button>
-                      <button className="p-1.5 text-gray-400 hover:text-primary hover:bg-gray-100 rounded-lg transition-all">
-                        <span className="material-symbols-outlined text-[18px]">
-                          edit
-                        </span>
-                      </button>
-                      <button className="p-1.5 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all">
-                        <span className="material-symbols-outlined text-[18px]">
-                          block
-                        </span>
-                      </button>
-                    </div>
+              {isLoading ? (
+                [...Array(4)].map((_, i) => (
+                  <tr key={i}>
+                    <td colSpan={5} className="px-6 py-4">
+                      <Skeleton className="h-10 w-full" />
+                    </td>
+                  </tr>
+                ))
+              ) : users.length === 0 ? (
+                <tr>
+                  <td
+                    colSpan={5}
+                    className="text-center py-12 text-slate-400 font-medium"
+                  >
+                    No users found.
                   </td>
                 </tr>
-              ))}
+              ) : (
+                users.map((user: any) => (
+                  <tr
+                    key={user._id}
+                    className="hover:bg-slate-50 transition-colors"
+                  >
+                    <td className="px-6 py-4">
+                      <div className="flex items-center gap-3">
+                        {user.profileImage ? (
+                          <img
+                            className="w-10 h-10 rounded-full border border-slate-100 object-cover"
+                            src={user.profileImage}
+                            alt={user.fullName}
+                          />
+                        ) : (
+                          <div className="w-10 h-10 rounded-full border border-slate-100 bg-slate-200 flex items-center justify-center text-slate-500 font-bold text-sm">
+                            {user.fullName?.charAt(0) || "U"}
+                          </div>
+                        )}
+                        <div>
+                          <p className="text-sm font-bold leading-tight">
+                            {user.fullName}
+                          </p>
+                          <p className="text-xs text-gray-500">{user.email}</p>
+                        </div>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 text-xs font-mono text-gray-400">
+                      {user._id?.slice(-8)}
+                    </td>
+                    <td className="px-6 py-4">
+                      <span className="px-2.5 py-1 bg-primary/10 text-primary text-[10px] font-bold rounded uppercase">
+                        {user.role}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4">
+                      <div
+                        className={`flex items-center gap-1.5 ${
+                          user.isDeleted ? "text-red-500" : "text-accent"
+                        }`}
+                      >
+                        <span
+                          className={`w-1.5 h-1.5 rounded-full ${
+                            user.isDeleted ? "bg-red-500" : "bg-secondary"
+                          }`}
+                        />
+                        <span className="text-[10px] font-extrabold uppercase">
+                          {user.isDeleted ? "DELETED" : "ACTIVE"}
+                        </span>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="flex items-center justify-center gap-1">
+                        <button className="p-1.5 text-gray-400 hover:text-primary hover:bg-gray-100 rounded-lg transition-all">
+                          <span className="material-symbols-outlined text-[18px]">
+                            visibility
+                          </span>
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))
+              )}
             </tbody>
           </table>
         </div>
