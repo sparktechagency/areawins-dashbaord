@@ -9,9 +9,7 @@ const COOKIE_NAMES: Record<string, string> = {
   refreshToken: "aw_rt_v1",
 };
 
-/**
- * Encrypts a string using AES
- */
+// Encrypts a string using AES
 const encrypt = (text: string): string => {
   return CryptoJS.AES.encrypt(text, SECRET_KEY).toString();
 };
@@ -42,9 +40,7 @@ export const setEncryptedToken = (
   });
 };
 
-/**
- * Gets and decrypts a token from cookies
- */
+// Gets and decrypts a token from cookies
 export const getDecryptedToken = (name: string): string | null => {
   const obfuscatedName = COOKIE_NAMES[name] || name;
   const encryptedToken = Cookies.get(obfuscatedName);
@@ -52,9 +48,7 @@ export const getDecryptedToken = (name: string): string | null => {
   return decrypt(encryptedToken);
 };
 
-/**
- * Removes a token from cookies
- */
+// Removes a token from cookies
 export const removeToken = (name: string) => {
   const obfuscatedName = COOKIE_NAMES[name] || name;
   Cookies.remove(obfuscatedName);
