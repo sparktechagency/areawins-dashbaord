@@ -19,7 +19,6 @@ const baseQueryWithRefreshToken = async (args, api, extraOptions) => {
   
   // Only redirect to auth if the error is 401 and it's NOT a login request
   if (result?.error?.status === 401 && args?.url !== "/auth/login") {
-    console.warn("Unauthorized! Redirecting to /auth. Endpoint:", args?.url);
     window.location.href = "/auth";
   }
 

@@ -31,15 +31,9 @@ const Login: React.FC = () => {
     },
   });
 
-  const onSubmit = async (
-    data: LoginFormValues,
-    e?: React.BaseSyntheticEvent,
-  ) => {
-    console.log("Submit triggered:", data);
-    e?.preventDefault();
+  const onSubmit = async (data: LoginFormValues) => {
     try {
       const res = await login(data).unwrap();
-
       if (res?.data?.tokens) {
         setEncryptedToken("accessToken", res.data.tokens.accessToken);
         setEncryptedToken("refreshToken", res.data.tokens.refreshToken);
