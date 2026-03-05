@@ -1,4 +1,5 @@
 import { FormInput, FormSelect } from "@/components/form";
+import ProfileSkeleton from "@/components/skeletons/ProfileSkeleton";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import {
@@ -19,9 +20,11 @@ import { toast } from "sonner";
 import Swal from "sweetalert2";
 
 const Profile: React.FC = () => {
-  const { data: profileRes } = useGetMyProfileQuery({});
-  const [deleteProfile] = useDeleteMyProfileMutation();
-  const [updateProfile] = useUpdateMyProfileMutation();
+  const { data: profileRes, isLoading } = useGetMyProfileQuery({});
+  const [deleteProfile, { isLoading: isDeleting }] =
+    useDeleteMyProfileMutation();
+  const [updateProfile, { isLoading: isUpdating }] =
+    useUpdateMyProfileMutation();
   const profileData = profileRes?.data;
   const [isEditing, setIsEditing] = useState(false);
   const [preview, setPreview] = useState<string | null>(null);
@@ -33,7 +36,7 @@ const Profile: React.FC = () => {
       name: "",
       email: "",
       role: "Super Admin",
-      profileImage: undefined, 
+      profileImage: undefined,
     },
   });
 
@@ -109,6 +112,10 @@ const Profile: React.FC = () => {
       toast.error(error?.data?.message || "Failed to update profile");
     }
   };
+
+  if (isLoading) {
+    return <ProfileSkeleton />;
+  }
 
   return (
     <div className="p-4 md:p-8 max-w-4xl mx-auto">
@@ -217,9 +224,10 @@ const Profile: React.FC = () => {
             </p>
             <Button
               onClick={handleDeleteAccount}
-              className="w-full bg-white text-red-600 border border-red-200 hover:bg-red-600 hover:text-white transition-all text-xs font-black shadow-none h-10"
+              disabled={isDeleting}
+              className="w-full bg-white text-red-600 border border-red-200 hover:bg-red-600 hover:text-white transition-all text-xs font-black shadow-none h-10 cursor-pointer disabled:opacity-50"
             >
-              Delete My Account
+              {isDeleting ? "Deleting..." : "Delete My Account"}
             </Button>
           </div>
         </div>
@@ -275,8 +283,9 @@ const Profile: React.FC = () => {
                     <Button
                       type="submit"
                       className="bg-primary px-8 py-6 rounded cursor-pointer text-white"
+                      disabled={isUpdating}
                     >
-                      Update Profile Data
+                      {isUpdating ? "Updating..." : "Update Profile Data"}
                     </Button>
                   </div>
                 )}
