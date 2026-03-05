@@ -31,32 +31,21 @@ import {
 } from "../../components/ui/card";
 import { sportService } from "../../services/mockData";
 import { Sport } from "../../types/schema";
-
-const sportSchema = z.object({
-  sportId: z.string().min(1, "Sport ID is required"),
-  name: z.string().min(1, "Name is required"),
-  slug: z.string().min(1, "Slug is required"),
-  icon: z.string().min(1, "Icon is required"),
-  displayOrder: z.number().int().min(0),
-  isActive: z.boolean(),
-});
-
-type SportFormValues = z.infer<typeof sportSchema>;
+import {
+  SportCategoriesFormValues,
+  sportCategoriesSchema,
+} from "@/validation/sportCategories";
 
 const Categories: React.FC = () => {
   const [sports, setSports] = useState<Sport[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
 
-  const form = useForm<SportFormValues>({
-    resolver: zodResolver(sportSchema) as any,
+  const form = useForm<SportCategoriesFormValues>({
+    resolver: zodResolver(sportCategoriesSchema) as any,
     defaultValues: {
-      sportId: "",
       name: "",
-      slug: "",
       icon: "",
-      displayOrder: 0,
-      isActive: true,
     },
   });
 
@@ -68,7 +57,7 @@ const Categories: React.FC = () => {
     setSports(sportService.getAll());
   };
 
-  const onSubmit = (data: SportFormValues) => {
+  const onSubmit = (data: SportCategoriesFormValues) => {
     if (editingId) {
       const updated = sportService.update(editingId, data);
       if (updated) {
@@ -79,12 +68,6 @@ const Categories: React.FC = () => {
         toast.error("Failed to update");
       }
     } else {
-      // Check uniqueness
-      if (sports.some((s) => s.sportId === data.sportId)) {
-        form.setError("sportId", { message: "ID must be unique" });
-        return;
-      }
-
       const newSport = sportService.add(data);
       if (newSport) {
         toast.success("Sport created successfully");
@@ -136,7 +119,7 @@ const Categories: React.FC = () => {
 
   const handleFileChange = (
     e: React.ChangeEvent<HTMLInputElement>,
-    field: any
+    field: any,
   ) => {
     const file = e.target.files?.[0];
     if (file) {

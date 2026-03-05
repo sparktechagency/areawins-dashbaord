@@ -1,0 +1,54 @@
+import { baseApi } from "@/redux/baseApi/baseApi";
+
+const sportCategoryApi = baseApi.injectEndpoints({
+  endpoints: (builder) => ({
+    getAllSportCategories: builder.query({
+      query: () => ({
+        url: "/sport-categories",
+        method: "GET",
+      }),
+      providesTags: ["SportCategory"],
+    }),
+    getSingleSportCategory: builder.query({
+      query: (id) => ({
+        url: `/sport-categories/${id}`,
+        method: "GET",
+      }),
+      providesTags: (result, error, id) => [{ type: "SportCategory", id }],
+    }),
+    createSportCategory: builder.mutation({
+      query: (data) => ({
+        url: "/sport-categories",
+        method: "POST",
+        body: data,
+      }),
+      invalidatesTags: ["SportCategory"],
+    }),
+    updateSportCategory: builder.mutation({
+      query: ({ id, data }) => ({
+        url: `/sport-categories/${id}`,
+        method: "PATCH",
+        body: data,
+      }),
+      invalidatesTags: (result, error, { id }) => [
+        "SportCategory",
+        { type: "SportCategory", id },
+      ],
+    }),
+    deleteSportCategory: builder.mutation({
+      query: (id) => ({
+        url: `/sport-categories/${id}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["SportCategory"],
+    }),
+  }),
+});
+
+export const {
+  useGetAllSportCategoriesQuery,
+  useGetSingleSportCategoryQuery,
+  useCreateSportCategoryMutation,
+  useUpdateSportCategoryMutation,
+  useDeleteSportCategoryMutation,
+} = sportCategoryApi;
