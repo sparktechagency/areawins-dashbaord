@@ -1,12 +1,6 @@
+import { FormInput } from "@/components/form";
 import { Button } from "@/components/ui/button";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
+import { Form } from "@/components/ui/form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import React from "react";
 import { useForm } from "react-hook-form";
@@ -50,21 +44,11 @@ const ForgotPassword: React.FC = () => {
 
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-          <FormField
+          <FormInput
             control={form.control}
             name="email"
-            render={({ field }) => (
-              <FormItem>
-                <FormControl>
-                  <Input
-                    placeholder="Work Email Address"
-                    {...field}
-                    className="bg-white/5 border-white/10 h-12 text-white placeholder:text-white/20 focus-visible:ring-primary/50"
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
+            placeholder="Work Email Address"
+            inputClassName="bg-white/5 border-white/10 h-12 text-white placeholder:text-white/20 focus-visible:ring-primary/50"
           />
 
           <Button

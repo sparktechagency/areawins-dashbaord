@@ -1,19 +1,13 @@
+import { FormInput } from "@/components/form";
 import { Button } from "@/components/ui/button";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
+import { Form } from "@/components/ui/form";
 import {
   useGetMyProfileQuery,
   useUpdateMyProfileMutation,
 } from "@/redux/features/profile/profileApi";
 import { zodResolver } from "@hookform/resolvers/zod";
-import React from "react";
+import { Camera } from "lucide-react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
@@ -22,6 +16,7 @@ import * as z from "zod";
 const profileSchema = z.object({
   fullName: z.string().min(1, "Name is required"),
   nickname: z.string().optional(),
+  profileImage: z.any().optional(),
 });
 
 type ProfileFormValues = z.infer<typeof profileSchema>;
@@ -32,6 +27,7 @@ const EditProfile: React.FC = () => {
     useUpdateMyProfileMutation();
   const profileData = profileRes?.data;
   const navigate = useNavigate();
+  const [preview, setPreview] = useState<string | null>(null);
 
   const form = useForm<ProfileFormValues>({
     resolver: zodResolver(profileSchema),
@@ -48,12 +44,36 @@ const EditProfile: React.FC = () => {
         fullName: profileData.fullName || "",
         nickname: profileData.nickname || "",
       });
+      if (profileData.profileImage) {
+        setPreview(profileData.profileImage);
+      }
     }
   }, [profileData, form]);
 
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      form.setValue("profileImage", file);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setPreview(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   const onSubmit = async (data: ProfileFormValues) => {
     try {
-      await updateProfile(data).unwrap();
+      const formData = new FormData();
+      formData.append("fullName", data.fullName);
+      if (data.nickname) {
+        formData.append("nickname", data.nickname);
+      }
+      if (data.profileImage instanceof File) {
+        formData.append("profileImage", data.profileImage);
+      }
+
+      await updateProfile(formData).unwrap();
       toast.success("Profile updated successfully");
       navigate("/profile");
     } catch (error: any) {
@@ -75,42 +95,54 @@ const EditProfile: React.FC = () => {
       <div className="bg-white border border-gray-200 rounded-3xl p-8 shadow-sm">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-            <FormField
+            <div className="flex flex-col items-center mb-8">
+              <div className="relative group">
+                <div className="size-32 rounded-full border-4 border-slate-50 overflow-hidden bg-slate-100 shadow-inner">
+                  {preview ? (
+                    <img
+                      src={preview}
+                      alt="Preview"
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center text-gray-400">
+                      <Camera size={40} />
+                    </div>
+                  )}
+                </div>
+                <label
+                  htmlFor="profileImage"
+                  className="absolute inset-0 flex items-center justify-center bg-black/40 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer"
+                >
+                  <Camera size={24} />
+                </label>
+                <input
+                  id="profileImage"
+                  type="file"
+                  accept="image/*"
+                  onChange={handleImageChange}
+                  className="hidden"
+                />
+              </div>
+              <p className="mt-2 text-xs font-bold text-gray-400 uppercase tracking-widest">
+                Profile Photo
+              </p>
+            </div>
+
+            <FormInput
               control={form.control}
               name="fullName"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="text-xs font-black text-gray-400 uppercase tracking-widest">
-                    Full Name
-                  </FormLabel>
-                  <FormControl>
-                    <Input
-                      className="bg-slate-50 border-none rounded-xl p-4 text-sm focus:ring-1 ring-primary font-bold"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
+              label="Full Name"
+              inputClassName="bg-slate-50 border-none rounded-xl p-4 text-sm focus:ring-1 ring-primary font-bold text-gray-900"
+              labelClassName="text-gray-400"
             />
 
-            <FormField
+            <FormInput
               control={form.control}
               name="nickname"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className="text-xs font-black text-gray-400 uppercase tracking-widest">
-                    Nickname
-                  </FormLabel>
-                  <FormControl>
-                    <Input
-                      className="bg-slate-50 border-none rounded-xl p-4 text-sm focus:ring-1 ring-primary font-bold"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
+              label="Nickname"
+              inputClassName="bg-slate-50 border-none rounded-xl p-4 text-sm focus:ring-1 ring-primary font-bold text-gray-900"
+              labelClassName="text-gray-400"
             />
 
             <div className="pt-8 flex gap-4 justify-end">

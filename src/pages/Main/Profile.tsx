@@ -1,20 +1,6 @@
+import { FormInput, FormSelect } from "@/components/form";
 import { Button } from "@/components/ui/button";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { Form } from "@/components/ui/form";
 import {
   useDeleteMyProfileMutation,
   useGetMyProfileQuery,
@@ -24,7 +10,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import dayjs from "dayjs";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
-import { useDispatch } from "react-redux";
 import { toast } from "sonner";
 import Swal from "sweetalert2";
 import * as z from "zod";
@@ -38,12 +23,10 @@ const profileSchema = z.object({
 type ProfileFormValues = z.infer<typeof profileSchema>;
 
 const Profile: React.FC = () => {
-  const { data: profileRes, isLoading } = useGetMyProfileQuery({});
+  const { data: profileRes } = useGetMyProfileQuery({});
   const [deleteProfile] = useDeleteMyProfileMutation();
   const [updateProfile] = useUpdateMyProfileMutation();
   const profileData = profileRes?.data;
-
-  const dispatch = useDispatch();
   const [isEditing, setIsEditing] = useState(false);
 
   const form = useForm<ProfileFormValues>({
@@ -93,7 +76,6 @@ const Profile: React.FC = () => {
     try {
       await updateProfile({
         fullName: data.name,
-        // email is usually not updated here or handled specifically by backend
       }).unwrap();
       setIsEditing(false);
       toast.success("Profile updated successfully");
@@ -116,14 +98,14 @@ const Profile: React.FC = () => {
         <Button
           onClick={() => {
             if (isEditing) {
-              form.reset(); // Cancel
+              form.reset();
             }
             setIsEditing(!isEditing);
           }}
-          className={`px-6 py-2.5 rounded-lg text-sm font-black transition-all ${
+          className={`px-6 py-2.5 rounded text-sm transition-all cursor-pointer ${
             isEditing
               ? "bg-red-50 text-red-500 hover:bg-red-100"
-              : "bg-primary text-secondary shadow-lg shadow-primary/20 hover:brightness-110"
+              : "bg-primary text-secondary"
           }`}
         >
           {isEditing ? "Cancel Editing" : "Edit Profile"}
@@ -135,8 +117,11 @@ const Profile: React.FC = () => {
           <div className="bg-white border border-gray-200 rounded-lg p-8 flex flex-col items-center text-center">
             <div className="relative group">
               <img
-                className="size-32 rounded-full border-4 border-slate-50 shadow-inner mb-6 group-hover:brightness-75 transition-all cursor-pointer"
-                src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${profileData?.fullName || "Admin"}`}
+                className="size-32 rounded-full border-4 border-slate-50 shadow-inner mb-6 group-hover:brightness-75 transition-all cursor-pointer object-cover"
+                src={
+                  profileData?.profileImage ||
+                  `https://api.dicebear.com/7.x/avataaars/svg?seed=${profileData?.fullName || "Admin"}`
+                }
                 alt="Avatar"
               />
               <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
@@ -148,7 +133,7 @@ const Profile: React.FC = () => {
             <h2 className="text-2xl font-black text-primary">
               {profileData?.fullName || "Loading..."}
             </h2>
-            <p className="text-accent font-black uppercase text-[10px] tracking-widest mt-1 bg-secondary/10 px-3 py-1 rounded-full">
+            <p className="text-primary font-black uppercase text-[10px] tracking-widest  bg-white border border-primary px-3 py-1 rounded-full mt-2">
               {profileData?.role}
             </p>
 
@@ -158,12 +143,6 @@ const Profile: React.FC = () => {
                 <span className="text-primary">{profileData?.customerId}</span>
               </div>
               <div className="flex justify-between text-xs font-bold">
-                <span className="text-gray-400">Referral Code</span>
-                <span className="text-primary">
-                  {profileData?.referralCode}
-                </span>
-              </div>
-              <div className="flex justify-between text-xs font-bold">
                 <span className="text-gray-400">Account Status</span>
                 <span className="text-green-500">Verified</span>
               </div>
@@ -171,7 +150,7 @@ const Profile: React.FC = () => {
                 <span className="text-gray-400">Member Since</span>
                 <span className="text-primary">
                   {profileData?.createdAt
-                    ? dayjs(profileData?.createdAt).format("MMM YYYY")
+                    ? dayjs(profileData?.createdAt).format("DD MMM YYYY")
                     : "..."}
                 </span>
               </div>
@@ -195,7 +174,7 @@ const Profile: React.FC = () => {
         </div>
 
         <div className="md:col-span-2">
-          <div className="bg-white border border-gray-200 rounded-lg p-8 h-full">
+          <div className="bg-white border border-gray-200 rounded-lg p-8 h-fit">
             <h3 className="text-xl font-bold mb-8 flex items-center gap-2">
               <span className="material-symbols-outlined text-primary">
                 person
@@ -209,83 +188,42 @@ const Profile: React.FC = () => {
                 className="space-y-6"
               >
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <FormField
+                  <FormInput
                     control={form.control}
                     name="name"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="text-xs font-black text-gray-400 uppercase tracking-widest">
-                          Full Name
-                        </FormLabel>
-                        <FormControl>
-                          <Input
-                            disabled={!isEditing}
-                            className="bg-slate-50 border-none rounded-xl p-4 text-sm focus:ring-1 ring-primary font-bold disabled:opacity-60"
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
+                    label="Full Name"
+                    disabled={!isEditing}
+                    labelClassName="text-gray-400"
                   />
-                  <FormField
+                  <FormInput
                     control={form.control}
                     name="email"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="text-xs font-black text-gray-400 uppercase tracking-widest">
-                          Email Address
-                        </FormLabel>
-                        <FormControl>
-                          <Input
-                            disabled={!isEditing}
-                            readOnly
-                            className="bg-slate-50 border-none rounded-xl p-4 text-sm focus:ring-1 ring-primary font-bold disabled:opacity-60 cursor-not-allowed"
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
+                    label="Email Address"
+                    disabled={!isEditing}
+                    labelClassName="text-gray-400"
+                    inputClassName="disabled:opacity-60 cursor-not-allowed"
                   />
                 </div>
 
-                <FormField
+                <FormSelect
                   control={form.control}
                   name="role"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="text-xs font-black text-gray-400 uppercase tracking-widest">
-                        Administrative Role
-                      </FormLabel>
-                      <Select
-                        disabled={true}
-                        onValueChange={field.onChange}
-                        defaultValue={field.value}
-                      >
-                        <FormControl>
-                          <SelectTrigger className="bg-slate-50 border-none rounded-xl p-4 text-sm focus:ring-1 ring-primary font-bold disabled:opacity-60">
-                            <SelectValue />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          <SelectItem value="Super Admin">
-                            Super Admin
-                          </SelectItem>
-                          <SelectItem value="Moderator">Moderator</SelectItem>
-                          <SelectItem value="Editor">Editor</SelectItem>
-                        </SelectContent>
-                      </Select>
-                      <FormMessage />
-                    </FormItem>
-                  )}
+                  label="Administrative Role"
+                  disabled={true}
+                  labelClassName="text-gray-400"
+                  triggerClassName="disabled:opacity-60"
+                  options={[
+                    { label: "Super Admin", value: "Super Admin" },
+                    { label: "Moderator", value: "Moderator" },
+                    { label: "Editor", value: "Editor" },
+                  ]}
                 />
 
                 {isEditing && (
                   <div className="pt-8 flex justify-end">
                     <Button
                       type="submit"
-                      className="bg-primary text-secondary px-8 py-6 rounded-xl font-black shadow-xl shadow-primary/20 hover:brightness-110 transition-all"
+                      className="bg-primary px-8 py-6 rounded cursor-pointer text-white"
                     >
                       Update Profile Data
                     </Button>
