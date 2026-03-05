@@ -18,6 +18,7 @@ import {
 import {
   useDeleteMyProfileMutation,
   useGetMyProfileQuery,
+  useUpdateMyProfileMutation,
 } from "@/redux/features/profile/profileApi";
 import { zodResolver } from "@hookform/resolvers/zod";
 import dayjs from "dayjs";
@@ -27,7 +28,6 @@ import { useDispatch } from "react-redux";
 import { toast } from "sonner";
 import Swal from "sweetalert2";
 import * as z from "zod";
-import { setUser } from "../../redux/features/dashboard/dashboardSlice";
 
 const profileSchema = z.object({
   name: z.string().min(1, "Name is required"),
@@ -40,6 +40,7 @@ type ProfileFormValues = z.infer<typeof profileSchema>;
 const Profile: React.FC = () => {
   const { data: profileRes, isLoading } = useGetMyProfileQuery({});
   const [deleteProfile] = useDeleteMyProfileMutation();
+  const [updateProfile] = useUpdateMyProfileMutation();
   const profileData = profileRes?.data;
 
   const dispatch = useDispatch();
@@ -88,10 +89,17 @@ const Profile: React.FC = () => {
     }
   };
 
-  const onSubmit = (data: ProfileFormValues) => {
-    dispatch(setUser({ ...user, name: data.name, role: data.role }));
-    setIsEditing(false);
-    toast.success("Profile updated successfully");
+  const onSubmit = async (data: ProfileFormValues) => {
+    try {
+      await updateProfile({
+        fullName: data.name,
+        // email is usually not updated here or handled specifically by backend
+      }).unwrap();
+      setIsEditing(false);
+      toast.success("Profile updated successfully");
+    } catch (error: any) {
+      toast.error(error?.data?.message || "Failed to update profile");
+    }
   };
 
   return (
@@ -124,11 +132,11 @@ const Profile: React.FC = () => {
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
         <div className="md:col-span-1 space-y-6">
-          <div className="bg-white border border-gray-200 rounded-3xl p-8 flex flex-col items-center text-center shadow-sm">
+          <div className="bg-white border border-gray-200 rounded-lg p-8 flex flex-col items-center text-center">
             <div className="relative group">
               <img
                 className="size-32 rounded-full border-4 border-slate-50 shadow-inner mb-6 group-hover:brightness-75 transition-all cursor-pointer"
-                src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${user?.name}`}
+                src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${profileData?.fullName || "Admin"}`}
                 alt="Avatar"
               />
               <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
@@ -170,7 +178,7 @@ const Profile: React.FC = () => {
             </div>
           </div>
 
-          <div className="bg-red-50 border border-red-100 rounded-3xl p-6 mt-6">
+          <div className="bg-red-50 border border-red-100 rounded-lg p-6 mt-6">
             <h4 className="text-red-600 font-black text-xs uppercase tracking-widest mb-4">
               Danger Zone
             </h4>
@@ -187,7 +195,7 @@ const Profile: React.FC = () => {
         </div>
 
         <div className="md:col-span-2">
-          <div className="bg-white border border-gray-200 rounded-3xl p-8 shadow-sm h-full">
+          <div className="bg-white border border-gray-200 rounded-lg p-8 h-full">
             <h3 className="text-xl font-bold mb-8 flex items-center gap-2">
               <span className="material-symbols-outlined text-primary">
                 person
@@ -251,7 +259,7 @@ const Profile: React.FC = () => {
                         Administrative Role
                       </FormLabel>
                       <Select
-                        disabled={!isEditing}
+                        disabled={true}
                         onValueChange={field.onChange}
                         defaultValue={field.value}
                       >

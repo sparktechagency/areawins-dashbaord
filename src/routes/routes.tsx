@@ -9,6 +9,7 @@ import BetManagement from "../pages/Main/BetManagement";
 import BetTypes from "../pages/Main/BetTypes";
 import Categories from "../pages/Main/Categories";
 import Dashboard from "../pages/Main/Dashboard";
+import EditProfile from "../pages/Main/EditProfile";
 import Financials from "../pages/Main/Financials";
 import MatchManagement from "../pages/Main/MatchManagement";
 import Notifications from "../pages/Main/Notifications";
@@ -76,6 +77,10 @@ const router = createBrowserRouter([
       {
         path: "notifications",
         element: <Notifications />,
+      },
+      {
+        path: "profile/edit",
+        element: <EditProfile />,
       },
     ],
   },
