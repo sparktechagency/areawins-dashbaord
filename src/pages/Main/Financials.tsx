@@ -27,11 +27,12 @@ const Financials: React.FC = () => {
         ? depositTxRes?.data
         : withdrawTxRes?.data;
 
-  const transactions = currentData?.data || [];
+  const transactions = currentData?.results || [];
   const isLoading = loadingAll || loadingDeposits || loadingWithdrawals;
 
-  const totalDeposits = depositTxRes?.data?.meta?.total || 0;
-  const pendingCount = pendingWithdrawalsRes?.data?.meta?.total || 0;
+  const totalDeposits = depositTxRes?.data?.pagination?.totalResult || 0;
+  const pendingCount =
+    pendingWithdrawalsRes?.data?.pagination?.totalResult || 0;
 
   const getStatusColor = (status: string) => {
     if (status === "completed") return "text-green-600 bg-green-50";
@@ -70,7 +71,7 @@ const Financials: React.FC = () => {
       <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 mb-8">
         <FinanceCard
           label="Total Transactions"
-          value={allTxRes?.data?.meta?.total?.toString() || "0"}
+          value={allTxRes?.data?.pagination?.totalResult?.toString() || "0"}
           trend="All time"
         />
         <FinanceCard
@@ -86,7 +87,9 @@ const Financials: React.FC = () => {
         />
         <FinanceCard
           label="Withdrawal Requests"
-          value={withdrawTxRes?.data?.meta?.total?.toString() || "0"}
+          value={
+            withdrawTxRes?.data?.pagination?.totalResult?.toString() || "0"
+          }
           trend="All withdrawals"
         />
       </div>

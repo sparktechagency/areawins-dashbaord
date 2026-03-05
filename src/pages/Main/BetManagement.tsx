@@ -25,7 +25,7 @@ const BetManagement: React.FC = () => {
   const [cancelBet, { isLoading: isCancelling }] = useCancelBetMutation();
   const [refundBet, { isLoading: isRefunding }] = useRefundBetMutation();
 
-  const bets = betsRes?.data?.data || [];
+  const bets = betsRes?.data?.results || [];
 
   const handleAction = async (action: string) => {
     if (!selectedBet) return;

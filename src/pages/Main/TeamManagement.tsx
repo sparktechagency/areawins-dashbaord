@@ -67,7 +67,7 @@ const TeamManagement: React.FC = () => {
   const [updateTeam, { isLoading: isUpdating }] = useUpdateTeamMutation();
   const [deleteTeam] = useDeleteTeamMutation();
 
-  const teams = teamsRes?.data?.data || [];
+  const teams = teamsRes?.data?.results || [];
   const sports = sportsRes?.data?.results || [];
 
   const form = useForm<TeamFormValues>({

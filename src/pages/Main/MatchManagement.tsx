@@ -73,10 +73,10 @@ const MatchManagement: React.FC = () => {
   const [deleteMatch] = useDeleteMatchMutation();
   const [changeStatus] = useChangeMatchStatusMutation();
 
-  const matches = matchesRes?.data?.data || [];
+  const matches = matchesRes?.data?.results || [];
   const sports = sportsRes?.data?.results || [];
-  const tournaments = tournamentsRes?.data?.data || [];
-  const teams = teamsRes?.data?.data || [];
+  const tournaments = tournamentsRes?.data?.results || [];
+  const teams = teamsRes?.data?.results || [];
 
   const form = useForm<MatchFormValues>({
     resolver: zodResolver(matchSchema) as any,

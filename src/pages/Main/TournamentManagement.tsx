@@ -71,7 +71,7 @@ const TournamentManagement: React.FC = () => {
     useUpdateTournamentMutation();
   const [deleteTournament] = useDeleteTournamentMutation();
 
-  const tournaments = tournamentsRes?.data?.data || [];
+  const tournaments = tournamentsRes?.data?.results || [];
   const sports = sportsRes?.data?.results || [];
 
   const form = useForm<TournamentFormValues>({

@@ -12,8 +12,7 @@ const UserManagement: React.FC = () => {
     role: roleFilter || undefined,
     status: statusFilter || undefined,
   });
-
-  const users = usersRes?.data?.data || [];
+  const users = usersRes?.data?.results || [];
 
   return (
     <div className="p-8 space-y-8">

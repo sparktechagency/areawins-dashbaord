@@ -12,7 +12,8 @@ const OverView = () => {
     });
 
   const stats = statsRes?.data;
-  const pendingCount = pendingWithdrawalsRes?.data?.meta?.total || 0;
+  const pendingCount =
+    pendingWithdrawalsRes?.data?.pagination?.totalResult || 0;
 
   if (statsLoading || pendingLoading) {
     return (
