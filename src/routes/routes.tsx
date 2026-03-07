@@ -11,13 +11,13 @@ import BetManagement from "../pages/Main/BetManagement/BetManagement";
 import Dashboard from "../pages/Main/Dashboard";
 import EditProfile from "../pages/Main/EditProfile";
 import Financials from "../pages/Main/Financials/Financials";
-import MatchManagement from "../pages/Main/MatchManagement";
+import MatchManagement from "../pages/Main/MatchManagement/MatchManagement";
 import Notifications from "../pages/Main/Notifications";
 import Profile from "../pages/Main/Profile";
 import Promotions from "../pages/Main/Promotions";
 import Settings from "../pages/Main/Settings";
 import SportCategories from "../pages/Main/SportCategories/SportCategories";
-import TeamManagement from "../pages/Main/TeamManagement";
+import TeamManagement from "../pages/Main/TeamManagement/TeamManagement";
 import UserManagement from "../pages/Main/UserManagement/UserManagement";
 const router = createBrowserRouter([
   {
