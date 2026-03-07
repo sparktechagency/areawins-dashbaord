@@ -27,13 +27,13 @@ import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import * as z from "zod";
-import { ImageUpload } from "../../components/common/ImageUpload";
+import { ImageUpload } from "../../../components/common/ImageUpload";
 import {
   Card,
   CardContent,
   CardHeader,
   CardTitle,
-} from "../../components/ui/card";
+} from "../../../components/ui/card";
 
 const sportSchema = z.object({
   name: z.string().min(1, "Name is required"),
@@ -249,14 +249,14 @@ const SportCategories: React.FC = () => {
                 <Button
                   type="button"
                   variant="outline"
-                  className="flex-1"
+                  className="flex-1 cursor-pointer rounded-md"
                   onClick={() => setIsModalOpen(false)}
                 >
                   Cancel
                 </Button>
                 <Button
                   type="submit"
-                  className="flex-1"
+                  className="flex-1 cursor-pointer rounded"
                   disabled={isCreating || isUpdating}
                 >
                   {isCreating || isUpdating ? "Saving..." : "Save Sport"}
