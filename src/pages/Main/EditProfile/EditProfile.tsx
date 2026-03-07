@@ -31,22 +31,16 @@ const EditProfile: React.FC = () => {
 
   const form = useForm<ProfileFormValues>({
     resolver: zodResolver(profileSchema),
-    defaultValues: {
-      fullName: "",
-      nickname: "",
-    },
+    defaultValues: { fullName: "", nickname: "" },
   });
 
-  // Update form when data is loaded
   React.useEffect(() => {
     if (profileData) {
       form.reset({
         fullName: profileData.fullName || "",
         nickname: profileData.nickname || "",
       });
-      if (profileData.profileImage) {
-        setPreview(profileData.profileImage);
-      }
+      if (profileData.profileImage) setPreview(profileData.profileImage);
     }
   }, [profileData, form]);
 
@@ -55,9 +49,7 @@ const EditProfile: React.FC = () => {
     if (file) {
       form.setValue("profileImage", file);
       const reader = new FileReader();
-      reader.onloadend = () => {
-        setPreview(reader.result as string);
-      };
+      reader.onloadend = () => setPreview(reader.result as string);
       reader.readAsDataURL(file);
     }
   };
@@ -66,13 +58,9 @@ const EditProfile: React.FC = () => {
     try {
       const formData = new FormData();
       formData.append("fullName", data.fullName);
-      if (data.nickname) {
-        formData.append("nickname", data.nickname);
-      }
-      if (data.profileImage instanceof File) {
+      if (data.nickname) formData.append("nickname", data.nickname);
+      if (data.profileImage instanceof File)
         formData.append("profileImage", data.profileImage);
-      }
-
       await updateProfile(formData).unwrap();
       toast.success("Profile updated successfully");
       navigate("/profile");
@@ -95,6 +83,7 @@ const EditProfile: React.FC = () => {
       <div className="bg-white border border-gray-200 rounded-3xl p-8 shadow-sm">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+            {/* Avatar picker */}
             <div className="flex flex-col items-center mb-8">
               <div className="relative">
                 <div className="size-32 rounded-full border-4 border-slate-50 overflow-hidden bg-slate-100 shadow-inner">
@@ -124,7 +113,7 @@ const EditProfile: React.FC = () => {
                   className="hidden"
                 />
               </div>
-              <p className="mt-4 text-xs font-bold text-gray-400  tracking-widest">
+              <p className="mt-4 text-xs font-bold text-gray-400 tracking-widest">
                 Profile Photo
               </p>
             </div>

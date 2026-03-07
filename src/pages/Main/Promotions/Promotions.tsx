@@ -27,7 +27,6 @@ import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import * as z from "zod";
 
-// Schema for Promotion
 const promotionSchema = z.object({
   title: z.string().min(1, "Title is required"),
   type: z.enum(["New User", "Retention", "Special", "Seasonal"]),
@@ -49,36 +48,38 @@ interface Promotion extends PromotionFormValues {
   id: string;
 }
 
+const INITIAL_PROMOS: Promotion[] = [
+  {
+    id: "1",
+    title: "Welcome Bonus 100%",
+    type: "New User",
+    reach: "1.2k users",
+    status: "Active",
+    color: "bg-green-500",
+    description: "Automated delivery triggered by account registration.",
+  },
+  {
+    id: "2",
+    title: "Weekend Cashback",
+    type: "Retention",
+    reach: "540 users",
+    status: "Scheduled",
+    color: "bg-blue-500",
+    description: "Refund 10% on losses during weekend.",
+  },
+  {
+    id: "3",
+    title: "VIP High Roller",
+    type: "Special",
+    reach: "12 users",
+    status: "Paused",
+    color: "bg-orange-500",
+    description: "Exclusive access to high stakes tables.",
+  },
+];
+
 const Promotions: React.FC = () => {
-  const [promos, setPromos] = useState<Promotion[]>([
-    {
-      id: "1",
-      title: "Welcome Bonus 100%",
-      type: "New User",
-      reach: "1.2k users",
-      status: "Active",
-      color: "bg-green-500",
-      description: "Automated delivery triggered by account registration.",
-    },
-    {
-      id: "2",
-      title: "Weekend Cashback",
-      type: "Retention",
-      reach: "540 users",
-      status: "Scheduled",
-      color: "bg-blue-500",
-      description: "Refund 10% on losses during weekend.",
-    },
-    {
-      id: "3",
-      title: "VIP High Roller",
-      type: "Special",
-      reach: "12 users",
-      status: "Paused",
-      color: "bg-orange-500",
-      description: "Exclusive access to high stakes tables.",
-    },
-  ]);
+  const [promos, setPromos] = useState<Promotion[]>(INITIAL_PROMOS);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
 
@@ -101,8 +102,7 @@ const Promotions: React.FC = () => {
       );
       toast.success("Campaign updated successfully");
     } else {
-      const newPromo: Promotion = { ...data, id: Date.now().toString() };
-      setPromos([...promos, newPromo]);
+      setPromos([...promos, { ...data, id: Date.now().toString() }]);
       toast.success("New campaign created");
     }
     setIsModalOpen(false);
@@ -128,10 +128,8 @@ const Promotions: React.FC = () => {
   };
 
   const handleDelete = (id: string) => {
-    if (confirm("Are you sure?")) {
-      setPromos((prev) => prev.filter((p) => p.id !== id));
-      toast.success("Campaign deleted");
-    }
+    setPromos((prev) => prev.filter((p) => p.id !== id));
+    toast.success("Campaign deleted");
   };
 
   return (
@@ -139,7 +137,7 @@ const Promotions: React.FC = () => {
       <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 mb-8">
         <div>
           <h1 className="text-3xl md:text-5xl font-black tracking-tight mb-2">
-            Promotions & Campaigns
+            Promotions &amp; Campaigns
           </h1>
           <p className="text-gray-500">
             Create incentives to drive user engagement and volume.
@@ -159,10 +157,10 @@ const Promotions: React.FC = () => {
             key={promo.id}
             className="bg-white rounded border border-gray-200 shadow-sm overflow-hidden flex flex-col group hover:shadow-md transition-all"
           >
-            <div className={`h-2 ${promo.color}`}></div>
+            <div className={`h-2 ${promo.color}`} />
             <div className="p-6 flex-1 flex flex-col">
               <div className="flex justify-between items-start mb-4">
-                <span className="text-[10px] font-black  text-gray-400 tracking-wider bg-gray-50 px-2 py-1 rounded">
+                <span className="text-[10px] font-black text-gray-400 tracking-wider bg-gray-50 px-2 py-1 rounded">
                   {promo.type}
                 </span>
                 <span
@@ -181,10 +179,9 @@ const Promotions: React.FC = () => {
               <p className="text-sm text-gray-500 mb-6 flex-1">
                 {promo.description}
               </p>
-
               <div className="flex items-center gap-3 pt-6 border-t border-gray-50 mt-auto">
                 <div className="flex-1">
-                  <p className="text-[10px] font-bold text-gray-400  mb-1">
+                  <p className="text-[10px] font-bold text-gray-400 mb-1">
                     Impact Reach
                   </p>
                   <p className="font-black text-slate-800">{promo.reach}</p>
@@ -224,7 +221,6 @@ const Promotions: React.FC = () => {
               {editingId ? "Edit Campaign" : "New Campaign"}
             </DialogTitle>
           </DialogHeader>
-
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
               <FormField
@@ -240,7 +236,6 @@ const Promotions: React.FC = () => {
                   </FormItem>
                 )}
               />
-
               <div className="grid grid-cols-2 gap-4">
                 <FormField
                   control={form.control}
@@ -295,7 +290,6 @@ const Promotions: React.FC = () => {
                   )}
                 />
               </div>
-
               <FormField
                 control={form.control}
                 name="description"
@@ -312,7 +306,6 @@ const Promotions: React.FC = () => {
                   </FormItem>
                 )}
               />
-
               <div className="grid grid-cols-2 gap-4">
                 <FormField
                   control={form.control}
@@ -343,36 +336,42 @@ const Promotions: React.FC = () => {
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                          <SelectItem value="bg-green-500">
-                            <div className="flex items-center gap-2">
-                              <div className="size-3 rounded-full bg-green-500" />{" "}
-                              Green
-                            </div>
-                          </SelectItem>
-                          <SelectItem value="bg-blue-500">
-                            <div className="flex items-center gap-2">
-                              <div className="size-3 rounded-full bg-blue-500" />{" "}
-                              Blue
-                            </div>
-                          </SelectItem>
-                          <SelectItem value="bg-orange-500">
-                            <div className="flex items-center gap-2">
-                              <div className="size-3 rounded-full bg-orange-500" />{" "}
-                              Orange
-                            </div>
-                          </SelectItem>
-                          <SelectItem value="bg-purple-500">
-                            <div className="flex items-center gap-2">
-                              <div className="size-3 rounded-full bg-purple-500" />{" "}
-                              Purple
-                            </div>
-                          </SelectItem>
-                          <SelectItem value="bg-red-500">
-                            <div className="flex items-center gap-2">
-                              <div className="size-3 rounded-full bg-red-500" />{" "}
-                              Red
-                            </div>
-                          </SelectItem>
+                          {[
+                            {
+                              label: "Green",
+                              value: "bg-green-500",
+                              cls: "bg-green-500",
+                            },
+                            {
+                              label: "Blue",
+                              value: "bg-blue-500",
+                              cls: "bg-blue-500",
+                            },
+                            {
+                              label: "Orange",
+                              value: "bg-orange-500",
+                              cls: "bg-orange-500",
+                            },
+                            {
+                              label: "Purple",
+                              value: "bg-purple-500",
+                              cls: "bg-purple-500",
+                            },
+                            {
+                              label: "Red",
+                              value: "bg-red-500",
+                              cls: "bg-red-500",
+                            },
+                          ].map((c) => (
+                            <SelectItem key={c.value} value={c.value}>
+                              <div className="flex items-center gap-2">
+                                <div
+                                  className={`size-3 rounded-full ${c.cls}`}
+                                />
+                                {c.label}
+                              </div>
+                            </SelectItem>
+                          ))}
                         </SelectContent>
                       </Select>
                       <FormMessage />
@@ -380,7 +379,6 @@ const Promotions: React.FC = () => {
                   )}
                 />
               </div>
-
               <div className="flex gap-4 pt-4">
                 <Button
                   type="button"

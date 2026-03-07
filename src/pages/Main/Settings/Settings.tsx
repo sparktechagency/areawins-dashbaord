@@ -1,8 +1,10 @@
 import React from "react";
+import GatewayCard from "./GatewayCard";
 
 const Settings: React.FC = () => {
   return (
     <div className="max-w-4xl mx-auto p-10 space-y-12">
+      {/* Header */}
       <div className="flex justify-between items-end border-b border-gray-100 pb-8">
         <div>
           <h1 className="text-4xl font-black tracking-tight mb-2">
@@ -22,12 +24,13 @@ const Settings: React.FC = () => {
         </div>
       </div>
 
+      {/* Commission & Fees */}
       <section className="bg-white rounded border border-gray-200 shadow-sm overflow-hidden">
         <div className="p-6 border-b border-gray-100 bg-slate-50/50 flex items-center gap-3">
           <span className="material-symbols-outlined text-primary">
             percent
           </span>
-          <h2 className="text-xl font-bold">Commission & Fees</h2>
+          <h2 className="text-xl font-bold">Commission &amp; Fees</h2>
         </div>
         <div className="p-8 space-y-8">
           <div className="space-y-4">
@@ -47,7 +50,7 @@ const Settings: React.FC = () => {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 pt-4">
             <div className="space-y-2">
-              <label className="text-xs font-black  text-gray-400 tracking-widest">
+              <label className="text-xs font-black text-gray-400 tracking-widest">
                 Min Bet Amount
               </label>
               <div className="relative">
@@ -61,7 +64,7 @@ const Settings: React.FC = () => {
               </div>
             </div>
             <div className="space-y-2">
-              <label className="text-xs font-black  text-gray-400 tracking-widest">
+              <label className="text-xs font-black text-gray-400 tracking-widest">
                 Max Bet Amount
               </label>
               <div className="relative">
@@ -78,6 +81,7 @@ const Settings: React.FC = () => {
         </div>
       </section>
 
+      {/* Active Gateways */}
       <section className="bg-white rounded border border-gray-200 shadow-sm overflow-hidden">
         <div className="p-6 border-b border-gray-100 bg-slate-50/50 flex items-center gap-3">
           <span className="material-symbols-outlined text-primary">
@@ -103,31 +107,5 @@ const Settings: React.FC = () => {
     </div>
   );
 };
-
-const GatewayCard = ({ title, icon, status, color }: any) => (
-  <div className="p-5 border border-slate-100 rounded hover:border-primary/50 transition-all group flex items-center justify-between">
-    <div className="flex items-center gap-4">
-      <div
-        className={`size-10 ${color} rounded flex items-center justify-center text-white`}
-      >
-        <span className="material-symbols-outlined">{icon}</span>
-      </div>
-      <div>
-        <h4 className="font-bold text-slate-800">{title}</h4>
-        <div className="flex items-center gap-1.5 mt-0.5">
-          <span
-            className={`size-1.5 rounded-full ${status === "Active" ? "bg-secondary" : "bg-slate-300"}`}
-          ></span>
-          <span className="text-[10px] font-black  tracking-tighter text-slate-400">
-            {status}
-          </span>
-        </div>
-      </div>
-    </div>
-    <button className="material-symbols-outlined text-gray-400 hover:text-primary">
-      settings
-    </button>
-  </div>
-);
 
 export default Settings;

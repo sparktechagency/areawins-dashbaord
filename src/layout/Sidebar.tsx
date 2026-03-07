@@ -88,7 +88,7 @@ const Sidebar: React.FC = () => {
               Main Menu
             </div>
           )}
-          {navItems.map((item) => (
+          {navItems?.map((item) => (
             <Link
               key={item.path}
               to={item.path}
@@ -117,7 +117,7 @@ const Sidebar: React.FC = () => {
               Platform
             </div>
           )}
-          {financialItems.map((item) => (
+          {financialItems?.map((item) => (
             <Link
               key={item.label}
               to={item.path}

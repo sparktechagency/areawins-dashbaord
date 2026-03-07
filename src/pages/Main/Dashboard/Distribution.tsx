@@ -1,6 +1,6 @@
-import React from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "../../components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Cell, Pie, PieChart, ResponsiveContainer, Tooltip } from "recharts";
+
 const Distribution = () => {
   const pieData = [
     { name: "Soccer", value: 65, color: "#00D65C" },
@@ -42,7 +42,7 @@ const Distribution = () => {
                   <div
                     className="size-2 rounded-full"
                     style={{ backgroundColor: item.color }}
-                  ></div>
+                  />
                   <span className="text-xs font-bold text-slate-600">
                     {item.name}
                   </span>

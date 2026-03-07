@@ -1,10 +1,10 @@
 import React from "react";
-import { Bet } from "../../../types";
-import OverView from "./OverView";
-import RevenueChart from "./RevenueChart";
-import RecentBets from "./RecentBets";
 import Distribution from "./Distribution";
+import OverView from "./OverView";
 import RecentActivities from "./RecentActivities";
+import RecentBets from "./RecentBets";
+import RevenueChart from "./RevenueChart";
+
 const Dashboard: React.FC = () => {
   return (
     <div className="p-4 md:p-8 flex flex-col gap-6 md:gap-8">

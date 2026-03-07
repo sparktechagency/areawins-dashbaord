@@ -25,7 +25,6 @@ const RecentActivities = () => {
     );
   }
 
-  // Combine and sort activities
   const activities: any[] = [];
 
   if (activityData?.newUsers) {
@@ -85,7 +84,7 @@ const RecentActivities = () => {
                   icon={activity.icon}
                   color={activity.color}
                   text={activity.text}
-                  time={moment(activity.timestamp).fromNow().to()}
+                  time={moment(activity.timestamp).fromNow()}
                 />
               ))
           ) : (

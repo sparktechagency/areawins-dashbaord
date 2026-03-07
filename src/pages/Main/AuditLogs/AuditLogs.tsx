@@ -1,11 +1,35 @@
 import React from "react";
 
+const LogEntry = ({ time, admin, action, entity, color }: any) => (
+  <tr className="hover:bg-slate-50 transition-colors group">
+    <td className="px-4 lg:px-8 py-4 font-mono text-[10px] lg:text-[12px] text-gray-500">
+      {time}
+    </td>
+    <td className="px-4 lg:px-8 py-4 flex items-center gap-2 lg:gap-3">
+      <div className="size-6 lg:size-8 rounded-full bg-slate-200 shrink-0" />
+      <span className="text-xs lg:text-sm font-bold text-slate-700 truncate max-w-[80px] lg:max-w-none">
+        {admin}
+      </span>
+    </td>
+    <td className="px-4 lg:px-8 py-4">
+      <span
+        className={`px-2 py-0.5 rounded-full text-[8px] lg:text-[10px] font-black tracking-widest border border-current ${color}`}
+      >
+        {action}
+      </span>
+    </td>
+    <td className="px-4 lg:px-8 py-4 text-right text-[10px] lg:text-xs font-semibold text-slate-500 truncate">
+      {entity}
+    </td>
+  </tr>
+);
+
 const AuditLogs: React.FC = () => {
   return (
     <div className="flex flex-col lg:flex-row h-full overflow-hidden">
       {/* Sidebar Filters */}
       <div className="w-full lg:w-72 border-b lg:border-b-0 lg:border-r border-gray-200 bg-white overflow-y-auto p-4 lg:p-6 flex flex-col gap-6 custom-scrollbar shrink-0">
-        <h3 className="text-sm font-bold  tracking-wider text-gray-400">
+        <h3 className="text-sm font-bold tracking-wider text-gray-400">
           Filters
         </h3>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-4 lg:gap-6">
@@ -31,7 +55,7 @@ const AuditLogs: React.FC = () => {
             </div>
           </div>
           <div className="space-y-2">
-            <label className="text-xs font-bold mb-1.5 block  opacity-50 tracking-tighter">
+            <label className="text-xs font-bold mb-1.5 block opacity-50 tracking-tighter">
               Action Type
             </label>
             <div className="flex flex-wrap lg:flex-col gap-2 lg:gap-2">
@@ -68,16 +92,15 @@ const AuditLogs: React.FC = () => {
             </p>
           </div>
           <div className="flex items-center gap-2 text-gray-500 bg-slate-50 px-3 py-1.5 rounded-full text-[10px] lg:text-xs font-medium">
-            <span className="size-2 bg-green-500 rounded-full animate-pulse"></span>{" "}
+            <span className="size-2 bg-green-500 rounded-full animate-pulse" />{" "}
             System Online
           </div>
         </div>
-
         <div className="flex-1 overflow-auto custom-scrollbar">
           <div className="min-width-[800px]">
             <table className="w-full border-collapse">
               <thead className="sticky top-0 bg-white z-10 shadow-sm">
-                <tr className="bg-slate-50/50 text-[10px]  font-bold text-gray-400 tracking-widest border-b border-gray-100">
+                <tr className="bg-slate-50/50 text-[10px] font-bold text-gray-400 tracking-widest border-b border-gray-100">
                   <th className="px-4 lg:px-8 py-4 text-left">Timestamp</th>
                   <th className="px-4 lg:px-8 py-4 text-left">Admin</th>
                   <th className="px-4 lg:px-8 py-4 text-left">Action</th>
@@ -121,29 +144,5 @@ const AuditLogs: React.FC = () => {
     </div>
   );
 };
-
-const LogEntry = ({ time, admin, action, entity, color }: any) => (
-  <tr className="hover:bg-slate-50 transition-colors group">
-    <td className="px-4 lg:px-8 py-4 font-mono text-[10px] lg:text-[12px] text-gray-500">
-      {time}
-    </td>
-    <td className="px-4 lg:px-8 py-4 flex items-center gap-2 lg:gap-3">
-      <div className="size-6 lg:size-8 rounded-full bg-slate-200 shrink-0"></div>
-      <span className="text-xs lg:text-sm font-bold text-slate-700 truncate max-w-[80px] lg:max-w-none">
-        {admin}
-      </span>
-    </td>
-    <td className="px-4 lg:px-8 py-4">
-      <span
-        className={`px-2 py-0.5 rounded-full text-[8px] lg:text-[10px] font-black tracking-widest border border-current ${color}`}
-      >
-        {action}
-      </span>
-    </td>
-    <td className="px-4 lg:px-8 py-4 text-right text-[10px] lg:text-xs font-semibold text-slate-500 truncate">
-      {entity}
-    </td>
-  </tr>
-);
 
 export default AuditLogs;

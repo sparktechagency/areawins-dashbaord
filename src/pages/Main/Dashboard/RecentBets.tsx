@@ -1,5 +1,6 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
   Table,
@@ -10,12 +11,6 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { useGetActivityQuery } from "@/redux/features/dashboard/dashboardApi";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "../../components/ui/card";
 
 const RecentBets = () => {
   const { data: activityRes, isLoading } = useGetActivityQuery({});
@@ -80,7 +75,6 @@ const RecentBets = () => {
                     </TableCell>
                     <TableCell className="pr-6 text-right">
                       <Badge
-                        className=""
                         variant={
                           bet.status === "won" || bet.status === "settled"
                             ? "success"
