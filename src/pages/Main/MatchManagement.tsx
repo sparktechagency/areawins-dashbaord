@@ -240,10 +240,10 @@ const MatchManagement: React.FC = () => {
                             : "bg-slate-100 text-slate-600"
                         }
                       >
-                        {m.status?.toUpperCase()}
+                        {m.status?.to()}
                       </Badge>
                     </div>
-                    <div className="text-xs text-center text-slate-400 font-bold uppercase tracking-wider mb-4">
+                    <div className="text-xs text-center text-slate-400 font-bold  tracking-wider mb-4">
                       {getTournamentName(m.tournament?._id || m.tournament)}
                     </div>
                     <div className="flex justify-between items-center px-4">
@@ -517,7 +517,7 @@ const MatchManagement: React.FC = () => {
 
               {(selectedStatus === "live" || selectedStatus === "finished") && (
                 <div className="p-4 bg-slate-50/50 rounded-xl space-y-4 border">
-                  <FormLabel className="uppercase text-xs font-bold text-slate-400">
+                  <FormLabel className=" text-xs font-bold text-slate-400">
                     Scores
                   </FormLabel>
                   <div className="grid grid-cols-2 gap-4">

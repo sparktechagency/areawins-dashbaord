@@ -97,7 +97,7 @@ const Promotions: React.FC = () => {
   const onSubmit = (data: PromotionFormValues) => {
     if (editingId) {
       setPromos((prev) =>
-        prev.map((p) => (p.id === editingId ? { ...data, id: editingId } : p))
+        prev.map((p) => (p.id === editingId ? { ...data, id: editingId } : p)),
       );
       toast.success("Campaign updated successfully");
     } else {
@@ -162,7 +162,7 @@ const Promotions: React.FC = () => {
             <div className={`h-2 ${promo.color}`}></div>
             <div className="p-6 flex-1 flex flex-col">
               <div className="flex justify-between items-start mb-4">
-                <span className="text-[10px] font-black uppercase text-gray-400 tracking-wider bg-gray-50 px-2 py-1 rounded">
+                <span className="text-[10px] font-black  text-gray-400 tracking-wider bg-gray-50 px-2 py-1 rounded">
                   {promo.type}
                 </span>
                 <span
@@ -184,7 +184,7 @@ const Promotions: React.FC = () => {
 
               <div className="flex items-center gap-3 pt-6 border-t border-gray-50 mt-auto">
                 <div className="flex-1">
-                  <p className="text-[10px] font-bold text-gray-400 uppercase mb-1">
+                  <p className="text-[10px] font-bold text-gray-400  mb-1">
                     Impact Reach
                   </p>
                   <p className="font-black text-slate-800">{promo.reach}</p>

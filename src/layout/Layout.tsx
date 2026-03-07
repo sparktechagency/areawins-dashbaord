@@ -1,10 +1,9 @@
 import React from "react";
-import { MdPayments } from "react-icons/md";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, Outlet, useLocation } from "react-router-dom";
 import { RootState } from "../../types";
-import { toggleSidebar } from "../redux/features/dashboard/dashboardSlice";
 import logo from "../assets/logo/logo.png";
+import { toggleSidebar } from "../redux/features/dashboard/dashboardSlice";
 
 const Layout: React.FC = () => {
   const dashboardState =
@@ -91,7 +90,7 @@ const Layout: React.FC = () => {
         {/* Navigation */}
         <nav className="flex-1 px-4 py-2 flex flex-col gap-1  space-y-1 overflow-y-auto custom-scrollbar no-scrollbar">
           {isSidebarOpen && (
-            <div className="text-white/30 text-[11px] font-bold uppercase px-3 py-2 tracking-wider mt-4">
+            <div className="text-white/30 text-[11px] font-bold  px-3 py-2 tracking-wider mt-4">
               Main Menu
             </div>
           )}
@@ -120,7 +119,7 @@ const Layout: React.FC = () => {
           ))}
 
           {isSidebarOpen && (
-            <div className="text-white/30 text-[11px] font-bold uppercase px-3 py-3 tracking-wider">
+            <div className="text-white/30 text-[11px] font-bold  px-3 py-3 tracking-wider">
               Platform
             </div>
           )}
@@ -213,7 +212,7 @@ const Layout: React.FC = () => {
                 {isSidebarOpen ? "menu_open" : "menu"}
               </span>
             </button>
-            <div className="flex items-center gap-2 text-[10px] md:text-xs font-bold text-gray-400 uppercase tracking-widest truncate">
+            <div className="flex items-center gap-2 text-[10px] md:text-xs font-bold text-gray-400  tracking-widest truncate">
               <span className="hidden xs:inline">Admin</span>
               <span className="material-symbols-outlined text-[14px] hidden xs:inline">
                 chevron_right

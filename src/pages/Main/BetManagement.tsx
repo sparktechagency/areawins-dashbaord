@@ -90,7 +90,7 @@ const BetManagement: React.FC = () => {
               </span>
               . Status:{" "}
               <Badge
-                className="uppercase"
+                className=""
                 variant={getBadgeVariant(selectedBet?.status)}
               >
                 {selectedBet?.status}
@@ -161,22 +161,22 @@ const BetManagement: React.FC = () => {
           <table className="w-full text-left border-collapse">
             <thead>
               <tr className="bg-gray-50 border-b border-gray-200">
-                <th className="px-6 py-4 text-xs font-black text-gray-400 uppercase tracking-wider">
+                <th className="px-6 py-4 text-xs font-black text-gray-400  tracking-wider">
                   Bet ID
                 </th>
-                <th className="px-6 py-4 text-xs font-black text-gray-400 uppercase tracking-wider">
+                <th className="px-6 py-4 text-xs font-black text-gray-400  tracking-wider">
                   Creator
                 </th>
-                <th className="px-6 py-4 text-xs font-black text-gray-400 uppercase tracking-wider">
+                <th className="px-6 py-4 text-xs font-black text-gray-400  tracking-wider">
                   Selection
                 </th>
-                <th className="px-6 py-4 text-xs font-black text-gray-400 uppercase tracking-wider text-right">
+                <th className="px-6 py-4 text-xs font-black text-gray-400  tracking-wider text-right">
                   Stake
                 </th>
-                <th className="px-6 py-4 text-xs font-black text-gray-400 uppercase tracking-wider">
+                <th className="px-6 py-4 text-xs font-black text-gray-400  tracking-wider">
                   Status
                 </th>
-                <th className="px-6 py-4 text-xs font-black text-gray-400 uppercase tracking-wider text-center">
+                <th className="px-6 py-4 text-xs font-black text-gray-400  tracking-wider text-center">
                   Action
                 </th>
               </tr>
@@ -217,7 +217,7 @@ const BetManagement: React.FC = () => {
                     <td className="px-6 py-4">
                       <Badge
                         variant="secondary"
-                        className="uppercase font-bold text-[10px]"
+                        className=" font-bold text-[10px]"
                       >
                         {bet.selectedOutcome}
                       </Badge>
@@ -228,7 +228,7 @@ const BetManagement: React.FC = () => {
                     <td className="px-6 py-4">
                       <Badge
                         variant={getBadgeVariant(bet.status)}
-                        className="uppercase text-[10px]"
+                        className=" text-[10px]"
                       >
                         {bet.status}
                       </Badge>

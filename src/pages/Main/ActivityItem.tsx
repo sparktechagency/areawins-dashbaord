@@ -11,7 +11,7 @@ const ActivityItem = ({ icon, color, text, time }: any) => (
       <p className="text-[11px] md:text-xs font-medium text-slate-900 leading-tight">
         {text}
       </p>
-      <span className="text-[9px] md:text-[10px] text-slate-400 font-bold uppercase">
+      <span className="text-[9px] md:text-[10px] text-slate-400 font-bold ">
         {time}
       </span>
     </div>

@@ -1,46 +1,77 @@
-
-import React from 'react';
+import React from "react";
 
 const Settings: React.FC = () => {
   return (
     <div className="max-w-4xl mx-auto p-10 space-y-12">
       <div className="flex justify-between items-end border-b border-gray-100 pb-8">
         <div>
-          <h1 className="text-4xl font-black tracking-tight mb-2">Platform Settings</h1>
-          <p className="text-gray-500">Global configurations for the AreaWins Bet ecosystem.</p>
+          <h1 className="text-4xl font-black tracking-tight mb-2">
+            Platform Settings
+          </h1>
+          <p className="text-gray-500">
+            Global configurations for the AreaWins Bet ecosystem.
+          </p>
         </div>
         <div className="flex gap-4">
-          <button className="px-6 py-2.5 bg-slate-100 text-slate-600 rounded-lg text-sm font-bold hover:bg-slate-200">Discard</button>
-          <button className="px-8 py-2.5 bg-primary text-white rounded-lg text-sm font-bold shadow-lg shadow-primary/20 hover:brightness-110">Save Changes</button>
+          <button className="px-6 py-2.5 bg-slate-100 text-slate-600 rounded-lg text-sm font-bold hover:bg-slate-200">
+            Discard
+          </button>
+          <button className="px-8 py-2.5 bg-primary text-white rounded-lg text-sm font-bold shadow-lg shadow-primary/20 hover:brightness-110">
+            Save Changes
+          </button>
         </div>
       </div>
 
       <section className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
         <div className="p-6 border-b border-gray-100 bg-slate-50/50 flex items-center gap-3">
-          <span className="material-symbols-outlined text-primary">percent</span>
+          <span className="material-symbols-outlined text-primary">
+            percent
+          </span>
           <h2 className="text-xl font-bold">Commission & Fees</h2>
         </div>
         <div className="p-8 space-y-8">
           <div className="space-y-4">
             <div className="flex justify-between items-center">
-              <label className="text-sm font-bold text-slate-700">Customer Commission (%)</label>
-              <span className="bg-primary/10 text-primary px-3 py-1 rounded-full text-xs font-black">5.0%</span>
+              <label className="text-sm font-bold text-slate-700">
+                Customer Commission (%)
+              </label>
+              <span className="bg-primary/10 text-primary px-3 py-1 rounded-full text-xs font-black">
+                5.0%
+              </span>
             </div>
-            <input type="range" className="w-full accent-primary" defaultValue="25" />
+            <input
+              type="range"
+              className="w-full accent-primary"
+              defaultValue="25"
+            />
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 pt-4">
             <div className="space-y-2">
-              <label className="text-xs font-black uppercase text-gray-400 tracking-widest">Min Bet Amount</label>
+              <label className="text-xs font-black  text-gray-400 tracking-widest">
+                Min Bet Amount
+              </label>
               <div className="relative">
-                <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 font-bold">$</span>
-                <input className="w-full h-12 pl-8 bg-slate-50 border-none rounded-lg font-bold focus:ring-1 focus:ring-primary" defaultValue="5.00" />
+                <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 font-bold">
+                  $
+                </span>
+                <input
+                  className="w-full h-12 pl-8 bg-slate-50 border-none rounded-lg font-bold focus:ring-1 focus:ring-primary"
+                  defaultValue="5.00"
+                />
               </div>
             </div>
             <div className="space-y-2">
-              <label className="text-xs font-black uppercase text-gray-400 tracking-widest">Max Bet Amount</label>
+              <label className="text-xs font-black  text-gray-400 tracking-widest">
+                Max Bet Amount
+              </label>
               <div className="relative">
-                <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 font-bold">$</span>
-                <input className="w-full h-12 pl-8 bg-slate-50 border-none rounded-lg font-bold focus:ring-1 focus:ring-primary" defaultValue="10,000.00" />
+                <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 font-bold">
+                  $
+                </span>
+                <input
+                  className="w-full h-12 pl-8 bg-slate-50 border-none rounded-lg font-bold focus:ring-1 focus:ring-primary"
+                  defaultValue="10,000.00"
+                />
               </div>
             </div>
           </div>
@@ -49,12 +80,24 @@ const Settings: React.FC = () => {
 
       <section className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
         <div className="p-6 border-b border-gray-100 bg-slate-50/50 flex items-center gap-3">
-          <span className="material-symbols-outlined text-primary">credit_card</span>
+          <span className="material-symbols-outlined text-primary">
+            credit_card
+          </span>
           <h2 className="text-xl font-bold">Active Gateways</h2>
         </div>
         <div className="p-8 grid grid-cols-1 md:grid-cols-2 gap-6">
-          <GatewayCard title="Stripe" icon="credit_card" status="Active" color="bg-blue-600" />
-          <GatewayCard title="Crypto Payments" icon="currency_bitcoin" status="Paused" color="bg-orange-500" />
+          <GatewayCard
+            title="Stripe"
+            icon="credit_card"
+            status="Active"
+            color="bg-blue-600"
+          />
+          <GatewayCard
+            title="Crypto Payments"
+            icon="currency_bitcoin"
+            status="Paused"
+            color="bg-orange-500"
+          />
         </div>
       </section>
     </div>
@@ -64,18 +107,26 @@ const Settings: React.FC = () => {
 const GatewayCard = ({ title, icon, status, color }: any) => (
   <div className="p-5 border border-slate-100 rounded-xl hover:border-primary/50 transition-all group flex items-center justify-between">
     <div className="flex items-center gap-4">
-      <div className={`size-10 ${color} rounded-lg flex items-center justify-center text-white`}>
+      <div
+        className={`size-10 ${color} rounded-lg flex items-center justify-center text-white`}
+      >
         <span className="material-symbols-outlined">{icon}</span>
       </div>
       <div>
         <h4 className="font-bold text-slate-800">{title}</h4>
         <div className="flex items-center gap-1.5 mt-0.5">
-          <span className={`size-1.5 rounded-full ${status === 'Active' ? 'bg-secondary' : 'bg-slate-300'}`}></span>
-          <span className="text-[10px] font-black uppercase tracking-tighter text-slate-400">{status}</span>
+          <span
+            className={`size-1.5 rounded-full ${status === "Active" ? "bg-secondary" : "bg-slate-300"}`}
+          ></span>
+          <span className="text-[10px] font-black  tracking-tighter text-slate-400">
+            {status}
+          </span>
         </div>
       </div>
     </div>
-    <button className="material-symbols-outlined text-gray-400 hover:text-primary">settings</button>
+    <button className="material-symbols-outlined text-gray-400 hover:text-primary">
+      settings
+    </button>
   </div>
 );
 

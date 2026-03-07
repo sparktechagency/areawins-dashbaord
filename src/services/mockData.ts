@@ -2,7 +2,7 @@ import { Bet, BetType, Match, Sport, Team, Tournament } from "../types/schema";
 
 // Helper to generate IDs
 const generateId = (prefix: string) =>
-  `${prefix}-${Math.random().toString(36).substr(2, 9).toUpperCase()}`;
+  `${prefix}-${Math.random().toString(36).substr(2, 9).to()}`;
 
 // Initial Seed Data
 const initialSports: Sport[] = [
@@ -233,19 +233,19 @@ class DataManager<T extends { _id: string }> {
 
 export const sportService = new DataManager<Sport>(
   "easybet_sports",
-  initialSports
+  initialSports,
 );
 export const betTypeService = new DataManager<BetType>(
   "easybet_bettypes",
-  initialBetTypes
+  initialBetTypes,
 );
 export const tournamentService = new DataManager<Tournament>(
   "easybet_tournaments",
-  initialTournaments
+  initialTournaments,
 );
 export const teamService = new DataManager<Team>("easybet_teams", initialTeams);
 export const matchService = new DataManager<Match>(
   "easybet_matches",
-  initialMatches
+  initialMatches,
 );
 export const betService = new DataManager<Bet>("easybet_bets", initialBets);

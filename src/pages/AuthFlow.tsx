@@ -23,12 +23,12 @@ const AuthFlow: React.FC = () => {
             <h2 className="text-4xl font-black text-white mb-2 tracking-tight">
               Welcome Back
             </h2>
-            <p className="text-white/40 font-bold uppercase text-[11px] tracking-widest mb-10">
+            <p className="text-white/40 font-bold  text-[11px] tracking-widest mb-10">
               Admin Control Center
             </p>
             <form onSubmit={handleLogin} className="space-y-6">
               <div className="space-y-2">
-                <label className="text-xs font-black text-white/40 uppercase tracking-widest ml-1">
+                <label className="text-xs font-black text-white/40  tracking-widest ml-1">
                   Work Email
                 </label>
                 <Input
@@ -39,7 +39,7 @@ const AuthFlow: React.FC = () => {
                 />
               </div>
               <div className="space-y-2">
-                <label className="text-xs font-black text-white/40 uppercase tracking-widest ml-1">
+                <label className="text-xs font-black text-white/40  tracking-widest ml-1">
                   Security Key
                 </label>
                 <Input required type="password" placeholder="••••••••" />
@@ -58,7 +58,7 @@ const AuthFlow: React.FC = () => {
               <Button
                 type="submit"
                 variant="accent"
-                className="w-full h-12 text-lg uppercase tracking-wider"
+                className="w-full h-12 text-lg  tracking-wider"
               >
                 Enter Dashboard
               </Button>
@@ -84,7 +84,7 @@ const AuthFlow: React.FC = () => {
               />
               <Button
                 variant="accent"
-                className="w-full h-12 uppercase tracking-wider"
+                className="w-full h-12  tracking-wider"
                 onClick={() => setStep("OTP")}
               >
                 Send Security Code
@@ -124,7 +124,7 @@ const AuthFlow: React.FC = () => {
               </div>
               <Button
                 variant="accent"
-                className="w-full h-12 uppercase tracking-wider"
+                className="w-full h-12  tracking-wider"
                 onClick={() => setStep("RESET")}
               >
                 Verify Code
@@ -148,20 +148,20 @@ const AuthFlow: React.FC = () => {
             </h2>
             <div className="space-y-6">
               <div className="space-y-2">
-                <label className="text-xs font-black text-white/40 uppercase tracking-widest ml-1">
+                <label className="text-xs font-black text-white/40  tracking-widest ml-1">
                   New Password
                 </label>
                 <Input type="password" placeholder="••••••••" />
               </div>
               <div className="space-y-2">
-                <label className="text-xs font-black text-white/40 uppercase tracking-widest ml-1">
+                <label className="text-xs font-black text-white/40  tracking-widest ml-1">
                   Confirm New Password
                 </label>
                 <Input type="password" placeholder="••••••••" />
               </div>
               <Button
                 variant="accent"
-                className="w-full h-12 uppercase tracking-wider"
+                className="w-full h-12  tracking-wider"
                 onClick={() => setStep("LOGIN")}
               >
                 Update & Login
@@ -187,7 +187,7 @@ const AuthFlow: React.FC = () => {
 
       <div className="w-full max-w-md">{renderStep()}</div>
 
-      <div className="absolute bottom-10 text-white/20 text-[10px] font-bold tracking-widest uppercase">
+      <div className="absolute bottom-10 text-white/20 text-[10px] font-bold tracking-widest ">
         © 2023 AreaWins Bet Internal Systems • Level 4 Security Active
       </div>
     </div>

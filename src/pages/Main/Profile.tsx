@@ -191,7 +191,7 @@ const Profile: React.FC = () => {
             <h2 className="text-2xl font-black text-primary">
               {profileData?.fullName || "Loading..."}
             </h2>
-            <p className="text-primary font-black uppercase text-[10px] tracking-widest  bg-white border border-primary px-3 py-1 rounded-full mt-2">
+            <p className="text-primary font-black  text-[10px] tracking-widest  bg-white border border-primary px-3 py-1 rounded-full mt-2">
               {profileData?.role}
             </p>
 
@@ -216,7 +216,7 @@ const Profile: React.FC = () => {
           </div>
 
           <div className="bg-red-50 border border-red-100 rounded-lg p-6 mt-6">
-            <h4 className="text-red-600 font-black text-xs uppercase tracking-widest mb-4">
+            <h4 className="text-red-600 font-black text-xs  tracking-widest mb-4">
               Danger Zone
             </h4>
             <p className="text-red-900/60 text-[10px] font-bold mb-4">

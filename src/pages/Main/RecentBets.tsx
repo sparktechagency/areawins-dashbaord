@@ -80,7 +80,7 @@ const RecentBets = () => {
                     </TableCell>
                     <TableCell className="pr-6 text-right">
                       <Badge
-                        className="uppercase"
+                        className=""
                         variant={
                           bet.status === "won" || bet.status === "settled"
                             ? "success"

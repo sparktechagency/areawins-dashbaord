@@ -1,4 +1,9 @@
-import { Card, CardContent, CardDescription, CardHeader } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+} from "@/components/ui/card";
 
 const StatCard = ({ title, value, trend, trendText, icon, isAlert }: any) => (
   <Card
@@ -7,7 +12,7 @@ const StatCard = ({ title, value, trend, trendText, icon, isAlert }: any) => (
     } hover:border-[#00D65C] transition-all`}
   >
     <CardHeader className="flex flex-row items-start justify-between pb-2">
-      <CardDescription className="uppercase font-bold tracking-wider text-[10px] md:text-[12px]">
+      <CardDescription className=" font-bold tracking-wider text-[10px] md:text-[12px]">
         {title}
       </CardDescription>
       <div

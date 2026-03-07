@@ -85,7 +85,7 @@ const RecentActivities = () => {
                   icon={activity.icon}
                   color={activity.color}
                   text={activity.text}
-                  time={moment(activity.timestamp).fromNow().toUpperCase()}
+                  time={moment(activity.timestamp).fromNow().to()}
                 />
               ))
           ) : (

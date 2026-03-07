@@ -72,7 +72,7 @@ const UserManagement: React.FC = () => {
         <div className="overflow-x-auto">
           <table className="w-full text-left">
             <thead>
-              <tr className="bg-gray-50 text-[11px] font-extrabold text-gray-400 uppercase tracking-widest border-b border-gray-100">
+              <tr className="bg-gray-50 text-[11px] font-extrabold text-gray-400  tracking-widest border-b border-gray-100">
                 <th className="px-6 py-4">User Profile</th>
                 <th className="px-6 py-4">User ID</th>
                 <th className="px-6 py-4">Role</th>
@@ -129,7 +129,7 @@ const UserManagement: React.FC = () => {
                       {user._id?.slice(-8)}
                     </td>
                     <td className="px-6 py-4">
-                      <span className="px-2.5 py-1 bg-primary/10 text-primary text-[10px] font-bold rounded uppercase">
+                      <span className="px-2.5 py-1 bg-primary/10 text-primary text-[10px] font-bold rounded ">
                         {user.role}
                       </span>
                     </td>
@@ -144,7 +144,7 @@ const UserManagement: React.FC = () => {
                             user.isDeleted ? "bg-red-500" : "bg-secondary"
                           }`}
                         />
-                        <span className="text-[10px] font-extrabold uppercase">
+                        <span className="text-[10px] font-extrabold ">
                           {user.isDeleted ? "DELETED" : "ACTIVE"}
                         </span>
                       </div>

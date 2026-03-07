@@ -124,7 +124,7 @@ const EditProfile: React.FC = () => {
                   className="hidden"
                 />
               </div>
-              <p className="mt-4 text-xs font-bold text-gray-400 uppercase tracking-widest">
+              <p className="mt-4 text-xs font-bold text-gray-400  tracking-widest">
                 Profile Photo
               </p>
             </div>

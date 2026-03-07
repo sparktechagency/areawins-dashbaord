@@ -37,7 +37,7 @@ export const FormTimePicker = <TFieldValues extends FieldValues>({
           {label && (
             <FormLabel
               className={cn(
-                "text-xs font-black uppercase tracking-widest ml-1",
+                "text-xs font-black  tracking-widest ml-1",
                 labelClassName,
               )}
             >

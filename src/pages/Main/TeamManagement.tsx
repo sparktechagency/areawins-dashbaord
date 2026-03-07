@@ -314,7 +314,7 @@ const TeamManagement: React.FC = () => {
                           if (!form.getValues("shortName"))
                             form.setValue(
                               "shortName",
-                              val.substring(0, 3).toUpperCase(),
+                              val.substring(0, 3).to(),
                             );
                         }}
                       />

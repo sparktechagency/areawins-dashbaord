@@ -117,7 +117,7 @@ const Financials: React.FC = () => {
         </div>
         <div className="overflow-x-auto">
           <table className="w-full text-left">
-            <thead className="bg-gray-50 text-[11px] font-extrabold text-gray-400 uppercase tracking-widest border-b border-gray-100">
+            <thead className="bg-gray-50 text-[11px] font-extrabold text-gray-400  tracking-widest border-b border-gray-100">
               <tr>
                 <th className="px-6 py-4">Transaction ID</th>
                 <th className="px-6 py-4">User</th>
@@ -162,7 +162,7 @@ const Financials: React.FC = () => {
                     </td>
                     <td className="px-6 py-4">
                       <span
-                        className={`px-2 py-1 rounded text-[10px] font-bold uppercase ${getTypeColor(tx.type)}`}
+                        className={`px-2 py-1 rounded text-[10px] font-bold  ${getTypeColor(tx.type)}`}
                       >
                         {tx.type?.replace(/_/g, " ")}
                       </span>
@@ -172,7 +172,7 @@ const Financials: React.FC = () => {
                     </td>
                     <td className="px-6 py-4">
                       <span
-                        className={`px-2 py-1 rounded text-[10px] font-bold uppercase ${getStatusColor(tx.status)}`}
+                        className={`px-2 py-1 rounded text-[10px] font-bold  ${getStatusColor(tx.status)}`}
                       >
                         {tx.status}
                       </span>
@@ -195,9 +195,7 @@ const FinanceCard = ({ label, value, trend, subValue, isAlert }: any) => (
   <div
     className={`bg-white p-5 rounded-xl border ${isAlert ? "border-l-4 border-l-red-500" : "border-gray-200"} shadow-sm`}
   >
-    <p className="text-xs font-bold text-gray-400 uppercase tracking-wider">
-      {label}
-    </p>
+    <p className="text-xs font-bold text-gray-400  tracking-wider">{label}</p>
     <div className="flex items-end justify-between mt-2">
       <h3 className="text-2xl font-black">{value}</h3>
       {trend ? (

@@ -249,7 +249,7 @@ const TournamentManagement: React.FC = () => {
                     <Badge variant="outline" className="text-xs">
                       {getSportName(t.sport?._id || t.sport)}
                     </Badge>
-                    <Badge variant="secondary" className="text-xs uppercase">
+                    <Badge variant="secondary" className="text-xs ">
                       {t.type}
                     </Badge>
                     {t.year && (

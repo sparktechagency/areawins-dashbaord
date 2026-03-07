@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
+import { Outlet, useLocation, useNavigate } from "react-router-dom";
 
 const AuthLayout: React.FC = () => {
   const navigate = useNavigate();
@@ -17,8 +17,9 @@ const AuthLayout: React.FC = () => {
         <Outlet />
       </div>
 
-      <div className="absolute bottom-10 text-white/20 text-[10px] font-bold tracking-widest uppercase">
-        © {new Date().getFullYear()} AreaWins Bet Internal Systems • Level 4 Security Active
+      <div className="absolute bottom-10 text-white/20 text-[10px] font-bold tracking-widest ">
+        © {new Date().getFullYear()} AreaWins Bet Internal Systems • Level 4
+        Security Active
       </div>
     </div>
   );
