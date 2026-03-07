@@ -7,23 +7,19 @@ import {
   useGetAllSportCategoriesQuery,
   useUpdateSportCategoryMutation,
 } from "@/redux/features/sportCategory/sportCategoryApi";
+import {
+  SportCategoriesFormValues,
+  sportCategoriesSchema,
+} from "@/validation/sportCategories";
 import { zodResolver } from "@hookform/resolvers/zod";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-import * as z from "zod";
 import SportCategoryCard from "./SportCategoryCard";
 import SportFormDialog from "./SportFormDialog";
 
-const sportSchema = z.object({
-  name: z.string().min(1, "Name is required"),
-  icon: z.any().optional(),
-});
-
-type SportFormValues = z.infer<typeof sportSchema>;
-
 const SportCategories: React.FC = () => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [deletingName, setDeletingName] = useState<string>("");
@@ -38,15 +34,17 @@ const SportCategories: React.FC = () => {
 
   const sports = sportsRes?.data?.results || [];
 
-  const form = useForm<SportFormValues>({
-    resolver: zodResolver(sportSchema) as any,
+  const form = useForm<SportCategoriesFormValues>({
+    resolver: zodResolver(sportCategoriesSchema) as any,
     defaultValues: { name: "", icon: "" },
   });
 
-  const onSubmit = async (data: SportFormValues) => {
+  const onSubmit = async (data: SportCategoriesFormValues) => {
     const formData = new FormData();
     formData.append("name", data.name);
-    if (data.icon instanceof File) formData.append("icon", data.icon);
+    if (data.icon instanceof File) {
+      formData.append("icon", data.icon);
+    }
 
     try {
       if (editingId) {

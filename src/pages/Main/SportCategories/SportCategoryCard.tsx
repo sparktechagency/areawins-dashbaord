@@ -17,7 +17,7 @@ const SportCategoryCard: React.FC<SportCategoryCardProps> = ({
   return (
     <Card className="w-full shadow-none group">
       <CardHeader className="flex flex-row items-center justify-between pb-4">
-        <div className="size-12 rounded bg-slate-50 flex items-center justify-center cursor-pointer group-hover:text-primary transition-all duration-500 overflow-hidden border border-slate-100 text-3xl">
+        <div className="size-12 rounded flex items-center justify-center cursor-pointer">
           {sport.icon ? (
             <img
               src={sport.icon}

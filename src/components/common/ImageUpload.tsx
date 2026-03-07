@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 interface ImageUploadProps {
-  value?: string;
-  onChange: (value: string) => void;
+  value?: any;
+  onChange: (value: any) => void;
   className?: string;
   placeholder?: string;
 }
@@ -16,11 +16,7 @@ export const ImageUpload: React.FC<ImageUploadProps> = ({
 
   const handleFile = (file: File) => {
     if (file && file.type.startsWith("image/")) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        onChange(reader.result as string);
-      };
-      reader.readAsDataURL(file);
+      onChange(file as any);
     }
   };
 
@@ -68,10 +64,16 @@ export const ImageUpload: React.FC<ImageUploadProps> = ({
       >
         <div className="flex flex-col items-center justify-center pt-5 pb-6">
           {value ? (
-            value.startsWith("data:") || value.startsWith("http") ? (
+            typeof value === "string" ? (
               <img src={value} alt="Preview" className="h-24 object-contain" />
+            ) : value instanceof File ? (
+              <img
+                src={URL.createObjectURL(value)}
+                alt="Preview"
+                className="h-24 object-contain"
+              />
             ) : (
-              <div className="text-2xl">{value}</div>
+              <div className="text-2xl">Invalid Image</div>
             )
           ) : (
             <>
