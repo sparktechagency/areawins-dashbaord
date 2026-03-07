@@ -65,7 +65,7 @@ const OTPVerification: React.FC = () => {
 
   const handleKeyDown = (
     index: number,
-    e: React.KeyboardEvent<HTMLInputElement>
+    e: React.KeyboardEvent<HTMLInputElement>,
   ) => {
     if (e.key === "Backspace" && !form.getValues("otp")[index] && index > 0) {
       inputRefs.current[index - 1]?.focus();
@@ -73,7 +73,7 @@ const OTPVerification: React.FC = () => {
   };
 
   return (
-    <div className="space-y-6 animate-in fade-in slide-in-from-top-4 duration-500 border border-white/10 p-6 rounded-lg">
+    <div className="space-y-6 animate-in fade-in slide-in-from-top-4 duration-500 border border-white/10 p-6 rounded">
       <div className="space-y-2">
         <h2 className="text-3xl font-black text-white mb-4">Verification</h2>
         <p className="text-white/50 text-sm mb-10">

@@ -351,7 +351,7 @@ const BetTypes: React.FC = () => {
               </div>
 
               {/* Outcomes Section */}
-              <div className="space-y-4 border rounded-xl p-4 bg-slate-50/50">
+              <div className="space-y-4 border rounded p-4 bg-slate-50/50">
                 <div className="flex justify-between items-center">
                   <FormLabel>Outcomes</FormLabel>
                   <Button

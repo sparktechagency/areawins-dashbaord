@@ -1,7 +1,4 @@
 import React, { useState } from "react";
-// The user prompt didn't say install packages, but I can prefer standard HTML5 if I want to be safe or install it.
-// Actually, I can implement drag and drop without a library easily.
-
 interface ImageUploadProps {
   value?: string;
   onChange: (value: string) => void;
@@ -60,7 +57,7 @@ export const ImageUpload: React.FC<ImageUploadProps> = ({
         onDragLeave={onDragLeave}
         onDrop={onDrop}
         className={`
-          flex flex-col items-center justify-center w-full h-32 border-2 border-dashed rounded-lg cursor-pointer 
+          flex flex-col items-center justify-center w-full h-32 border-2 border-dashed rounded cursor-pointer 
           transition-colors duration-200 ease-in-out
           ${
             isDragging

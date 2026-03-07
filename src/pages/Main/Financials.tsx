@@ -60,7 +60,7 @@ const Financials: React.FC = () => {
           </p>
         </div>
         <div className="flex gap-3">
-          <button className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-200 rounded-lg text-sm font-bold hover:bg-gray-50 shadow-sm transition-colors">
+          <button className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-200 rounded text-sm font-bold hover:bg-gray-50 shadow-sm transition-colors">
             <span className="material-symbols-outlined text-sm">download</span>{" "}
             Export CSV
           </button>
@@ -95,7 +95,7 @@ const Financials: React.FC = () => {
       </div>
 
       {/* Transaction Table */}
-      <div className="bg-white rounded-xl border border-gray-200 shadow-sm flex flex-col overflow-hidden">
+      <div className="bg-white rounded border border-gray-200 shadow-sm flex flex-col overflow-hidden">
         <div className="flex border-b border-gray-100 px-6 gap-8 overflow-x-auto no-scrollbar">
           {(["all", "deposit", "withdraw"] as const).map((tab) => (
             <button
@@ -193,7 +193,7 @@ const Financials: React.FC = () => {
 
 const FinanceCard = ({ label, value, trend, subValue, isAlert }: any) => (
   <div
-    className={`bg-white p-5 rounded-xl border ${isAlert ? "border-l-4 border-l-red-500" : "border-gray-200"} shadow-sm`}
+    className={`bg-white p-5 rounded border ${isAlert ? "border-l-4 border-l-red-500" : "border-gray-200"} shadow-sm`}
   >
     <p className="text-xs font-bold text-gray-400  tracking-wider">{label}</p>
     <div className="flex items-end justify-between mt-2">

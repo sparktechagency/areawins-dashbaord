@@ -156,7 +156,7 @@ const SportCategories: React.FC = () => {
           sports?.map((sport: any) => (
             <Card key={sport._id} className="w-full shadow-none group ">
               <CardHeader className="flex flex-row items-center justify-between pb-4">
-                <div className="size-12 rounded-2xl bg-slate-50 flex items-center justify-center cursor-pointer group-hover:text-primary transition-all duration-500 overflow-hidden border border-slate-100 text-3xl">
+                <div className="size-12 rounded bg-slate-50 flex items-center justify-center cursor-pointer group-hover:text-primary transition-all duration-500 overflow-hidden border border-slate-100 text-3xl">
                   {sport.icon ? (
                     <img
                       src={sport.icon}
@@ -291,7 +291,7 @@ const SportCategories: React.FC = () => {
             <div className="flex gap-3 pt-2">
               <Button
                 variant="outline"
-                className="flex-1"
+                className="flex-1 cursor-pointer"
                 onClick={() => {
                   setDeletingId(null);
                   setDeletingName("");
@@ -302,7 +302,7 @@ const SportCategories: React.FC = () => {
               </Button>
               <Button
                 variant="destructive"
-                className="flex-1"
+                className="flex-1 cursor-pointer"
                 onClick={handleConfirmDelete}
                 disabled={isDeleting}
               >

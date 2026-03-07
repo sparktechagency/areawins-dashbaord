@@ -13,16 +13,16 @@ const Settings: React.FC = () => {
           </p>
         </div>
         <div className="flex gap-4">
-          <button className="px-6 py-2.5 bg-slate-100 text-slate-600 rounded-lg text-sm font-bold hover:bg-slate-200">
+          <button className="px-6 py-2.5 bg-slate-100 text-slate-600 rounded text-sm font-bold hover:bg-slate-200">
             Discard
           </button>
-          <button className="px-8 py-2.5 bg-primary text-white rounded-lg text-sm font-bold shadow-lg shadow-primary/20 hover:brightness-110">
+          <button className="px-8 py-2.5 bg-primary text-white rounded text-sm font-bold shadow-lg shadow-primary/20 hover:brightness-110">
             Save Changes
           </button>
         </div>
       </div>
 
-      <section className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
+      <section className="bg-white rounded border border-gray-200 shadow-sm overflow-hidden">
         <div className="p-6 border-b border-gray-100 bg-slate-50/50 flex items-center gap-3">
           <span className="material-symbols-outlined text-primary">
             percent
@@ -55,7 +55,7 @@ const Settings: React.FC = () => {
                   $
                 </span>
                 <input
-                  className="w-full h-12 pl-8 bg-slate-50 border-none rounded-lg font-bold focus:ring-1 focus:ring-primary"
+                  className="w-full h-12 pl-8 bg-slate-50 border-none rounded font-bold focus:ring-1 focus:ring-primary"
                   defaultValue="5.00"
                 />
               </div>
@@ -69,7 +69,7 @@ const Settings: React.FC = () => {
                   $
                 </span>
                 <input
-                  className="w-full h-12 pl-8 bg-slate-50 border-none rounded-lg font-bold focus:ring-1 focus:ring-primary"
+                  className="w-full h-12 pl-8 bg-slate-50 border-none rounded font-bold focus:ring-1 focus:ring-primary"
                   defaultValue="10,000.00"
                 />
               </div>
@@ -78,7 +78,7 @@ const Settings: React.FC = () => {
         </div>
       </section>
 
-      <section className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
+      <section className="bg-white rounded border border-gray-200 shadow-sm overflow-hidden">
         <div className="p-6 border-b border-gray-100 bg-slate-50/50 flex items-center gap-3">
           <span className="material-symbols-outlined text-primary">
             credit_card
@@ -105,10 +105,10 @@ const Settings: React.FC = () => {
 };
 
 const GatewayCard = ({ title, icon, status, color }: any) => (
-  <div className="p-5 border border-slate-100 rounded-xl hover:border-primary/50 transition-all group flex items-center justify-between">
+  <div className="p-5 border border-slate-100 rounded hover:border-primary/50 transition-all group flex items-center justify-between">
     <div className="flex items-center gap-4">
       <div
-        className={`size-10 ${color} rounded-lg flex items-center justify-center text-white`}
+        className={`size-10 ${color} rounded flex items-center justify-center text-white`}
       >
         <span className="material-symbols-outlined">{icon}</span>
       </div>

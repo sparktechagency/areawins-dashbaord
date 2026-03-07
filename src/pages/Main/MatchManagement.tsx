@@ -208,7 +208,7 @@ const MatchManagement: React.FC = () => {
       {isLoading ? (
         <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
           {[1, 2, 3].map((i) => (
-            <Skeleton key={i} className="h-56 w-full rounded-xl" />
+            <Skeleton key={i} className="h-56 w-full rounded" />
           ))}
         </div>
       ) : (
@@ -516,7 +516,7 @@ const MatchManagement: React.FC = () => {
               />
 
               {(selectedStatus === "live" || selectedStatus === "finished") && (
-                <div className="p-4 bg-slate-50/50 rounded-xl space-y-4 border">
+                <div className="p-4 bg-slate-50/50 rounded space-y-4 border">
                   <FormLabel className=" text-xs font-bold text-slate-400">
                     Scores
                   </FormLabel>
@@ -567,7 +567,7 @@ const MatchManagement: React.FC = () => {
                 control={form.control}
                 name="isFeatured"
                 render={({ field }) => (
-                  <FormItem className="flex flex-row items-start space-x-3 space-y-0 p-4 border rounded-md">
+                  <FormItem className="flex flex-row items-start space-x-3 space-y-0 p-4 border rounded">
                     <FormControl>
                       <Checkbox
                         checked={field.value}

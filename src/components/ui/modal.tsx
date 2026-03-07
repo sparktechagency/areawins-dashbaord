@@ -60,7 +60,7 @@ const Modal: React.FC<ModalProps> = ({
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black bg-opacity-50">
       <div 
         ref={modalRef}
-        className={`relative bg-white rounded-xl shadow-xl w-full max-w-md max-h-[90vh] overflow-y-auto ${className}`}
+        className={`relative bg-white rounded shadow-xl w-full max-w-md max-h-[90vh] overflow-y-auto ${className}`}
       >
         {title && (
           <div className="flex items-center justify-between p-6 border-b">

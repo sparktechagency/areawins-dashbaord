@@ -15,7 +15,7 @@ const AuditLogs: React.FC = () => {
                 Date Range
               </label>
               <input
-                className="w-full text-sm border-gray-200 rounded-lg focus:ring-primary focus:border-primary"
+                className="w-full text-sm border-gray-200 rounded focus:ring-primary focus:border-primary"
                 defaultValue="Oct 01 - Oct 31, 2023"
               />
             </div>
@@ -23,7 +23,7 @@ const AuditLogs: React.FC = () => {
               <label className="text-xs font-bold mb-1.5 block">
                 Admin User
               </label>
-              <select className="w-full text-sm border-gray-200 rounded-lg focus:ring-primary">
+              <select className="w-full text-sm border-gray-200 rounded focus:ring-primary">
                 <option>All Administrators</option>
                 <option>Sarah Jenkins</option>
                 <option>Alex Rivera</option>
@@ -51,7 +51,7 @@ const AuditLogs: React.FC = () => {
             </div>
           </div>
         </div>
-        <button className="w-full py-3 bg-slate-50 text-primary font-bold text-sm rounded-lg hover:bg-slate-100 transition-all mt-2 lg:mt-auto">
+        <button className="w-full py-3 bg-slate-50 text-primary font-bold text-sm rounded hover:bg-slate-100 transition-all mt-2 lg:mt-auto">
           Reset Filters
         </button>
       </div>

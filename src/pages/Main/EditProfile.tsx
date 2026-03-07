@@ -133,7 +133,7 @@ const EditProfile: React.FC = () => {
               control={form.control}
               name="fullName"
               label="Full Name"
-              inputClassName="bg-slate-50 border-none rounded-xl p-4 text-sm focus:ring-1 ring-primary font-bold text-gray-900"
+              inputClassName="bg-slate-50 border-none rounded p-4 text-sm focus:ring-1 ring-primary font-bold text-gray-900"
               labelClassName="text-gray-400"
             />
 
@@ -141,7 +141,7 @@ const EditProfile: React.FC = () => {
               control={form.control}
               name="nickname"
               label="Nickname"
-              inputClassName="bg-slate-50 border-none rounded-xl p-4 text-sm focus:ring-1 ring-primary font-bold text-gray-900"
+              inputClassName="bg-slate-50 border-none rounded p-4 text-sm focus:ring-1 ring-primary font-bold text-gray-900"
               labelClassName="text-gray-400"
             />
 
@@ -150,14 +150,14 @@ const EditProfile: React.FC = () => {
                 type="button"
                 variant="ghost"
                 onClick={() => navigate("/profile")}
-                className="px-8 py-6 rounded-xl font-black"
+                className="px-8 py-6 rounded font-black"
               >
                 Cancel
               </Button>
               <Button
                 type="submit"
                 disabled={isUpdating}
-                className="bg-primary text-secondary px-8 py-6 rounded-xl font-black shadow-xl shadow-primary/20 hover:brightness-110 transition-all"
+                className="bg-primary text-secondary px-8 py-6 rounded font-black shadow-xl shadow-primary/20 hover:brightness-110 transition-all"
               >
                 {isUpdating ? "Saving..." : "Save Changes"}
               </Button>

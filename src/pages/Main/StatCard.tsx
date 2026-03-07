@@ -16,7 +16,7 @@ const StatCard = ({ title, value, trend, trendText, icon, isAlert }: any) => (
         {title}
       </CardDescription>
       <div
-        className={`p-1.5 md:p-2.5 rounded-lg ${
+        className={`p-1.5 md:p-2.5 rounded ${
           isAlert ? "bg-red-50 text-red-500" : "bg-[#00D65C]/10 text-[#00D65C]"
         }`}
       >

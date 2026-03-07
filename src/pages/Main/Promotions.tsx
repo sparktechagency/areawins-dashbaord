@@ -157,7 +157,7 @@ const Promotions: React.FC = () => {
         {promos.map((promo) => (
           <div
             key={promo.id}
-            className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden flex flex-col group hover:shadow-md transition-all"
+            className="bg-white rounded border border-gray-200 shadow-sm overflow-hidden flex flex-col group hover:shadow-md transition-all"
           >
             <div className={`h-2 ${promo.color}`}></div>
             <div className="p-6 flex-1 flex flex-col">
@@ -193,7 +193,7 @@ const Promotions: React.FC = () => {
                   <Button
                     variant="ghost"
                     size="icon"
-                    className="size-8 rounded-xl bg-slate-50 text-slate-400 hover:bg-primary hover:text-white"
+                    className="size-8 rounded bg-slate-50 text-slate-400 hover:bg-primary hover:text-white"
                     onClick={() => handleEdit(promo)}
                   >
                     <span className="material-symbols-outlined text-lg">
@@ -203,7 +203,7 @@ const Promotions: React.FC = () => {
                   <Button
                     variant="ghost"
                     size="icon"
-                    className="size-8 rounded-xl bg-slate-50 text-slate-400 hover:bg-red-50 hover:text-red-500"
+                    className="size-8 rounded bg-slate-50 text-slate-400 hover:bg-red-50 hover:text-red-500"
                     onClick={() => handleDelete(promo.id)}
                   >
                     <span className="material-symbols-outlined text-lg">

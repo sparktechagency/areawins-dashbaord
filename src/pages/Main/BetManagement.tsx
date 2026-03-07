@@ -103,7 +103,7 @@ const BetManagement: React.FC = () => {
                   Winner User ID (for settle)
                 </label>
                 <input
-                  className="w-full border rounded-lg px-3 py-2 text-sm"
+                  className="w-full border rounded px-3 py-2 text-sm"
                   placeholder="Enter winner's user ID..."
                   value={winnerUserId}
                   onChange={(e) => setWinnerUserId(e.target.value)}
@@ -156,7 +156,7 @@ const BetManagement: React.FC = () => {
         </DialogContent>
       </Dialog>
 
-      <div className="bg-white rounded-xl border border-gray-200 overflow-hidden shadow-sm">
+      <div className="bg-white rounded border border-gray-200 overflow-hidden shadow-sm">
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead>

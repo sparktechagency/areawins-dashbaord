@@ -33,7 +33,7 @@ const ForgotPassword: React.FC = () => {
   };
 
   return (
-    <div className="space-y-6 animate-in fade-in slide-in-from-left-4 duration-300 border border-white/10 p-6 rounded-lg">
+    <div className="space-y-6 animate-in fade-in slide-in-from-left-4 duration-300 border border-white/10 p-6 rounded">
       <div className="space-y-2">
         <h2 className="text-3xl font-black text-white mb-2">Recover Access</h2>
         <p className="text-white/50 text-sm leading-relaxed">

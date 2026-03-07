@@ -188,7 +188,7 @@ const TournamentManagement: React.FC = () => {
       {isLoading ? (
         <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-6">
           {[1, 2, 3, 4].map((i) => (
-            <Skeleton key={i} className="h-48 w-full rounded-xl" />
+            <Skeleton key={i} className="h-48 w-full rounded" />
           ))}
         </div>
       ) : (
@@ -204,12 +204,12 @@ const TournamentManagement: React.FC = () => {
                 className={!t.isActive ? "opacity-60 grayscale" : ""}
               >
                 <CardHeader className="flex flex-row items-center justify-between pb-4">
-                  <div className="size-12 rounded-xl bg-slate-50 flex items-center justify-center border border-slate-100 text-2xl">
+                  <div className="size-12 rounded bg-slate-50 flex items-center justify-center border border-slate-100 text-2xl">
                     {t.logo && t.logo.startsWith("http") ? (
                       <img
                         src={t.logo}
                         alt={t.name}
-                        className="w-full h-full object-cover rounded-xl"
+                        className="w-full h-full object-cover rounded"
                       />
                     ) : (
                       t.logo || "🏆"

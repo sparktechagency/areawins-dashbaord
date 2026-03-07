@@ -175,7 +175,7 @@ const AuthFlow: React.FC = () => {
   return (
     <div className="min-h-screen bg-secondary flex items-center justify-center p-6 font-sans">
       <div className="absolute top-10 left-10 flex items-center gap-3">
-        <div className="size-10 bg-[#00D65C] rounded-lg flex items-center justify-center">
+        <div className="size-10 bg-[#00D65C] rounded flex items-center justify-center">
           <span className="material-symbols-outlined text-black font-bold">
             payments
           </span>

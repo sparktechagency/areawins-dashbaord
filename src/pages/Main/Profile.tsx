@@ -158,7 +158,7 @@ const Profile: React.FC = () => {
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
         <div className="md:col-span-1 space-y-6">
-          <div className="bg-white border border-gray-200 rounded-lg p-8 flex flex-col items-center text-center">
+          <div className="bg-white border border-gray-200 rounded p-8 flex flex-col items-center text-center">
             <div
               className={`relative group ${isEditing ? "cursor-pointer" : ""}`}
               onClick={() => isEditing && fileInputRef.current?.click()}
@@ -215,7 +215,7 @@ const Profile: React.FC = () => {
             </div>
           </div>
 
-          <div className="bg-red-50 border border-red-100 rounded-lg p-6 mt-6">
+          <div className="bg-red-50 border border-red-100 rounded p-6 mt-6">
             <h4 className="text-red-600 font-black text-xs  tracking-widest mb-4">
               Danger Zone
             </h4>
@@ -233,7 +233,7 @@ const Profile: React.FC = () => {
         </div>
 
         <div className="md:col-span-2">
-          <div className="bg-white border border-gray-200 rounded-lg p-8 h-fit">
+          <div className="bg-white border border-gray-200 rounded p-8 h-fit">
             <h3 className="text-xl font-bold mb-8 flex items-center gap-2">
               <span className="material-symbols-outlined text-primary">
                 person

@@ -27,14 +27,14 @@ const UserManagement: React.FC = () => {
         </div>
       </div>
 
-      <div className="bg-white p-4 rounded-xl border border-gray-200 flex flex-wrap gap-4 items-center shadow-sm">
+      <div className="bg-white p-4 rounded border border-gray-200 flex flex-wrap gap-4 items-center shadow-sm">
         <div className="flex-1 min-w-75">
           <div className="relative group">
             <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-primary">
               search
             </span>
             <input
-              className="w-full bg-slate-50 border-none rounded-lg py-2.5 pl-10 text-sm focus:ring-2 focus:ring-primary"
+              className="w-full bg-slate-50 border-none rounded py-2.5 pl-10 text-sm focus:ring-2 focus:ring-primary"
               placeholder="Search by email, ID, or nickname..."
               type="text"
               value={search}
@@ -44,7 +44,7 @@ const UserManagement: React.FC = () => {
         </div>
         <div className="flex items-center gap-2">
           <select
-            className="bg-slate-50 border-none rounded-lg px-4 py-2.5 text-sm font-semibold focus:ring-1 focus:ring-primary"
+            className="bg-slate-50 border-none rounded px-4 py-2.5 text-sm font-semibold focus:ring-1 focus:ring-primary"
             value={roleFilter}
             onChange={(e) => setRoleFilter(e.target.value)}
           >
@@ -68,7 +68,7 @@ const UserManagement: React.FC = () => {
         </button>
       </div>
 
-      <div className="bg-white rounded-xl border border-gray-200 overflow-hidden shadow-sm">
+      <div className="bg-white rounded border border-gray-200 overflow-hidden shadow-sm">
         <div className="overflow-x-auto">
           <table className="w-full text-left">
             <thead>
@@ -151,7 +151,7 @@ const UserManagement: React.FC = () => {
                     </td>
                     <td className="px-6 py-4">
                       <div className="flex items-center justify-center gap-1">
-                        <button className="p-1.5 text-gray-400 hover:text-primary hover:bg-gray-100 rounded-lg transition-all">
+                        <button className="p-1.5 text-gray-400 hover:text-primary hover:bg-gray-100 rounded transition-all">
                           <span className="material-symbols-outlined text-[18px]">
                             visibility
                           </span>

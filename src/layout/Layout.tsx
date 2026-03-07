@@ -99,7 +99,7 @@ const Layout: React.FC = () => {
               key={item.path}
               to={item.path}
               onClick={handleMobileNavClick}
-              className={`flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all group ${
+              className={`flex items-center gap-3 px-3 py-2.5 rounded transition-all group ${
                 isActive(item.path)
                   ? "bg-primary text-white"
                   : "text-white/70 hover:text-white hover:bg-white/5"
@@ -128,7 +128,7 @@ const Layout: React.FC = () => {
               key={item.label}
               to={item.path}
               onClick={handleMobileNavClick}
-              className={`flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all group ${
+              className={`flex items-center gap-3 px-3 py-2.5 rounded transition-all group ${
                 isActive(item.path)
                   ? "bg-black/80 text-white"
                   : "text-white/70 hover:text-white hover:bg-white/5"
@@ -151,7 +151,7 @@ const Layout: React.FC = () => {
             <Link
               to="/settings"
               onClick={handleMobileNavClick}
-              className={`flex items-center gap-3 px-3 py-3 rounded-xl transition-all ${
+              className={`flex items-center gap-3 px-3 py-3 rounded transition-all ${
                 isActive("/settings")
                   ? "bg-secondary/20 text-accent"
                   : "text-white/70 hover:text-white hover:bg-white/5"
@@ -176,7 +176,7 @@ const Layout: React.FC = () => {
           <Link
             to="/profile"
             onClick={handleMobileNavClick}
-            className="flex items-center gap-3 p-2 rounded-xl hover:bg-white/5 transition-all"
+            className="flex items-center gap-3 p-2 rounded hover:bg-white/5 transition-all"
           >
             <img
               className="size-10 rounded-full border border-white/10 shrink-0"
@@ -206,7 +206,7 @@ const Layout: React.FC = () => {
             {/* Toggle Button */}
             <button
               onClick={() => dispatch(toggleSidebar())}
-              className="p-2.5 hover:bg-gray-100 rounded-xl transition-colors"
+              className="p-2.5 hover:bg-gray-100 rounded transition-colors"
             >
               <span className="material-symbols-outlined text-gray-600 block">
                 {isSidebarOpen ? "menu_open" : "menu"}
@@ -228,7 +228,7 @@ const Layout: React.FC = () => {
           <div className="flex items-center gap-2 md:gap-4">
             <Link
               to="/notifications"
-              className="size-10 rounded-xl hover:bg-gray-100 flex items-center justify-center relative transition-all border border-transparent hover:border-gray-200"
+              className="size-10 rounded hover:bg-gray-100 flex items-center justify-center relative transition-all border border-transparent hover:border-gray-200"
             >
               <span className="material-symbols-outlined text-gray-600">
                 notifications
@@ -239,7 +239,7 @@ const Layout: React.FC = () => {
             </Link>
             <Link
               to="/auth"
-              className="size-10 rounded-xl bg-slate-50 text-gray-600 hover:text-red-500 flex items-center justify-center transition-all border border-gray-200"
+              className="size-10 rounded bg-slate-50 text-gray-600 hover:text-red-500 flex items-center justify-center transition-all border border-gray-200"
             >
               <span className="material-symbols-outlined">logout</span>
             </Link>
