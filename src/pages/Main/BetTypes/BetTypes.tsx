@@ -1,5 +1,6 @@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
   Dialog,
@@ -23,20 +24,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { betTypeService, sportService } from "@/services/mockData";
+import { BetType, Sport } from "@/types/schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import React, { useEffect, useState } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import * as z from "zod";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "../../components/ui/card";
-import { betTypeService, sportService } from "../../services/mockData";
-import { BetType, Sport } from "../../types/schema";
-
 const outcomeSchema = z.object({
   outcomeId: z.string().min(1, "ID is required"),
   label: z.string().min(1, "Label is required"),

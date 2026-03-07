@@ -1,21 +1,6 @@
+import DeleteConfirmDialog from "@/components/common/DeleteConfirmDialog";
 import SportCategoriesSkeleton from "@/components/skeletons/SportCategoriesSkeleton";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
 import {
   useCreateSportCategoryMutation,
   useDeleteSportCategoryMutation,
@@ -27,13 +12,8 @@ import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import * as z from "zod";
-import { ImageUpload } from "../../../components/common/ImageUpload";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "../../../components/ui/card";
+import SportCategoryCard from "./SportCategoryCard";
+import SportFormDialog from "./SportFormDialog";
 
 const sportSchema = z.object({
   name: z.string().min(1, "Name is required"),
@@ -60,18 +40,13 @@ const SportCategories: React.FC = () => {
 
   const form = useForm<SportFormValues>({
     resolver: zodResolver(sportSchema) as any,
-    defaultValues: {
-      name: "",
-      icon: "",
-    },
+    defaultValues: { name: "", icon: "" },
   });
 
   const onSubmit = async (data: SportFormValues) => {
     const formData = new FormData();
     formData.append("name", data.name);
-    if (data.icon instanceof File) {
-      formData.append("icon", data.icon);
-    }
+    if (data.icon instanceof File) formData.append("icon", data.icon);
 
     try {
       if (editingId) {
@@ -90,10 +65,7 @@ const SportCategories: React.FC = () => {
 
   const handleEdit = (sport: any) => {
     setEditingId(sport._id);
-    form.reset({
-      name: sport.name,
-      icon: sport.icon,
-    });
+    form.reset({ name: sport.name, icon: sport.icon });
     setIsModalOpen(true);
   };
 
@@ -103,12 +75,7 @@ const SportCategories: React.FC = () => {
     setIsModalOpen(true);
   };
 
-  const openDeleteConfirm = (sport: any) => {
-    setDeletingId(sport._id);
-    setDeletingName(sport.name);
-  };
-
-  const handleConfirmDelete = async () => {
+  const handleDeleteConfirm = async () => {
     if (!deletingId) return;
     try {
       await deleteSportCategory(deletingId).unwrap();
@@ -146,7 +113,7 @@ const SportCategories: React.FC = () => {
         </Button>
       </div>
 
-      {/* Sports List */}
+      {/* Cards Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-6">
         {sports?.length === 0 ? (
           <p className="col-span-full text-center text-slate-400 py-12">
@@ -154,173 +121,41 @@ const SportCategories: React.FC = () => {
           </p>
         ) : (
           sports?.map((sport: any) => (
-            <Card key={sport._id} className="w-full shadow-none group ">
-              <CardHeader className="flex flex-row items-center justify-between pb-4">
-                <div className="size-12 rounded bg-slate-50 flex items-center justify-center cursor-pointer group-hover:text-primary transition-all duration-500 overflow-hidden border border-slate-100 text-3xl">
-                  {sport.icon ? (
-                    <img
-                      src={sport.icon}
-                      alt={sport.name}
-                      className="w-full h-full object-cover"
-                    />
-                  ) : (
-                    "🏅"
-                  )}
-                </div>
-                <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="size-8 cursor-pointer"
-                    onClick={() => handleEdit(sport)}
-                  >
-                    <span className="material-symbols-outlined text-lg">
-                      edit
-                    </span>
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="size-8 text-red-500 hover:text-red-600 hover:bg-red-50 cursor-pointer"
-                    onClick={() => openDeleteConfirm(sport)}
-                  >
-                    <span className="material-symbols-outlined text-lg">
-                      delete
-                    </span>
-                  </Button>
-                </div>
-              </CardHeader>
-              <CardContent>
-                <CardTitle className="mb-1 text-2xl font-black">
-                  {sport.name}
-                </CardTitle>
-                <div className="text-xs text-slate-400 font-mono mb-4">
-                  {sport.slug}
-                </div>
-                <Badge variant="default">Active</Badge>
-              </CardContent>
-            </Card>
+            <SportCategoryCard
+              key={sport._id}
+              sport={sport}
+              onEdit={handleEdit}
+              onDelete={(s) => {
+                setDeletingId(s._id);
+                setDeletingName(s.name);
+              }}
+            />
           ))
         )}
       </div>
 
-      {/* Create / Edit Modal */}
-      <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>
-              {editingId ? "Edit Sport" : "Create New Sport"}
-            </DialogTitle>
-          </DialogHeader>
-
-          <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-              <FormField
-                control={form.control}
-                name="name"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Name</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Football" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="icon"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Icon</FormLabel>
-                    <FormControl>
-                      <ImageUpload
-                        value={field.value}
-                        onChange={field.onChange}
-                        placeholder="Upload Sport Icon"
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <div className="flex gap-4 pt-4">
-                <Button
-                  type="button"
-                  variant="outline"
-                  className="flex-1 cursor-pointer rounded-md"
-                  onClick={() => setIsModalOpen(false)}
-                >
-                  Cancel
-                </Button>
-                <Button
-                  type="submit"
-                  className="flex-1 cursor-pointer rounded"
-                  disabled={isCreating || isUpdating}
-                >
-                  {isCreating || isUpdating ? "Saving..." : "Save Sport"}
-                </Button>
-              </div>
-            </form>
-          </Form>
-        </DialogContent>
-      </Dialog>
+      {/* Create / Edit Dialog */}
+      <SportFormDialog
+        open={isModalOpen}
+        editingId={editingId}
+        form={form}
+        isCreating={isCreating}
+        isUpdating={isUpdating}
+        onSubmit={onSubmit}
+        onClose={() => setIsModalOpen(false)}
+      />
 
       {/* Delete Confirmation Dialog */}
-      <Dialog
+      <DeleteConfirmDialog
         open={!!deletingId}
-        onOpenChange={() => {
+        itemName={deletingName}
+        isDeleting={isDeleting}
+        onConfirm={handleDeleteConfirm}
+        onCancel={() => {
           setDeletingId(null);
           setDeletingName("");
         }}
-      >
-        <DialogContent className="max-w-sm">
-          <DialogHeader>
-            <DialogTitle className="text-red-600 flex items-center gap-2">
-              <span className="material-symbols-outlined">warning</span>
-              Delete Sport
-            </DialogTitle>
-          </DialogHeader>
-          <div className="space-y-4">
-            <p className="text-sm text-slate-600">
-              Are you sure you want to delete{" "}
-              <span className="font-bold text-slate-900">"{deletingName}"</span>
-              ? This action cannot be undone.
-            </p>
-            <div className="flex gap-3 pt-2">
-              <Button
-                variant="outline"
-                className="flex-1 cursor-pointer"
-                onClick={() => {
-                  setDeletingId(null);
-                  setDeletingName("");
-                }}
-                disabled={isDeleting}
-              >
-                Cancel
-              </Button>
-              <Button
-                variant="destructive"
-                className="flex-1 cursor-pointer"
-                onClick={handleConfirmDelete}
-                disabled={isDeleting}
-              >
-                {isDeleting ? (
-                  <span className="flex items-center gap-2">
-                    <span className="animate-spin material-symbols-outlined text-sm">
-                      progress_activity
-                    </span>
-                    Deleting...
-                  </span>
-                ) : (
-                  "Yes, Delete"
-                )}
-              </Button>
-            </div>
-          </div>
-        </DialogContent>
-      </Dialog>
+      />
     </div>
   );
 };

@@ -1,5 +1,7 @@
+import { ImageUpload } from "@/components/common/ImageUpload";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
   Dialog,
@@ -24,6 +26,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Skeleton } from "@/components/ui/skeleton";
+import { countries } from "@/constants/countries";
 import { useGetAllSportCategoriesQuery } from "@/redux/features/sportCategory/sportCategoryApi";
 import {
   useCreateTournamentMutation,
@@ -36,14 +39,6 @@ import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import * as z from "zod";
-import { ImageUpload } from "../../components/common/ImageUpload";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "../../components/ui/card";
-import { countries } from "../../constants/countries";
 
 const tournamentSchema = z.object({
   name: z.string().min(1, "Name is required"),
