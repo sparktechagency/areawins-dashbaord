@@ -1,3 +1,4 @@
+import SportCategoriesSkeleton from "@/components/skeletons/SportCategoriesSkeleton";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -44,13 +45,16 @@ type SportFormValues = z.infer<typeof sportSchema>;
 const SportCategories: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [deletingName, setDeletingName] = useState<string>("");
 
   const { data: sportsRes, isLoading } = useGetAllSportCategoriesQuery({});
   const [createSportCategory, { isLoading: isCreating }] =
     useCreateSportCategoryMutation();
   const [updateSportCategory, { isLoading: isUpdating }] =
     useUpdateSportCategoryMutation();
-  const [deleteSportCategory] = useDeleteSportCategoryMutation();
+  const [deleteSportCategory, { isLoading: isDeleting }] =
+    useDeleteSportCategoryMutation();
 
   const sports = sportsRes?.data?.results || [];
 
@@ -99,16 +103,25 @@ const SportCategories: React.FC = () => {
     setIsModalOpen(true);
   };
 
-  const handleDelete = async (id: string) => {
-    if (confirm("Are you sure you want to delete this sport?")) {
-      try {
-        await deleteSportCategory(id).unwrap();
-        toast.success("Sport deleted successfully");
-      } catch (err: any) {
-        toast.error(err?.data?.message || "Failed to delete sport");
-      }
+  const openDeleteConfirm = (sport: any) => {
+    setDeletingId(sport._id);
+    setDeletingName(sport.name);
+  };
+
+  const handleConfirmDelete = async () => {
+    if (!deletingId) return;
+    try {
+      await deleteSportCategory(deletingId).unwrap();
+      toast.success("Sport deleted successfully");
+    } catch (err: any) {
+      toast.error(err?.data?.message || "Failed to delete sport");
+    } finally {
+      setDeletingId(null);
+      setDeletingName("");
     }
   };
+
+  if (isLoading) return <SportCategoriesSkeleton />;
 
   return (
     <div className="w-full p-4 md:p-8">
@@ -132,6 +145,7 @@ const SportCategories: React.FC = () => {
           New Sport
         </Button>
       </div>
+
       {/* Sports List */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-6">
         {sports?.length === 0 ? (
@@ -142,7 +156,7 @@ const SportCategories: React.FC = () => {
           sports?.map((sport: any) => (
             <Card key={sport._id} className="w-full shadow-none group ">
               <CardHeader className="flex flex-row items-center justify-between pb-4">
-                <div className="size-16 rounded-2xl bg-slate-50 flex items-center justify-center cursor-pointer group-hover:text-primary transition-all duration-500 overflow-hidden border border-slate-100 text-3xl">
+                <div className="size-12 rounded-2xl bg-slate-50 flex items-center justify-center cursor-pointer group-hover:text-primary transition-all duration-500 overflow-hidden border border-slate-100 text-3xl">
                   {sport.icon ? (
                     <img
                       src={sport.icon}
@@ -168,7 +182,7 @@ const SportCategories: React.FC = () => {
                     variant="ghost"
                     size="icon"
                     className="size-8 text-red-500 hover:text-red-600 hover:bg-red-50 cursor-pointer"
-                    onClick={() => handleDelete(sport._id)}
+                    onClick={() => openDeleteConfirm(sport)}
                   >
                     <span className="material-symbols-outlined text-lg">
                       delete
@@ -189,7 +203,8 @@ const SportCategories: React.FC = () => {
           ))
         )}
       </div>
-      {/* Modal */}
+
+      {/* Create / Edit Modal */}
       <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
         <DialogContent>
           <DialogHeader>
@@ -249,6 +264,61 @@ const SportCategories: React.FC = () => {
               </div>
             </form>
           </Form>
+        </DialogContent>
+      </Dialog>
+
+      {/* Delete Confirmation Dialog */}
+      <Dialog
+        open={!!deletingId}
+        onOpenChange={() => {
+          setDeletingId(null);
+          setDeletingName("");
+        }}
+      >
+        <DialogContent className="max-w-sm">
+          <DialogHeader>
+            <DialogTitle className="text-red-600 flex items-center gap-2">
+              <span className="material-symbols-outlined">warning</span>
+              Delete Sport
+            </DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <p className="text-sm text-slate-600">
+              Are you sure you want to delete{" "}
+              <span className="font-bold text-slate-900">"{deletingName}"</span>
+              ? This action cannot be undone.
+            </p>
+            <div className="flex gap-3 pt-2">
+              <Button
+                variant="outline"
+                className="flex-1"
+                onClick={() => {
+                  setDeletingId(null);
+                  setDeletingName("");
+                }}
+                disabled={isDeleting}
+              >
+                Cancel
+              </Button>
+              <Button
+                variant="destructive"
+                className="flex-1"
+                onClick={handleConfirmDelete}
+                disabled={isDeleting}
+              >
+                {isDeleting ? (
+                  <span className="flex items-center gap-2">
+                    <span className="animate-spin material-symbols-outlined text-sm">
+                      progress_activity
+                    </span>
+                    Deleting...
+                  </span>
+                ) : (
+                  "Yes, Delete"
+                )}
+              </Button>
+            </div>
+          </div>
         </DialogContent>
       </Dialog>
     </div>
