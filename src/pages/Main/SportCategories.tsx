@@ -41,7 +41,7 @@ const sportSchema = z.object({
 
 type SportFormValues = z.infer<typeof sportSchema>;
 
-const Categories: React.FC = () => {
+const SportCategories: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
 
@@ -111,7 +111,7 @@ const Categories: React.FC = () => {
   };
 
   return (
-    <div className="p-4 md:p-8">
+    <div className="w-full p-4 md:p-8">
       {/* Header */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 mb-10">
         <div>
@@ -255,4 +255,4 @@ const Categories: React.FC = () => {
   );
 };
 
-export default Categories;
+export default SportCategories;

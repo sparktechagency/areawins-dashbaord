@@ -113,12 +113,12 @@ const Profile: React.FC = () => {
     }
   };
 
-  if (!isLoading) {
+  if (isLoading) {
     return <ProfileSkeleton />;
   }
 
   return (
-    <div className="p-4 md:p-8 max-w-4xl mx-auto">
+    <div className="w-full p-4 md:p-8 max-w-4xl mx-auto">
       <div className="flex justify-between items-end mb-12">
         <div>
           <h1 className="text-4xl font-black tracking-tight mb-2">

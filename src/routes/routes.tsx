@@ -7,7 +7,7 @@ import OTPVerification from "../pages/Auth/OTPVerification";
 import ResetPassword from "../pages/Auth/ResetPassword";
 import BetManagement from "../pages/Main/BetManagement";
 import BetTypes from "../pages/Main/BetTypes";
-import Categories from "../pages/Main/Categories";
+import SportCategories from "../pages/Main/SportCategories";
 import Dashboard from "../pages/Main/Dashboard";
 import EditProfile from "../pages/Main/EditProfile";
 import Financials from "../pages/Main/Financials";
@@ -40,7 +40,7 @@ const router = createBrowserRouter([
       },
       {
         path: "categories",
-        element: <Categories />,
+        element: <SportCategories />,
       },
       {
         path: "bet-types",
