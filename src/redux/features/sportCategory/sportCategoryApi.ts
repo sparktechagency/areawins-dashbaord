@@ -14,7 +14,6 @@ const sportCategoryApi = baseApi.injectEndpoints({
         url: `/sport-categories/${id}`,
         method: "GET",
       }),
-      providesTags: (result, error, id) => [{ type: "SportCategory", id }],
     }),
     createSportCategory: builder.mutation({
       query: (data) => ({
@@ -30,10 +29,7 @@ const sportCategoryApi = baseApi.injectEndpoints({
         method: "PATCH",
         body: data,
       }),
-      invalidatesTags: (result, error, { id }) => [
-        "SportCategory",
-        { type: "SportCategory", id },
-      ],
+      invalidatesTags: ["SportCategory"],
     }),
     deleteSportCategory: builder.mutation({
       query: (id) => ({
