@@ -113,7 +113,7 @@ const Profile: React.FC = () => {
     }
   };
 
-  if (isLoading) {
+  if (!isLoading) {
     return <ProfileSkeleton />;
   }
 

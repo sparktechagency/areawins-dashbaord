@@ -4,6 +4,7 @@ import React from "react";
 const ProfileSkeleton: React.FC = () => {
   return (
     <div className="p-4 md:p-8 max-w-4xl mx-auto animate-pulse">
+      {/* Header */}
       <div className="flex justify-between items-end mb-12">
         <div className="space-y-2">
           <Skeleton className="h-10 w-48 rounded-xl" />
@@ -37,6 +38,7 @@ const ProfileSkeleton: React.FC = () => {
           </div>
         </div>
 
+        {/* Form */}
         <div className="md:col-span-2">
           <div className="bg-white border border-gray-100 rounded-2xl p-8 h-fit ">
             <div className="flex items-center gap-3 mb-10">
@@ -48,17 +50,17 @@ const ProfileSkeleton: React.FC = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div className="space-y-3">
                   <Skeleton className="h-3 w-24 rounded bg-slate-100" />
-                  <Skeleton className="h-[52px] w-full rounded-xl bg-slate-50/50" />
+                  <Skeleton className="h-[52px] w-full rounded-xl " />
                 </div>
                 <div className="space-y-3">
                   <Skeleton className="h-3 w-28 rounded bg-slate-100" />
-                  <Skeleton className="h-[52px] w-full rounded-xl bg-slate-50/50" />
+                  <Skeleton className="h-[52px] w-full rounded-xl " />
                 </div>
               </div>
 
               <div className="space-y-3">
                 <Skeleton className="h-3 w-36 rounded bg-slate-100" />
-                <Skeleton className="h-[52px] w-full rounded-xl bg-slate-50/50" />
+                <Skeleton className="h-[52px] w-full rounded-xl " />
               </div>
             </div>
           </div>

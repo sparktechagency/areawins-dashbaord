@@ -110,8 +110,6 @@ const Categories: React.FC = () => {
     }
   };
 
-  console.log("sportsRes",sportsRes)
-
   return (
     <div className="p-4 md:p-8">
       {/* Header */}
