@@ -34,25 +34,14 @@ import {
   useGetAllTournamentsQuery,
   useUpdateTournamentMutation,
 } from "@/redux/features/tournament/tournamentApi";
+import {
+  TournamentFormValues,
+  tournamentSchema,
+} from "@/validation/tournament";
 import { zodResolver } from "@hookform/resolvers/zod";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-import * as z from "zod";
-
-const tournamentSchema = z.object({
-  name: z.string().min(1, "Name is required"),
-  slug: z.string().min(1, "Slug is required"),
-  sport: z.string().min(1, "Sport is required"),
-  type: z.enum(["league", "tournament", "cup", "international", "grand_slam"]),
-  year: z.string().optional(),
-  country: z.string().optional(),
-  logo: z.any().optional(),
-  isFeatured: z.boolean(),
-  isActive: z.boolean(),
-});
-
-type TournamentFormValues = z.infer<typeof tournamentSchema>;
 
 const TournamentManagement: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);

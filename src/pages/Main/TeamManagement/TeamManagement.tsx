@@ -8,25 +8,13 @@ import {
   useGetAllTeamsQuery,
   useUpdateTeamMutation,
 } from "@/redux/features/team/teamApi";
+import { TeamFormValues, teamSchema } from "@/validation/team";
 import { zodResolver } from "@hookform/resolvers/zod";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-import * as z from "zod";
 import TeamCard from "./TeamCard";
 import TeamFormDialog from "./TeamFormDialog";
-
-const teamSchema = z.object({
-  name: z.string().min(1, "Name is required"),
-  slug: z.string().min(1, "Slug is required"),
-  sport: z.string().min(1, "Sport is required"),
-  shortName: z.string().min(1, "Short Name is required"),
-  country: z.string().min(1, "Country is required"),
-  logo: z.any().optional(),
-  isActive: z.boolean(),
-});
-
-type TeamFormValues = z.infer<typeof teamSchema>;
 
 const TeamManagement: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);

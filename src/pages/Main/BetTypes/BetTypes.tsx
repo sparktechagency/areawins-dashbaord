@@ -26,29 +26,11 @@ import {
 } from "@/components/ui/select";
 import { betTypeService, sportService } from "@/services/mockData";
 import { BetType, Sport } from "@/types/schema";
+import { BetTypeFormValues, betTypeSchema } from "@/validation/betType";
 import { zodResolver } from "@hookform/resolvers/zod";
 import React, { useEffect, useState } from "react";
 import { useFieldArray, useForm } from "react-hook-form";
 import { toast } from "sonner";
-import * as z from "zod";
-const outcomeSchema = z.object({
-  outcomeId: z.string().min(1, "ID is required"),
-  label: z.string().min(1, "Label is required"),
-  displayOrder: z.coerce.number(),
-});
-
-const betTypeSchema = z.object({
-  betTypeId: z.string().min(1, "Bet Type ID is required"),
-  sport: z.string().min(1, "Sport is required"),
-  name: z.string().min(1, "Name is required"),
-  slug: z.string().min(1, "Slug is required"),
-  outcomes: z.array(outcomeSchema).min(1, "At least one outcome is required"),
-  isDefault: z.boolean(),
-  displayOrder: z.coerce.number(),
-  isActive: z.boolean(),
-});
-
-type BetTypeFormValues = z.infer<typeof betTypeSchema>;
 
 const BetTypes: React.FC = () => {
   const [betTypes, setBetTypes] = useState<BetType[]>([]);

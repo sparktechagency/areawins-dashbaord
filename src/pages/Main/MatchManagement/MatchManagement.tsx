@@ -10,32 +10,13 @@ import {
 import { useGetAllSportCategoriesQuery } from "@/redux/features/sportCategory/sportCategoryApi";
 import { useGetAllTeamsQuery } from "@/redux/features/team/teamApi";
 import { useGetAllTournamentsQuery } from "@/redux/features/tournament/tournamentApi";
+import { MatchFormValues, matchSchema } from "@/validation/match";
 import { zodResolver } from "@hookform/resolvers/zod";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-import * as z from "zod";
 import MatchCard from "./MatchCard";
 import MatchFormDialog from "./MatchFormDialog";
-
-const matchSchema = z
-  .object({
-    sport: z.string().min(1, "Sport is required"),
-    tournament: z.string().optional(),
-    homeTeam: z.string().min(1, "Home Team is required"),
-    awayTeam: z.string().min(1, "Away Team is required"),
-    scheduledStartTime: z.string().min(1, "Start Time is required"),
-    status: z.enum(["scheduled", "live", "finished", "cancelled", "postponed"]),
-    isFeatured: z.boolean(),
-    homeScore: z.coerce.number(),
-    awayScore: z.coerce.number(),
-  })
-  .refine((data) => data.homeTeam !== data.awayTeam, {
-    message: "Home and Away teams cannot be the same",
-    path: ["awayTeam"],
-  });
-
-type MatchFormValues = z.infer<typeof matchSchema>;
 
 const MatchManagement: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);

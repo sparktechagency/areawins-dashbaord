@@ -21,28 +21,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { PromotionFormValues, promotionSchema } from "@/validation/promotion";
 import { zodResolver } from "@hookform/resolvers/zod";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-import * as z from "zod";
-
-const promotionSchema = z.object({
-  title: z.string().min(1, "Title is required"),
-  type: z.enum(["New User", "Retention", "Special", "Seasonal"]),
-  status: z.enum(["Active", "Scheduled", "Paused", "Expired"]),
-  reach: z.string().min(1, "Reach description is required"),
-  color: z.enum([
-    "bg-green-500",
-    "bg-blue-500",
-    "bg-orange-500",
-    "bg-purple-500",
-    "bg-red-500",
-  ]),
-  description: z.string().min(1, "Description is required"),
-});
-
-type PromotionFormValues = z.infer<typeof promotionSchema>;
 
 interface Promotion extends PromotionFormValues {
   id: string;

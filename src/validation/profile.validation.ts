@@ -8,3 +8,11 @@ export const profileSchema = z.object({
 });
 
 export type ProfileFormValues = z.infer<typeof profileSchema>;
+
+export const editProfileSchema = z.object({
+  fullName: z.string().min(1, "Name is required"),
+  nickname: z.string().optional(),
+  profileImage: z.any().optional(),
+});
+
+export type EditProfileFormValues = z.infer<typeof editProfileSchema>;

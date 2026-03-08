@@ -5,21 +5,16 @@ import {
   useGetMyProfileQuery,
   useUpdateMyProfileMutation,
 } from "@/redux/features/profile/profileApi";
+import {
+  EditProfileFormValues,
+  editProfileSchema,
+} from "@/validation/profile.validation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Camera } from "lucide-react";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
-import * as z from "zod";
-
-const profileSchema = z.object({
-  fullName: z.string().min(1, "Name is required"),
-  nickname: z.string().optional(),
-  profileImage: z.any().optional(),
-});
-
-type ProfileFormValues = z.infer<typeof profileSchema>;
 
 const EditProfile: React.FC = () => {
   const { data: profileRes, isLoading } = useGetMyProfileQuery({});
@@ -29,8 +24,8 @@ const EditProfile: React.FC = () => {
   const navigate = useNavigate();
   const [preview, setPreview] = useState<string | null>(null);
 
-  const form = useForm<ProfileFormValues>({
-    resolver: zodResolver(profileSchema),
+  const form = useForm<EditProfileFormValues>({
+    resolver: zodResolver(editProfileSchema),
     defaultValues: { fullName: "", nickname: "" },
   });
 
@@ -54,7 +49,7 @@ const EditProfile: React.FC = () => {
     }
   };
 
-  const onSubmit = async (data: ProfileFormValues) => {
+  const onSubmit = async (data: EditProfileFormValues) => {
     try {
       const formData = new FormData();
       formData.append("fullName", data.fullName);

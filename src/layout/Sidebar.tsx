@@ -9,10 +9,11 @@ const navItems = [
   { label: "Overview", icon: "grid_view", path: "/" },
   { label: "User Management", icon: "group", path: "/users" },
   { label: "Sport Categories", icon: "category", path: "/categories" },
-  { label: "Bet Types", icon: "style", path: "/bet-types" },
-  { label: "Sports Events", icon: "sports_soccer", path: "/matches" },
   { label: "Teams", icon: "shield", path: "/teams" },
   { label: "Tournaments", icon: "emoji_events", path: "/tournaments" },
+  { label: "Bet Types", icon: "style", path: "/bet-types" },
+  { label: "Matchs Management", icon: "sports_soccer", path: "/matches" },
+
   { label: "Bet Management", icon: "confirmation_number", path: "/bets" },
 ];
 

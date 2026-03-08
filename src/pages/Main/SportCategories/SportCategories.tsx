@@ -102,7 +102,7 @@ const SportCategories: React.FC = () => {
         </div>
         <Button
           onClick={handleCreate}
-          className="bg-primary text-secondary hover:bg-primary/90 cursor-pointer"
+          className="bg-primary text-white hover:bg-primary/90 cursor-pointer"
         >
           <span className="material-symbols-outlined text-lg mr-2">
             add_circle
