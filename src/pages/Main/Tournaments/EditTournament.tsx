@@ -209,6 +209,7 @@ const EditTournament: React.FC = () => {
               name="logo"
               label="Tournament Logo"
               placeholder="Upload Tournament Logo"
+              required
             />
 
             <div className="flex gap-4 pt-4">

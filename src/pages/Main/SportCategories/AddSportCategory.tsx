@@ -76,6 +76,7 @@ const AddSportCategory: React.FC = () => {
               name="icon"
               label="Sport Icon"
               placeholder="Upload Sport Icon"
+              required
             />
 
             <div className="flex gap-4 pt-4">

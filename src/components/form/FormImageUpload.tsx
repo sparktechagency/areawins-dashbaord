@@ -16,6 +16,7 @@ interface FormImageUploadProps<TFieldValues extends FieldValues> {
   placeholder?: string;
   className?: string;
   labelClassName?: string;
+  required?: boolean;
 }
 
 export const FormImageUpload = <TFieldValues extends FieldValues>({
@@ -25,6 +26,7 @@ export const FormImageUpload = <TFieldValues extends FieldValues>({
   placeholder,
   className,
   labelClassName,
+  required,
 }: FormImageUploadProps<TFieldValues>) => {
   return (
     <FormField
@@ -34,7 +36,7 @@ export const FormImageUpload = <TFieldValues extends FieldValues>({
         <FormItem className={cn("flex flex-col gap-1.5", className)}>
           {label && (
             <FormLabel className={cn("text-sm text-gray-700", labelClassName)}>
-              {label}
+              {label} {required && <span className="text-red-500">*</span>}
             </FormLabel>
           )}
           <FormControl>

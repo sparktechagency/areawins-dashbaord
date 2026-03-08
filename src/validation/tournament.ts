@@ -17,7 +17,7 @@ export const tournamentSchema = z.object({
   year: z.string().optional(),
   country: z.string().min(1, "Country is required"),
   isFeatured: z.boolean(),
-  logo: z.any().optional(),
+  logo: z.any().refine((file) => file, "Logo is required"),
 });
 
 export type TournamentFormValues = z.infer<typeof tournamentSchema>;

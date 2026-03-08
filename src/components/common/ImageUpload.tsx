@@ -1,3 +1,4 @@
+import { X } from "lucide-react";
 import React, { useState } from "react";
 interface ImageUploadProps {
   value?: any;
@@ -46,6 +47,12 @@ export const ImageUpload: React.FC<ImageUploadProps> = ({
     }
   };
 
+  const handleRemove = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    onChange("");
+  };
+
   return (
     <div className={`w-full ${className}`}>
       <label
@@ -53,28 +60,51 @@ export const ImageUpload: React.FC<ImageUploadProps> = ({
         onDragLeave={onDragLeave}
         onDrop={onDrop}
         className={`
-          flex flex-col items-center justify-center w-full h-32 border-2 border-dashed rounded cursor-pointer 
-          transition-colors duration-200 ease-in-out
+          relative flex flex-col items-center justify-center w-full h-32 rounded-md cursor-pointer 
+          transition-all duration-200 ease-in-out
           ${
-            isDragging
-              ? "border-primary bg-primary/5"
-              : "border-slate-200 hover:bg-slate-50"
+            value
+              ? "border-0 bg-gray-50/10"
+              : isDragging
+                ? "border-2 border-dashed border-primary bg-primary/5"
+                : "border-2 border-dashed border-slate-200 hover:bg-slate-50 bg-gray-50/30"
           }
         `}
       >
-        <div className="flex flex-col items-center justify-center pt-5 pb-6">
+        <div className="flex flex-col items-center justify-center w-full h-full p-2">
           {value ? (
-            typeof value === "string" ? (
-              <img src={value} alt="Preview" className="h-24 object-contain" />
-            ) : value instanceof File ? (
-              <img
-                src={URL.createObjectURL(value)}
-                alt="Preview"
-                className="h-24 object-contain"
-              />
-            ) : (
-              <div className="text-2xl">Invalid Image</div>
-            )
+            <div className="relative group w-full h-full flex justify-start items-center">
+              <div className="relative w-fit h-fit">
+                {/* Image Preview */}
+                {typeof value === "string" ? (
+                  <img
+                    src={value}
+                    alt="Preview"
+                    className="max-h-28 max-w-full object-contain rounded border border-gray-100"
+                  />
+                ) : value instanceof File ? (
+                  <img
+                    src={URL.createObjectURL(value)}
+                    alt="Preview"
+                    className="max-h-28 max-w-full object-contain rounded border border-gray-100"
+                  />
+                ) : (
+                  <div className="text-sm font-medium text-red-500">
+                    Invalid Image
+                  </div>
+                )}
+
+                {/* Delete Button - Positioned relative to the image */}
+                <button
+                  type="button"
+                  onClick={handleRemove}
+                  className="absolute -top-2 -right-2 p-1 bg-rose-500 text-white rounded-full shadow-lg hover:bg-rose-600 transition-colors transform hover:scale-110 z-10"
+                  title="Remove image"
+                >
+                  <X className="size-3" />
+                </button>
+              </div>
+            </div>
           ) : (
             <>
               <svg
@@ -106,18 +136,6 @@ export const ImageUpload: React.FC<ImageUploadProps> = ({
           onChange={onFileSelect}
         />
       </label>
-      {value && (
-        <button
-          type="button"
-          onClick={(e) => {
-            e.preventDefault();
-            onChange("");
-          }}
-          className="text-xs text-red-500 mt-2 hover:underline text-center w-full block"
-        >
-          Remove Image
-        </button>
-      )}
     </div>
   );
 };
