@@ -1,4 +1,4 @@
-import { FormImageUpload, FormInput } from "@/components/form";
+import { FormInput, FormImageUpload } from "@/components/form";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import {
@@ -84,6 +84,7 @@ const EditSportCategory: React.FC = () => {
               name="name"
               label="Sport Name"
               placeholder="Football"
+              error={form.formState.errors.name?.message}
               required
             />
 

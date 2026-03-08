@@ -1,11 +1,11 @@
 import {
-  FormCheckbox,
   FormDatePicker,
-  FormImageUpload,
   FormInput,
   FormSelect,
   FormTextarea,
 } from "@/components/form";
+import FormCheckbox from "@/components/form/FormCheckbox";
+import FormImageUpload from "@/components/form/FormImageUpload";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import { countries } from "@/constants/countries";

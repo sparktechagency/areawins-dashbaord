@@ -1,4 +1,5 @@
-import { FormImageUpload, FormInput } from "@/components/form";
+import { FormInput } from "@/components/form";
+import FormImageUpload from "@/components/form/FormImageUpload";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import { useCreateSportCategoryMutation } from "@/redux/features/sportCategory/sportCategoryApi";
@@ -7,6 +8,7 @@ import {
   sportCategoriesSchema,
 } from "@/validation/sportCategories";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Icon } from "lucide-react";
 import React from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
@@ -66,6 +68,7 @@ const AddSportCategory: React.FC = () => {
               name="name"
               label="Sport Name"
               placeholder="Football"
+              error={form.formState.errors.name?.message}
               required
             />
 
