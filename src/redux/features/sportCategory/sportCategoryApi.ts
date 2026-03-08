@@ -3,9 +3,10 @@ import { baseApi } from "@/redux/baseApi/baseApi";
 const sportCategoryApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     getAllSportCategories: builder.query({
-      query: () => ({
+      query: (params) => ({
         url: "/sport-categories",
         method: "GET",
+        params,
       }),
       providesTags: ["SportCategory"],
     }),
