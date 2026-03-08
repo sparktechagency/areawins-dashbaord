@@ -43,15 +43,9 @@ const BetTypeForm: React.FC<BetTypeFormProps> = ({
   const form = useForm<BetTypeFormValues>({
     resolver: zodResolver(betTypeSchema) as any,
     defaultValues: {
-      betTypeId:
-        initialData?.betTypeId ||
-        `BET-TYPE-${Math.floor(Math.random() * 1000)
-          .toString()
-          .padStart(3, "0")}`,
       sport:
         initialData?.sport?._id || initialData?.sport || initialSportId || "",
       name: initialData?.name || "",
-      slug: initialData?.slug || "",
       outcomes: initialData?.outcomes || [],
       isDefault: initialData?.isDefault || false,
       displayOrder: initialData?.displayOrder || 0,
@@ -67,10 +61,8 @@ const BetTypeForm: React.FC<BetTypeFormProps> = ({
   useEffect(() => {
     if (initialData) {
       form.reset({
-        betTypeId: initialData.betTypeId,
         sport: initialData.sport,
         name: initialData.name,
-        slug: initialData.slug,
         outcomes: initialData.outcomes,
         isDefault: initialData.isDefault,
         displayOrder: initialData.displayOrder,
@@ -85,21 +77,7 @@ const BetTypeForm: React.FC<BetTypeFormProps> = ({
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
           <div className="p-6 bg-white rounded-xl border border-slate-100 shadow-sm space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <FormField
-                control={form.control}
-                name="betTypeId"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Bet Type ID</FormLabel>
-                    <FormControl>
-                      <Input placeholder="BET-TYPE-001" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
+            <div className="grid grid-cols-1 gap-4">
               <FormField
                 control={form.control}
                 name="sport"
@@ -130,7 +108,7 @@ const BetTypeForm: React.FC<BetTypeFormProps> = ({
               />
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 gap-4">
               <FormField
                 control={form.control}
                 name="name"
@@ -140,30 +118,6 @@ const BetTypeForm: React.FC<BetTypeFormProps> = ({
                     <FormControl>
                       <Input
                         placeholder="Match Winner"
-                        className="h-12"
-                        {...field}
-                        onChange={(e) => {
-                          field.onChange(e);
-                          const slug = e.target.value
-                            .toLowerCase()
-                            .replace(/ /g, "_");
-                          form.setValue("slug", slug);
-                        }}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="slug"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Slug</FormLabel>
-                    <FormControl>
-                      <Input
-                        placeholder="match_winner"
                         className="h-12"
                         {...field}
                       />

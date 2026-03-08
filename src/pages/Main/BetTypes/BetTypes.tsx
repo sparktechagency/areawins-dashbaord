@@ -1,8 +1,8 @@
 import DeleteConfirmDialog from "@/components/common/DeleteConfirmDialog";
+import BetTypeSkeleton from "@/components/skeletons/BetTypeSkeleton";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Skeleton } from "@/components/ui/skeleton";
 import {
   useDeleteBetTypeMutation,
   useGetAllBetTypesQuery,
@@ -28,13 +28,16 @@ const BetTypes: React.FC = () => {
 
   const currentSport = sports.find((s: any) => s._id === sportId);
 
-  const betTypeParams: any = {};
-  if (sportId && sportId !== "all") {
-    betTypeParams.sport = sportId;
-  }
+  React.useEffect(() => {
+    if (!sportId && sports.length > 0) {
+      navigate(`/categories/${sports[0]._id}/bet-types`, { replace: true });
+    }
+  }, [sportId, sports, navigate]);
 
   const { data: betTypesRes, isLoading: isBetTypesLoading } =
-    useGetAllBetTypesQuery(betTypeParams);
+    useGetAllBetTypesQuery(sportId ? { sport: sportId } : {}, {
+      skip: !sportId,
+    });
   const betTypes = betTypesRes?.data?.results || [];
 
   const [deleteBetType, { isLoading: isDeleting }] = useDeleteBetTypeMutation();
@@ -65,15 +68,11 @@ const BetTypes: React.FC = () => {
   };
 
   const handleSelectSport = (id: string) => {
-    if (id === "all") {
-      navigate("/bet-types");
-    } else {
-      navigate(`/categories/${id}/bet-types`);
-    }
+    navigate(`/categories/${id}/bet-types`);
   };
 
   const handleCreate = () => {
-    if (sportId && sportId !== "all") {
+    if (sportId) {
       navigate(`/bet-types/add?sportId=${sportId}`);
     } else {
       navigate("/bet-types/add");
@@ -102,11 +101,11 @@ const BetTypes: React.FC = () => {
       <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 mb-4">
         <div>
           <h1 className="text-3xl md:text-5xl font-black tracking-tighter mb-2">
-            {currentSport?.name || "All"} Bet Types
+            {currentSport?.name} Bet Types
           </h1>
           <p className="text-slate-500 font-medium">
             Define bet types and their potential outcomes for{" "}
-            {currentSport?.name || "all sports"}.
+            {currentSport?.name}.
           </p>
         </div>
         <Button
@@ -134,8 +133,8 @@ const BetTypes: React.FC = () => {
 
       {isBetTypesLoading ? (
         <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
-          {[1, 2, 3].map((i) => (
-            <Skeleton key={i} className="h-48 w-full rounded" />
+          {[1, 2, 3, 4, 5, 6].map((i) => (
+            <BetTypeSkeleton key={i} />
           ))}
         </div>
       ) : (
@@ -148,7 +147,7 @@ const BetTypes: React.FC = () => {
             betTypes.map((bt: any) => (
               <Card
                 key={bt._id}
-                className={`group transition-all duration-300 hover:scale-[1.02] hover:border-primary ${
+                className={`group transition-all duration-300 border-slate-100 ${
                   !bt.isActive ? "opacity-60 grayscale" : ""
                 }`}
               >

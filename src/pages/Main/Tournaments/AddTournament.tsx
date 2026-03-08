@@ -45,6 +45,7 @@ const AddTournament: React.FC = () => {
       year: "",
       country: "",
       isFeatured: false,
+      isActive: true,
       logo: "",
     },
   });

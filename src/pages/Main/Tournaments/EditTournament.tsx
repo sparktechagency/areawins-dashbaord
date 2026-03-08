@@ -56,6 +56,7 @@ const EditTournamentForm: React.FC<EditTournamentFormProps> = ({
       year: tournament.year || "",
       country: tournament.country || "",
       isFeatured: !!tournament.isFeatured,
+      isActive: tournament.isActive ?? true,
       logo: tournament.logo || "",
     },
   });
