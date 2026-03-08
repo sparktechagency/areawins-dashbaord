@@ -6,6 +6,7 @@ import {
   FormSelect,
   FormTextarea,
 } from "@/components/form";
+import FormSkeleton from "@/components/skeletons/FormSkeleton";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import { countries } from "@/constants/countries";
@@ -55,16 +56,16 @@ const EditTournament: React.FC = () => {
     if (tournamentRes?.data) {
       const t = tournamentRes.data;
       form.reset({
-        name: t.name,
-        sport: t.sport?._id || t.sport,
-        type: t.type,
+        name: t.name || "",
+        sport: typeof t.sport === "object" ? t.sport?._id : t.sport || "",
+        type: t.type || "league",
         description: t.description || "",
         startDate: t.startDate || "",
         endDate: t.endDate || "",
         year: t.year || "",
-        country: t.country,
-        isFeatured: t.isFeatured,
-        logo: t.logo,
+        country: t.country || "",
+        isFeatured: !!t.isFeatured,
+        logo: t.logo || "",
       });
     }
   }, [tournamentRes, form]);
@@ -90,8 +91,7 @@ const EditTournament: React.FC = () => {
     }
   };
 
-  if (isFetching)
-    return <div className="p-8 text-center">Loading tournament details...</div>;
+  if (isFetching) return <FormSkeleton fields={8} columns={2} />;
 
   return (
     <div className="p-4 md:p-8 max-w-4xl mx-auto">

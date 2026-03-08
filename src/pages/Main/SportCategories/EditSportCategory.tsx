@@ -1,4 +1,5 @@
 import { FormImageUpload, FormInput } from "@/components/form";
+import FormSkeleton from "@/components/skeletons/FormSkeleton";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import {
@@ -31,8 +32,8 @@ const EditSportCategory: React.FC = () => {
   useEffect(() => {
     if (sportRes?.data) {
       form.reset({
-        name: sportRes.data.name,
-        icon: sportRes.data.icon,
+        name: sportRes.data.name || "",
+        icon: sportRes.data.icon || "",
       });
     }
   }, [sportRes, form]);
@@ -53,8 +54,7 @@ const EditSportCategory: React.FC = () => {
     }
   };
 
-  if (isFetching)
-    return <div className="p-8 text-center">Loading sport details...</div>;
+  if (isFetching) return <FormSkeleton fields={1} />;
 
   return (
     <div className="p-4 md:p-8 max-w-2xl mx-auto">

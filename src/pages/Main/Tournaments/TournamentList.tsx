@@ -113,7 +113,7 @@ const TournamentList: React.FC = () => {
         </div>
         <Button
           onClick={handleCreate}
-          className="bg-primary text-white hover:bg-primary/90"
+          className="bg-primary text-white hover:bg-primary/90 cursor-pointer"
         >
           <span className="material-symbols-outlined text-lg mr-2">
             add_circle
