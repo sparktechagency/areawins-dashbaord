@@ -73,6 +73,14 @@ const router = createBrowserRouter([
         element: <TournamentList />,
       },
       {
+        path: "categories/:sportId/tournaments/add",
+        element: <AddTournament />,
+      },
+      {
+        path: "categories/:sportId/tournaments/edit/:id",
+        element: <EditTournament />,
+      },
+      {
         path: "categories/:sportId/tournaments/:tournamentId/teams",
         element: <TeamManagement />,
       },
@@ -99,14 +107,6 @@ const router = createBrowserRouter([
       {
         path: "bet-types/edit/:id",
         element: <EditBetType />,
-      },
-      {
-        path: "tournaments/add",
-        element: <AddTournament />,
-      },
-      {
-        path: "tournaments/edit/:id",
-        element: <EditTournament />,
       },
       {
         path: "bets",

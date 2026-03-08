@@ -90,15 +90,11 @@ const TournamentList: React.FC = () => {
   };
 
   const handleCreate = () => {
-    if (sportId && sportId !== "all") {
-      navigate(`/tournaments/add?sportId=${sportId}`);
-    } else {
-      navigate("/tournaments/add");
-    }
+    navigate(`/categories/${sportId}/tournaments/add`);
   };
 
   const handleEdit = (t: any) => {
-    navigate(`/tournaments/edit/${t._id}`);
+    navigate(`/categories/${sportId}/tournaments/edit/${t._id}`);
   };
 
   const handleSelectSport = (id: string) => {

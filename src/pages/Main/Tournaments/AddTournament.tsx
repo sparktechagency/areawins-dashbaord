@@ -19,13 +19,12 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { CalendarIcon, Globe, Trophy, Type } from "lucide-react";
 import React from "react";
 import { useForm } from "react-hook-form";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
 
 const AddTournament: React.FC = () => {
   const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
-  const sportId = searchParams.get("sportId");
+  const { sportId } = useParams<{ sportId: string }>();
 
   const { data: sportsRes, isLoading: isSportsLoading } =
     useGetAllSportCategoriesQuery({ limit: 100 });
@@ -69,7 +68,7 @@ const AddTournament: React.FC = () => {
     try {
       await createTournament(formData).unwrap();
       toast.success("Tournament created successfully");
-      navigate("/tournaments");
+      navigate(`/categories/${sportId}/tournaments`);
     } catch (err: any) {
       toast.error(err?.data?.message || "Operation failed");
     }

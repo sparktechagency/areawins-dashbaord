@@ -30,12 +30,14 @@ interface EditTournamentFormProps {
   tournament: any;
   sports: any[];
   id: string;
+  sportId: string;
 }
 
 const EditTournamentForm: React.FC<EditTournamentFormProps> = ({
   tournament,
   sports,
   id,
+  sportId,
 }) => {
   const navigate = useNavigate();
   const [updateTournament, { isLoading: isUpdating }] =
@@ -78,7 +80,7 @@ const EditTournamentForm: React.FC<EditTournamentFormProps> = ({
     try {
       await updateTournament({ id, data: formData }).unwrap();
       toast.success("Tournament updated successfully");
-      navigate("/tournaments");
+      navigate(`/categories/${sportId}/tournaments`);
     } catch (err: any) {
       toast.error(err?.data?.message || "Operation failed");
     }
@@ -211,7 +213,7 @@ const EditTournamentForm: React.FC<EditTournamentFormProps> = ({
 
 // --- Parent (Data Fetcher) Component ---
 const EditTournament: React.FC = () => {
-  const { id } = useParams<{ id: string }>();
+  const { id, sportId } = useParams<{ id: string; sportId: string }>();
   const navigate = useNavigate();
 
   const { data: tournamentRes, isLoading: isFetching } =
@@ -259,7 +261,12 @@ const EditTournament: React.FC = () => {
         </Button>
       </div>
 
-      <EditTournamentForm tournament={tournament} sports={sports} id={id!} />
+      <EditTournamentForm
+        tournament={tournament}
+        sports={sports}
+        id={id!}
+        sportId={sportId!}
+      />
     </div>
   );
 };
