@@ -27,11 +27,11 @@ const TournamentCard: React.FC<TournamentCardProps> = ({
 
   return (
     <Card
-      className="cursor-pointer hover:border-primary transition-all duration-300"
+      className="cursor-pointer hover:border-primary transition-all duration-300 hover:scale-[1.02] group"
       onClick={handleCardClick}
     >
       <CardHeader className="flex flex-row items-center justify-between pb-4">
-        <div className="size-12 rounded bg-slate-50 flex items-center justify-center border border-slate-100 text-2xl">
+        <div className="size-12 rounded bg-slate-50 flex items-center justify-center border border-slate-100 text-2xl group-hover:border-primary/30 transition-colors">
           {tournament.logo && tournament.logo.startsWith("http") ? (
             <img
               src={tournament.logo}
@@ -95,12 +95,11 @@ const TournamentCard: React.FC<TournamentCardProps> = ({
             <span>{tournament.startDate || "N/A"}</span>
             <span>{tournament.endDate || "N/A"}</span>
           </div>
-          <div className="flex gap-2">
-            {tournament.isFeatured && (
-              <Badge variant="outline" className="border-accent text-accent">
-                Featured
-              </Badge>
-            )}
+          <div className="flex items-center gap-1 text-primary font-bold opacity-0 group-hover:opacity-100 transition-all transform translate-x-2 group-hover:translate-x-0">
+            <span>View Teams</span>
+            <span className="material-symbols-outlined text-sm">
+              arrow_forward
+            </span>
           </div>
         </div>
       </CardContent>

@@ -109,14 +109,24 @@ const TournamentList: React.FC = () => {
     <div className="p-4 md:p-8">
       {/* Header */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 mb-4">
-        <div>
-          <h1 className="text-3xl md:text-5xl font-black tracking-tighter mb-2">
-            {currentSport?.name || "Sport"} Tournaments
-          </h1>
-          <p className="text-slate-500 font-medium">
-            Manage tournaments and leagues for{" "}
-            {currentSport?.name || "this category"}.
-          </p>
+        <div className="flex items-center gap-4">
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => navigate("/categories")}
+            className="rounded-full hover:bg-slate-100"
+          >
+            <span className="material-symbols-outlined">arrow_back</span>
+          </Button>
+          <div>
+            <h1 className="text-3xl md:text-5xl font-black tracking-tighter mb-2">
+              {currentSport?.name || "Sport"} Tournaments
+            </h1>
+            <p className="text-slate-500 font-medium">
+              Manage tournaments and leagues for{" "}
+              {currentSport?.name || "this category"}.
+            </p>
+          </div>
         </div>
         <Button
           onClick={handleCreate}

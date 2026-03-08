@@ -8,14 +8,10 @@ import {
   useGetAllTeamsQuery,
   useUpdateTeamMutation,
 } from "@/redux/features/team/teamApi";
-import { TeamFormValues, teamSchema } from "@/validation/team";
-import { zodResolver } from "@hookform/resolvers/zod";
 import React, { useState } from "react";
-import { useForm } from "react-hook-form";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
 import TeamCard from "./TeamCard";
-import TeamFormDialog from "./TeamFormDialog";
 
 const TeamManagement: React.FC = () => {
   const navigate = useNavigate();
@@ -24,8 +20,6 @@ const TeamManagement: React.FC = () => {
     tournamentId: string;
   }>();
 
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [editingId, setEditingId] = useState<string | null>(null);
   const [deletingTeam, setDeletingTeam] = useState<any | null>(null);
 
   const { data: teamsRes, isLoading } = useGetAllTeamsQuery({
@@ -44,68 +38,14 @@ const TeamManagement: React.FC = () => {
   const getSportName = (id: string) =>
     sports.find((s: any) => s._id === id)?.name || "Unknown Sport";
 
-  const form = useForm<TeamFormValues>({
-    resolver: zodResolver(teamSchema) as any,
-    defaultValues: {
-      name: "",
-      sport: "",
-      tournament: "",
-      shortName: "",
-      country: "",
-      foundedYear: "",
-      logo: "",
-    },
-  });
-
-  const onSubmit = async (data: TeamFormValues) => {
-    const formData = new FormData();
-    Object.entries(data).forEach(([key, val]) => {
-      if (val !== undefined && val !== null) {
-        if (val instanceof File) formData.append(key, val);
-        else formData.append(key, String(val));
-      }
-    });
-    try {
-      if (editingId) {
-        await updateTeam({ id: editingId, data: formData }).unwrap();
-        toast.success("Team updated successfully");
-      } else {
-        await createTeam(formData).unwrap();
-        toast.success("Team created successfully");
-      }
-      setIsModalOpen(false);
-      form.reset();
-    } catch (err: any) {
-      toast.error(err?.data?.message || "Operation failed");
-    }
-  };
-
   const handleEdit = (t: any) => {
-    setEditingId(t._id);
-    form.reset({
-      name: t.name,
-      sport: t.sport?._id || t.sport,
-      tournament: t.tournament?._id || t.tournament,
-      shortName: t.shortName,
-      country: t.country,
-      foundedYear: t.foundedYear,
-      logo: t.logo,
-    });
-    setIsModalOpen(true);
+    navigate(
+      `/categories/${sportId}/tournaments/${tournamentId}/teams/edit/${t._id}`,
+    );
   };
 
   const handleCreate = () => {
-    setEditingId(null);
-    form.reset({
-      name: "",
-      sport: sportId || "",
-      tournament: tournamentId || "",
-      shortName: "",
-      country: "",
-      foundedYear: "",
-      logo: "",
-    });
-    setIsModalOpen(true);
+    navigate(`/categories/${sportId}/tournaments/${tournamentId}/teams/add`);
   };
 
   const handleConfirmDelete = async () => {
@@ -124,13 +64,23 @@ const TeamManagement: React.FC = () => {
     <div className="p-4 md:p-8">
       {/* Header */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 mb-10">
-        <div>
-          <h1 className="text-3xl md:text-5xl font-black tracking-tighter mb-2">
-            Team Management
-          </h1>
-          <p className="text-slate-500 font-medium">
-            Manage teams, logos, and affiliations.
-          </p>
+        <div className="flex items-center gap-4">
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => navigate(`/categories/${sportId}/tournaments`)}
+            className="rounded-full hover:bg-slate-100"
+          >
+            <span className="material-symbols-outlined">arrow_back</span>
+          </Button>
+          <div>
+            <h1 className="text-3xl md:text-5xl font-black tracking-tighter mb-2">
+              Team Management
+            </h1>
+            <p className="text-slate-500 font-medium">
+              Manage teams, logos, and affiliations.
+            </p>
+          </div>
         </div>
         <Button
           onClick={handleCreate}
@@ -169,19 +119,6 @@ const TeamManagement: React.FC = () => {
           )}
         </div>
       )}
-
-      <TeamFormDialog
-        open={isModalOpen}
-        editingId={editingId}
-        form={form}
-        sports={sports}
-        sportId={sportId}
-        tournamentId={tournamentId}
-        isCreating={isCreating}
-        isUpdating={isUpdating}
-        onSubmit={onSubmit}
-        onClose={() => setIsModalOpen(false)}
-      />
 
       <DeleteConfirmDialog
         open={!!deletingTeam}

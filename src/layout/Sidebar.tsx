@@ -10,7 +10,11 @@ const navItems = [
   { label: "User Management", icon: "group", path: "/users" },
   { label: "Sport Categories", icon: "category", path: "/categories" },
   { label: "Bet Types", icon: "style", path: "/bet-types" },
-  { label: "Matchs Management", icon: "sports_soccer", path: "/matches" },
+  {
+    label: "Match Management",
+    icon: "sports_soccer",
+    path: "/match-management",
+  },
 
   { label: "Bet Management", icon: "confirmation_number", path: "/bets" },
 ];

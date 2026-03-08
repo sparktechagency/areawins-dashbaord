@@ -1,12 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import {
   Form,
   FormControl,
   FormField,
@@ -22,50 +16,81 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import React from "react";
-import { UseFormReturn } from "react-hook-form";
+import { MatchFormValues, matchSchema } from "@/validation/match";
+import { zodResolver } from "@hookform/resolvers/zod";
+import React, { useEffect } from "react";
+import { useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
 
-interface MatchFormDialogProps {
-  open: boolean;
-  editingId: string | null;
-  form: UseFormReturn<any>;
+interface MatchFormProps {
+  initialData?: any;
   sports: any[];
   tournaments: any[];
   teams: any[];
-  isCreating: boolean;
-  isUpdating: boolean;
-  onSubmit: (data: any) => void;
-  onClose: () => void;
+  isLoading?: boolean;
+  onSubmit: (data: MatchFormValues) => void;
+  title?: string;
 }
 
 const STATUSES = ["scheduled", "live", "finished", "cancelled", "postponed"];
 
-const MatchFormDialog: React.FC<MatchFormDialogProps> = ({
-  open,
-  editingId,
-  form,
+const MatchForm: React.FC<MatchFormProps> = ({
+  initialData,
   sports,
   tournaments,
   teams,
-  isCreating,
-  isUpdating,
+  isLoading,
   onSubmit,
-  onClose,
+  title,
 }) => {
+  const navigate = useNavigate();
+  const form = useForm<MatchFormValues>({
+    resolver: zodResolver(matchSchema) as any,
+    defaultValues: {
+      sport: initialData?.sport?._id || initialData?.sport || "",
+      tournament:
+        initialData?.tournament?._id || initialData?.tournament || "none",
+      homeTeam: initialData?.homeTeam?._id || initialData?.homeTeam || "",
+      awayTeam: initialData?.awayTeam?._id || initialData?.awayTeam || "",
+      scheduledStartTime: initialData?.scheduledStartTime
+        ? new Date(initialData.scheduledStartTime).toISOString().slice(0, 16)
+        : "",
+      status: initialData?.status || "scheduled",
+      isFeatured: initialData?.isFeatured || false,
+      homeScore: initialData?.liveStatus?.homeScore || 0,
+      awayScore: initialData?.liveStatus?.awayScore || 0,
+    },
+  });
+
   const selectedSport = form.watch("sport");
   const selectedStatus = form.watch("status");
 
+  useEffect(() => {
+    if (initialData) {
+      form.reset({
+        sport: initialData.sport?._id || initialData.sport,
+        tournament:
+          initialData.tournament?._id || initialData.tournament || "none",
+        homeTeam: initialData.homeTeam?._id || initialData.homeTeam,
+        awayTeam: initialData.awayTeam?._id || initialData.awayTeam,
+        scheduledStartTime: initialData.scheduledStartTime
+          ? new Date(initialData.scheduledStartTime).toISOString().slice(0, 16)
+          : "",
+        status: initialData.status,
+        isFeatured: initialData.isFeatured,
+        homeScore: initialData.liveStatus?.homeScore || 0,
+        awayScore: initialData.liveStatus?.awayScore || 0,
+      });
+    }
+  }, [initialData, form]);
+
   return (
-    <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="max-h-[90vh] overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle>
-            {editingId ? "Edit Match" : "Schedule Match"}
-          </DialogTitle>
-        </DialogHeader>
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-            <div className="grid grid-cols-2 gap-4">
+    <div className="max-w-4xl mx-auto">
+      {title && <h1 className="text-2xl font-bold mb-6">{title}</h1>}
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+          <div className="p-6 bg-white rounded-xl border border-slate-100 shadow-sm space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <FormField
                 control={form.control}
                 name="sport"
@@ -74,7 +99,7 @@ const MatchFormDialog: React.FC<MatchFormDialogProps> = ({
                     <FormLabel>Sport</FormLabel>
                     <Select onValueChange={field.onChange} value={field.value}>
                       <FormControl>
-                        <SelectTrigger>
+                        <SelectTrigger className="h-12">
                           <SelectValue placeholder="Select Sport" />
                         </SelectTrigger>
                       </FormControl>
@@ -98,7 +123,7 @@ const MatchFormDialog: React.FC<MatchFormDialogProps> = ({
                     <FormLabel>Status</FormLabel>
                     <Select onValueChange={field.onChange} value={field.value}>
                       <FormControl>
-                        <SelectTrigger>
+                        <SelectTrigger className="h-12">
                           <SelectValue placeholder="Select Status" />
                         </SelectTrigger>
                       </FormControl>
@@ -124,7 +149,7 @@ const MatchFormDialog: React.FC<MatchFormDialogProps> = ({
                   <FormLabel>Tournament</FormLabel>
                   <Select onValueChange={field.onChange} value={field.value}>
                     <FormControl>
-                      <SelectTrigger>
+                      <SelectTrigger className="h-12">
                         <SelectValue placeholder="Select Tournament (Optional)" />
                       </SelectTrigger>
                     </FormControl>
@@ -148,7 +173,7 @@ const MatchFormDialog: React.FC<MatchFormDialogProps> = ({
               )}
             />
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <FormField
                 control={form.control}
                 name="homeTeam"
@@ -157,7 +182,7 @@ const MatchFormDialog: React.FC<MatchFormDialogProps> = ({
                     <FormLabel>Home Team</FormLabel>
                     <Select onValueChange={field.onChange} value={field.value}>
                       <FormControl>
-                        <SelectTrigger>
+                        <SelectTrigger className="h-12">
                           <SelectValue placeholder="Select Home Team" />
                         </SelectTrigger>
                       </FormControl>
@@ -187,7 +212,7 @@ const MatchFormDialog: React.FC<MatchFormDialogProps> = ({
                     <FormLabel>Away Team</FormLabel>
                     <Select onValueChange={field.onChange} value={field.value}>
                       <FormControl>
-                        <SelectTrigger>
+                        <SelectTrigger className="h-12">
                           <SelectValue placeholder="Select Away Team" />
                         </SelectTrigger>
                       </FormControl>
@@ -219,7 +244,7 @@ const MatchFormDialog: React.FC<MatchFormDialogProps> = ({
                 <FormItem>
                   <FormLabel>Scheduled Start Time</FormLabel>
                   <FormControl>
-                    <Input type="datetime-local" {...field} />
+                    <Input type="datetime-local" className="h-12" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -227,7 +252,7 @@ const MatchFormDialog: React.FC<MatchFormDialogProps> = ({
             />
 
             {(selectedStatus === "live" || selectedStatus === "finished") && (
-              <div className="p-4 bg-slate-50/50 rounded space-y-4 border">
+              <div className="p-4 bg-slate-50 border rounded space-y-4">
                 <FormLabel className="text-xs font-bold text-slate-400">
                   Scores
                 </FormLabel>
@@ -241,6 +266,7 @@ const MatchFormDialog: React.FC<MatchFormDialogProps> = ({
                         <FormControl>
                           <Input
                             type="number"
+                            className="h-12"
                             {...field}
                             onChange={(e) =>
                               field.onChange(parseInt(e.target.value))
@@ -260,6 +286,7 @@ const MatchFormDialog: React.FC<MatchFormDialogProps> = ({
                         <FormControl>
                           <Input
                             type="number"
+                            className="h-12"
                             {...field}
                             onChange={(e) =>
                               field.onChange(parseInt(e.target.value))
@@ -291,29 +318,25 @@ const MatchFormDialog: React.FC<MatchFormDialogProps> = ({
                 </FormItem>
               )}
             />
+          </div>
 
-            <div className="flex gap-4 pt-4">
-              <Button
-                type="button"
-                variant="outline"
-                className="flex-1"
-                onClick={onClose}
-              >
-                Cancel
-              </Button>
-              <Button
-                type="submit"
-                className="flex-1"
-                disabled={isCreating || isUpdating}
-              >
-                {isCreating || isUpdating ? "Saving..." : "Save Match"}
-              </Button>
-            </div>
-          </form>
-        </Form>
-      </DialogContent>
-    </Dialog>
+          <div className="flex gap-4 pt-4">
+            <Button
+              type="button"
+              variant="outline"
+              className="flex-1 h-12"
+              onClick={() => navigate(-1)}
+            >
+              Cancel
+            </Button>
+            <Button type="submit" className="flex-1 h-12" disabled={isLoading}>
+              {isLoading ? "Saving..." : "Save Match"}
+            </Button>
+          </div>
+        </form>
+      </Form>
+    </div>
   );
 };
 
-export default MatchFormDialog;
+export default MatchForm;

@@ -2,33 +2,26 @@ import DeleteConfirmDialog from "@/components/common/DeleteConfirmDialog";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
-  useCreateMatchMutation,
   useDeleteMatchMutation,
   useGetAllMatchesQuery,
-  useUpdateMatchMutation,
 } from "@/redux/features/match/matchApi";
 import { useGetAllSportCategoriesQuery } from "@/redux/features/sportCategory/sportCategoryApi";
 import { useGetAllTeamsQuery } from "@/redux/features/team/teamApi";
 import { useGetAllTournamentsQuery } from "@/redux/features/tournament/tournamentApi";
-import { MatchFormValues, matchSchema } from "@/validation/match";
-import { zodResolver } from "@hookform/resolvers/zod";
 import React, { useState } from "react";
-import { useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import MatchCard from "./MatchCard";
-import MatchFormDialog from "./MatchFormDialog";
 
 const MatchManagement: React.FC = () => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [editingId, setEditingId] = useState<string | null>(null);
+  const navigate = useNavigate();
   const [deletingId, setDeletingId] = useState<string | null>(null);
 
   const { data: matchesRes, isLoading } = useGetAllMatchesQuery({});
   const { data: sportsRes } = useGetAllSportCategoriesQuery({});
   const { data: tournamentsRes } = useGetAllTournamentsQuery({});
   const { data: teamsRes } = useGetAllTeamsQuery({});
-  const [createMatch, { isLoading: isCreating }] = useCreateMatchMutation();
-  const [updateMatch, { isLoading: isUpdating }] = useUpdateMatchMutation();
+
   const [deleteMatch, { isLoading: isDeleting }] = useDeleteMatchMutation();
 
   const matches = matchesRes?.data?.results || [];
@@ -36,86 +29,12 @@ const MatchManagement: React.FC = () => {
   const tournaments = tournamentsRes?.data?.results || [];
   const teams = teamsRes?.data?.results || [];
 
-  const form = useForm<MatchFormValues>({
-    resolver: zodResolver(matchSchema) as any,
-    defaultValues: {
-      sport: "",
-      tournament: "",
-      homeTeam: "",
-      awayTeam: "",
-      scheduledStartTime: "",
-      status: "scheduled",
-      isFeatured: false,
-      homeScore: 0,
-      awayScore: 0,
-    },
-  });
-
-  const onSubmit = async (data: MatchFormValues) => {
-    const payload: any = {
-      sport: data.sport,
-      homeTeam: data.homeTeam,
-      awayTeam: data.awayTeam,
-      scheduledStartTime: new Date(data.scheduledStartTime),
-      status: data.status,
-      isFeatured: data.isFeatured,
-    };
-    if (data.tournament && data.tournament !== "none")
-      payload.tournament = data.tournament;
-    if (data.status === "live" || data.status === "finished") {
-      payload.liveStatus = {
-        homeScore: data.homeScore,
-        awayScore: data.awayScore,
-        lastUpdated: new Date(),
-      };
-    }
-    try {
-      if (editingId) {
-        await updateMatch({ id: editingId, data: payload }).unwrap();
-        toast.success("Match updated successfully");
-      } else {
-        await createMatch(payload).unwrap();
-        toast.success("Match created successfully");
-      }
-      setIsModalOpen(false);
-      form.reset();
-    } catch (err: any) {
-      toast.error(err?.data?.message || "Operation failed");
-    }
-  };
-
   const handleEdit = (m: any) => {
-    setEditingId(m._id);
-    form.reset({
-      sport: m.sport?._id || m.sport,
-      tournament: m.tournament?._id || m.tournament || "none",
-      homeTeam: m.homeTeam?._id || m.homeTeam,
-      awayTeam: m.awayTeam?._id || m.awayTeam,
-      scheduledStartTime: m.scheduledStartTime
-        ? new Date(m.scheduledStartTime).toISOString().slice(0, 16)
-        : "",
-      status: m.status,
-      isFeatured: m.isFeatured,
-      homeScore: m.liveStatus?.homeScore || 0,
-      awayScore: m.liveStatus?.awayScore || 0,
-    });
-    setIsModalOpen(true);
+    navigate(`/match-management/edit/${m._id}`);
   };
 
   const handleCreate = () => {
-    setEditingId(null);
-    form.reset({
-      sport: "",
-      tournament: "",
-      homeTeam: "",
-      awayTeam: "",
-      scheduledStartTime: "",
-      status: "scheduled",
-      isFeatured: false,
-      homeScore: 0,
-      awayScore: 0,
-    });
-    setIsModalOpen(true);
+    navigate("/match-management/add");
   };
 
   const handleConfirmDelete = async () => {
@@ -181,19 +100,6 @@ const MatchManagement: React.FC = () => {
           )}
         </div>
       )}
-
-      <MatchFormDialog
-        open={isModalOpen}
-        editingId={editingId}
-        form={form}
-        sports={sports}
-        tournaments={tournaments}
-        teams={teams}
-        isCreating={isCreating}
-        isUpdating={isUpdating}
-        onSubmit={onSubmit}
-        onClose={() => setIsModalOpen(false)}
-      />
 
       <DeleteConfirmDialog
         open={!!deletingId}
