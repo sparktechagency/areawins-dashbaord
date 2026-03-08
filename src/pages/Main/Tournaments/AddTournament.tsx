@@ -1,49 +1,92 @@
-import FormCheckbox from "@/components/form/FormCheckbox";
-import FormDatePicker from "@/components/form/FormDatePicker";
-import FormImageUpload from "@/components/form/FormImageUpload";
-import FormInput from "@/components/form/FormInput";
-import FormSelect from "@/components/form/FormSelect";
-import FormTextarea from "@/components/form/FormTextarea";
-import { Button } from "@/components/ui/button";
 import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+  FormCheckbox,
+  FormDatePicker,
+  FormImageUpload,
+  FormInput,
+  FormSelect,
+  FormTextarea,
+} from "@/components/form";
+import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import { countries } from "@/constants/countries";
+import { useGetAllSportCategoriesQuery } from "@/redux/features/sportCategory/sportCategoryApi";
+import { useCreateTournamentMutation } from "@/redux/features/tournament/tournamentApi";
+import {
+  TournamentFormValues,
+  tournamentSchema,
+} from "@/validation/tournament";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { CalendarIcon, Globe, Trophy, Type } from "lucide-react";
 import React from "react";
-import { UseFormReturn } from "react-hook-form";
+import { useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 
-interface TournamentFormDialogProps {
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
-  editingId: string | null;
-  form: UseFormReturn<any>;
-  sports: any[];
-  onSubmit: (data: any) => void;
-  isSaving: boolean;
-}
+const AddTournament: React.FC = () => {
+  const navigate = useNavigate();
+  const { data: sportsRes } = useGetAllSportCategoriesQuery({ limit: 100 });
+  const [createTournament, { isLoading: isCreating }] =
+    useCreateTournamentMutation();
+  const sports = sportsRes?.data?.results || [];
 
-const TournamentFormDialog: React.FC<TournamentFormDialogProps> = ({
-  open,
-  onOpenChange,
-  editingId,
-  form,
-  sports,
-  onSubmit,
-  isSaving,
-}) => {
+  const form = useForm<TournamentFormValues>({
+    resolver: zodResolver(tournamentSchema) as any,
+    defaultValues: {
+      name: "",
+      sport: "",
+      type: "league",
+      description: "",
+      startDate: "",
+      endDate: "",
+      year: "",
+      country: "",
+      isFeatured: false,
+      logo: "",
+    },
+  });
+
+  const onSubmit = async (data: TournamentFormValues) => {
+    const formData = new FormData();
+    Object.entries(data).forEach(([key, val]) => {
+      if (val !== undefined && val !== null) {
+        if (val instanceof File) {
+          formData.append(key, val);
+        } else {
+          formData.append(key, String(val));
+        }
+      }
+    });
+
+    try {
+      await createTournament(formData).unwrap();
+      toast.success("Tournament created successfully");
+      navigate("/tournaments");
+    } catch (err: any) {
+      toast.error(err?.data?.message || "Operation failed");
+    }
+  };
+
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-h-[90vh] overflow-y-auto max-w-2xl">
-        <DialogHeader>
-          <DialogTitle>
-            {editingId ? "Edit Tournament" : "New Tournament"}
-          </DialogTitle>
-        </DialogHeader>
+    <div className="p-4 md:p-8 max-w-4xl mx-auto">
+      <div className="flex justify-between items-center mb-10">
+        <div>
+          <h1 className="text-3xl md:text-5xl font-black tracking-tighter mb-2">
+            New Tournament
+          </h1>
+          <p className="text-slate-500 font-medium">
+            Fill in the details to create a new tournament.
+          </p>
+        </div>
+        <Button
+          variant="outline"
+          onClick={() => navigate(-1)}
+          className="cursor-pointer"
+        >
+          Go Back
+        </Button>
+      </div>
+
+      <div className="bg-white p-6 rounded-xl border border-gray-100 shadow-sm">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -145,20 +188,24 @@ const TournamentFormDialog: React.FC<TournamentFormDialogProps> = ({
               <Button
                 type="button"
                 variant="outline"
-                className="flex-1 h-12"
-                onClick={() => onOpenChange(false)}
+                className="flex-1 h-12 cursor-pointer"
+                onClick={() => navigate(-1)}
               >
                 Cancel
               </Button>
-              <Button type="submit" className="flex-1 h-12" disabled={isSaving}>
-                {isSaving ? "Saving..." : "Save Tournament"}
+              <Button
+                type="submit"
+                className="flex-1 h-12 cursor-pointer"
+                disabled={isCreating}
+              >
+                {isCreating ? "Saving..." : "Create Tournament"}
               </Button>
             </div>
           </form>
         </Form>
-      </DialogContent>
-    </Dialog>
+      </div>
+    </div>
   );
 };
 
-export default TournamentFormDialog;
+export default AddTournament;

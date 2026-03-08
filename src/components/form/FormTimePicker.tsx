@@ -5,60 +5,70 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
+import { Clock, LucideIcon } from "lucide-react";
 import { Control, FieldPath, FieldValues } from "react-hook-form";
+import TimePicker from "../ui/time-picket";
 
 interface FormTimePickerProps<TFieldValues extends FieldValues> {
   name: FieldPath<TFieldValues>;
-  label?: string;
   control: Control<TFieldValues>;
-  disabled?: boolean;
+  label?: string;
+  icon?: LucideIcon;
+  required?: boolean;
   className?: string;
-  inputClassName?: string;
   labelClassName?: string;
+  placeholder?: string;
 }
 
 export const FormTimePicker = <TFieldValues extends FieldValues>({
   name,
-  label,
   control,
-  disabled,
+  label,
+  icon: Icon = Clock,
+  required,
   className,
-  inputClassName,
   labelClassName,
+  placeholder,
 }: FormTimePickerProps<TFieldValues>) => {
   return (
     <FormField
       control={control}
       name={name}
-      render={({ field }) => (
-        <FormItem className={cn("space-y-2", className)}>
+      render={({ field, fieldState }) => (
+        <FormItem className={cn("flex flex-col gap-1.5", className)}>
           {label && (
             <FormLabel
               className={cn(
-                "text-xs font-black  tracking-widest ml-1",
+                "text-sm font-semibold text-gray-700",
                 labelClassName,
               )}
             >
-              {label}
+              {label} {required && <span className="text-red-500">*</span>}
             </FormLabel>
           )}
           <FormControl>
-            <Input
-              type="time"
-              disabled={disabled}
-              className={cn(
-                "bg-white/5 border-gray-400 placeholder:text-white/20 focus-visible:ring-primary/50",
-                inputClassName,
-              )}
-              {...field}
-              value={field.value ?? ""}
-            />
+            <div className="relative">
+              <Icon className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none" />
+              <TimePicker
+                className={cn(
+                  "h-12 text-base border-gray-200 rounded-md focus:border-primary focus:ring-primary transition-all font-medium",
+                  "pl-10",
+                  fieldState.error
+                    ? "border-red-500 bg-red-50/10"
+                    : "bg-gray-50/30",
+                )}
+                placeholder={placeholder}
+                value={field.value}
+                onChange={field.onChange}
+              />
+            </div>
           </FormControl>
-          <FormMessage />
+          <FormMessage className="text-xs font-medium text-red-500 mt-1" />
         </FormItem>
       )}
     />
   );
 };
+
+export default FormTimePicker;

@@ -16,8 +16,12 @@ import Notifications from "../pages/Main/Notifications/Notifications";
 import Profile from "../pages/Main/Profile/Profile";
 import Promotions from "../pages/Main/Promotions/Promotions";
 import Settings from "../pages/Main/Settings/Settings";
+import AddSportCategory from "../pages/Main/SportCategories/AddSportCategory";
+import EditSportCategory from "../pages/Main/SportCategories/EditSportCategory";
 import SportCategories from "../pages/Main/SportCategories/SportCategories";
 import TeamManagement from "../pages/Main/TeamManagement/TeamManagement";
+import AddTournament from "../pages/Main/Tournaments/AddTournament";
+import EditTournament from "../pages/Main/Tournaments/EditTournament";
 import TournamentList from "../pages/Main/Tournaments/TournamentList";
 import UserManagement from "../pages/Main/UserManagement/UserManagement";
 
@@ -30,9 +34,13 @@ const router = createBrowserRouter([
       { path: "users", element: <UserManagement /> },
       { path: "matches", element: <MatchManagement /> },
       { path: "categories", element: <SportCategories /> },
+      { path: "categories/add", element: <AddSportCategory /> },
+      { path: "categories/edit/:id", element: <EditSportCategory /> },
       { path: "bet-types", element: <BetTypes /> },
       { path: "teams", element: <TeamManagement /> },
       { path: "tournaments", element: <TournamentList /> },
+      { path: "tournaments/add", element: <AddTournament /> },
+      { path: "tournaments/edit/:id", element: <EditTournament /> },
       { path: "tournaments/:sportId", element: <TournamentList /> },
       { path: "bets", element: <BetManagement /> },
       { path: "financials", element: <Financials /> },

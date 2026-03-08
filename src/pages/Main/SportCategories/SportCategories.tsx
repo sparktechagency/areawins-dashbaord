@@ -2,75 +2,31 @@ import DeleteConfirmDialog from "@/components/common/DeleteConfirmDialog";
 import SportCategoriesSkeleton from "@/components/skeletons/SportCategoriesSkeleton";
 import { Button } from "@/components/ui/button";
 import {
-  useCreateSportCategoryMutation,
   useDeleteSportCategoryMutation,
   useGetAllSportCategoriesQuery,
-  useUpdateSportCategoryMutation,
 } from "@/redux/features/sportCategory/sportCategoryApi";
-import {
-  SportCategoriesFormValues,
-  sportCategoriesSchema,
-} from "@/validation/sportCategories";
-import { zodResolver } from "@hookform/resolvers/zod";
 import React, { useState } from "react";
-import { useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import SportCategoryCard from "./SportCategoryCard";
-import SportFormDialog from "./SportFormDialog";
 
 const SportCategories: React.FC = () => {
-  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-  const [editingId, setEditingId] = useState<string | null>(null);
+  const navigate = useNavigate();
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [deletingName, setDeletingName] = useState<string>("");
 
   const { data: sportsRes, isLoading } = useGetAllSportCategoriesQuery({});
-  const [createSportCategory, { isLoading: isCreating }] =
-    useCreateSportCategoryMutation();
-  const [updateSportCategory, { isLoading: isUpdating }] =
-    useUpdateSportCategoryMutation();
   const [deleteSportCategory, { isLoading: isDeleting }] =
     useDeleteSportCategoryMutation();
 
   const sports = sportsRes?.data?.results || [];
 
-  const form = useForm<SportCategoriesFormValues>({
-    resolver: zodResolver(sportCategoriesSchema) as any,
-    defaultValues: { name: "", icon: "" },
-  });
-
-  const onSubmit = async (data: SportCategoriesFormValues) => {
-    const formData = new FormData();
-    formData.append("name", data.name);
-    if (data.icon instanceof File) {
-      formData.append("icon", data.icon);
-    }
-
-    try {
-      if (editingId) {
-        await updateSportCategory({ id: editingId, data: formData }).unwrap();
-        toast.success("Sport updated successfully");
-      } else {
-        await createSportCategory(formData).unwrap();
-        toast.success("Sport created successfully");
-      }
-      setIsModalOpen(false);
-      form.reset();
-    } catch (err: any) {
-      toast.error(err?.data?.message || "Operation failed");
-    }
-  };
-
   const handleEdit = (sport: any) => {
-    setEditingId(sport._id);
-    form.reset({ name: sport.name, icon: sport.icon });
-    setIsModalOpen(true);
+    navigate(`/categories/edit/${sport._id}`);
   };
 
   const handleCreate = () => {
-    setEditingId(null);
-    form.reset({ name: "", icon: "" });
-    setIsModalOpen(true);
+    navigate("/categories/add");
   };
 
   const handleDeleteConfirm = async () => {
@@ -131,17 +87,6 @@ const SportCategories: React.FC = () => {
           ))
         )}
       </div>
-
-      {/* Create / Edit Dialog */}
-      <SportFormDialog
-        open={isModalOpen}
-        editingId={editingId}
-        form={form}
-        isCreating={isCreating}
-        isUpdating={isUpdating}
-        onSubmit={onSubmit}
-        onClose={() => setIsModalOpen(false)}
-      />
 
       {/* Delete Confirmation Dialog */}
       <DeleteConfirmDialog
