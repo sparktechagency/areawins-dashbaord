@@ -137,63 +137,58 @@ const BetTypeForm: React.FC<BetTypeFormProps> = ({
                   size="sm"
                   variant="outline"
                   onClick={() =>
-                <Button
-                   type="button"
-                   size="sm"
-                   variant="outline"
-                   onClick={() =>
-                     append({
-                       label: "",
-                     })
-                   }
-                 >
-                   + Add Outcome
-                 </Button>
-               </div>
-               {form.formState.errors.outcomes && (
-                 <p className="text-sm font-medium text-destructive">
-                   {form.formState.errors.outcomes.message ||
-                     form.formState.errors.outcomes.root?.message}
-                 </p>
-               )}
- 
-               {fields.map((field, index) => (
-                 <div
-                   key={field.id}
-                   className="flex gap-2 items-start bg-white p-3 rounded border border-slate-100 mb-2 shadow-sm"
-                 >
-                   <FormField
-                     control={form.control}
-                     name={`outcomes.${index}.label`}
-                     render={({ field }) => (
-                       <FormItem className="flex-1 space-y-1">
-                         <FormLabel className="text-xs text-slate-400">
-                           Label
-                         </FormLabel>
-                         <FormControl>
-                           <Input
-                             {...field}
-                             className="h-10 text-sm font-bold"
-                             placeholder="Outcome Label (e.g. Home Win)"
-                           />
-                         </FormControl>
-                         <FormMessage className="text-[10px]" />
-                       </FormItem>
-                     )}
-                   />
-                   <Button
-                     type="button"
-                     variant="ghost"
-                     size="icon"
-                     className="h-10 w-10 mt-6 text-destructive hover:bg-destructive/10"
-                     onClick={() => remove(index)}
-                   >
-                     <span className="material-symbols-outlined text-sm">
-                       close
-                     </span>
-                   </Button>
-                 </div>
-               ))}
+                    append({
+                      label: "",
+                    })
+                  }
+                >
+                  + Add Outcome
+                </Button>
+              </div>
+              {form.formState.errors.outcomes && (
+                <p className="text-sm font-medium text-destructive">
+                  {form.formState.errors.outcomes.message ||
+                    form.formState.errors.outcomes.root?.message}
+                </p>
+              )}
+
+              {fields.map((field, index) => (
+                <div
+                  key={field.id}
+                  className="flex gap-2 items-start bg-white p-3 rounded border border-slate-100 mb-2 shadow-sm"
+                >
+                  <FormField
+                    control={form.control}
+                    name={`outcomes.${index}.label`}
+                    render={({ field }) => (
+                      <FormItem className="flex-1 space-y-1">
+                        <FormLabel className="text-xs text-slate-400">
+                          Label
+                        </FormLabel>
+                        <FormControl>
+                          <Input
+                            {...field}
+                            className="h-10 text-sm font-bold"
+                            placeholder="Outcome Label (e.g. Home Win)"
+                          />
+                        </FormControl>
+                        <FormMessage className="text-[10px]" />
+                      </FormItem>
+                    )}
+                  />
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon"
+                    className="h-10 w-10 mt-6 text-destructive hover:bg-destructive/10"
+                    onClick={() => remove(index)}
+                  >
+                    <span className="material-symbols-outlined text-sm">
+                      close
+                    </span>
+                  </Button>
+                </div>
+              ))}
             </div>
 
             <div className="flex gap-6">
