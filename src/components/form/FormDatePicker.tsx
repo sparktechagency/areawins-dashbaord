@@ -38,12 +38,7 @@ export const FormDatePicker = <TFieldValues extends FieldValues>({
       render={({ field, fieldState }) => (
         <FormItem className={cn("flex flex-col gap-1.5", className)}>
           {label && (
-            <FormLabel
-              className={cn(
-                "text-sm font-semibold text-gray-700",
-                labelClassName,
-              )}
-            >
+            <FormLabel className={cn("text-sm text-gray-700", labelClassName)}>
               {label} {required && <span className="text-red-500">*</span>}
             </FormLabel>
           )}
@@ -52,10 +47,10 @@ export const FormDatePicker = <TFieldValues extends FieldValues>({
               <Icon className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none" />
               <DatePicker
                 className={cn(
-                  "h-12 text-base border-gray-200 rounded-md focus:border-primary focus:ring-primary transition-all font-medium",
+                  "h-12 text-base border-gray-200 rounded-md focus:border-primary transition-all font-medium",
                   "pl-10",
                   fieldState.error
-                    ? "border-red-500 bg-red-50/10"
+                    ? "border-rose-500 bg-red-50/10"
                     : "bg-gray-50/30",
                 )}
                 placeholder={placeholder}

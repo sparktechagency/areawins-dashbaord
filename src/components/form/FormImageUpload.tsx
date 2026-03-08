@@ -33,12 +33,7 @@ export const FormImageUpload = <TFieldValues extends FieldValues>({
       render={({ field }) => (
         <FormItem className={cn("flex flex-col gap-1.5", className)}>
           {label && (
-            <FormLabel
-              className={cn(
-                "text-sm font-semibold text-gray-700",
-                labelClassName,
-              )}
-            >
+            <FormLabel className={cn("text-sm text-gray-700", labelClassName)}>
               {label}
             </FormLabel>
           )}

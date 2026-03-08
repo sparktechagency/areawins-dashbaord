@@ -46,7 +46,7 @@ export const FormCheckbox = <TFieldValues extends FieldValues>({
           <div className="space-y-1 leading-none">
             <FormLabel
               className={cn(
-                "text-sm font-semibold text-gray-700 cursor-pointer",
+                "text-sm text-gray-700 cursor-pointer",
                 labelClassName,
               )}
             >

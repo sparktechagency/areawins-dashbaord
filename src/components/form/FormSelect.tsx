@@ -50,12 +50,7 @@ export const FormSelect = <TFieldValues extends FieldValues>({
       render={({ field, fieldState }) => (
         <FormItem className={cn("flex flex-col gap-1.5", className)}>
           {label && (
-            <FormLabel
-              className={cn(
-                "text-sm font-semibold text-gray-700",
-                labelClassName,
-              )}
-            >
+            <FormLabel className={cn("text-sm text-gray-700", labelClassName)}>
               {label} {required && <span className="text-red-500">*</span>}
             </FormLabel>
           )}
@@ -71,10 +66,10 @@ export const FormSelect = <TFieldValues extends FieldValues>({
               <FormControl>
                 <SelectTrigger
                   className={cn(
-                    "h-12 w-full text-base border-gray-200 rounded-md focus:border-primary focus:ring-primary transition-all font-medium",
+                    "h-12 w-full text-base border-gray-200 rounded-md focus:border-primary transition-all font-medium",
                     Icon && "pl-10",
                     fieldState.error
-                      ? "border-red-500 bg-red-50/10"
+                      ? "border-rose-500 bg-red-50/10"
                       : "bg-gray-50/30",
                     triggerClassName,
                   )}

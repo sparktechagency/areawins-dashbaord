@@ -41,12 +41,7 @@ export const FormTextarea = <TFieldValues extends FieldValues>({
       render={({ field, fieldState }) => (
         <FormItem className={cn("flex flex-col gap-1.5", containerClassName)}>
           {label && (
-            <FormLabel
-              className={cn(
-                "text-sm font-semibold text-gray-700",
-                labelClassName,
-              )}
-            >
+            <FormLabel className={cn("text-sm text-gray-700", labelClassName)}>
               {label} {required && <span className="text-red-500">*</span>}
             </FormLabel>
           )}
@@ -55,9 +50,9 @@ export const FormTextarea = <TFieldValues extends FieldValues>({
               placeholder={placeholder}
               disabled={disabled}
               className={cn(
-                "min-h-[100px] text-base border-gray-200 rounded-md focus:border-primary focus:ring-primary transition-all font-medium",
+                "min-h-[100px] text-base border-gray-200 rounded-md focus:border-primary transition-all font-medium",
                 fieldState.error
-                  ? "border-red-500 bg-red-50/10"
+                  ? "border-rose-500 bg-red-50/10"
                   : "bg-gray-50/30",
                 className,
               )}
