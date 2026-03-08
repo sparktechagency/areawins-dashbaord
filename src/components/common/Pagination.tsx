@@ -30,9 +30,9 @@ const Pagination: React.FC<PaginationProps> = ({
           key={i}
           variant={currentPage === i ? "default" : "outline"}
           size="sm"
-          className={`w-9 h-9 rounded-lg font-bold transition-all duration-300 ${
+          className={`w-9 h-9 rounded font-bold transition-all duration-300 cursor-pointer ${
             currentPage === i
-              ? "bg-primary text-secondary shadow-md hover:bg-primary/90"
+              ? "bg-primary text-secondary hover:bg-primary/90"
               : "text-slate-500 hover:text-primary hover:border-primary"
           }`}
           onClick={() => onPageChange(i)}
@@ -49,7 +49,7 @@ const Pagination: React.FC<PaginationProps> = ({
       <Button
         variant="outline"
         size="sm"
-        className="h-9 px-3 rounded-lg flex items-center gap-1 text-slate-500 hover:text-primary hover:border-primary disabled:opacity-50"
+        className="h-9 px-3 rounded flex items-center gap-1 text-slate-500 hover:text-primary hover:border-primary disabled:opacity-50 cursor-pointer"
         onClick={() => onPageChange(currentPage - 1)}
         disabled={currentPage === 1}
       >
@@ -62,7 +62,7 @@ const Pagination: React.FC<PaginationProps> = ({
       <Button
         variant="outline"
         size="sm"
-        className="h-9 px-3 rounded-lg flex items-center gap-1 text-slate-500 hover:text-primary hover:border-primary disabled:opacity-50"
+        className="h-9 px-3 rounded flex items-center gap-1 text-slate-500 hover:text-primary hover:border-primary disabled:opacity-50 cursor-pointer"
         onClick={() => onPageChange(currentPage + 1)}
         disabled={currentPage === totalPages}
       >

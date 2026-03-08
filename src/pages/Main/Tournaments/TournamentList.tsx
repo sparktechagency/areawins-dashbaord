@@ -29,10 +29,11 @@ const TournamentList: React.FC = () => {
   const CATEGORY_LIMIT = 10;
   const TOURNAMENT_LIMIT = 12;
 
-  const { data: sportsRes } = useGetAllSportCategoriesQuery({
-    page: categoryPage,
-    limit: CATEGORY_LIMIT,
-  });
+  const { data: sportsRes, isLoading: isSportsLoading } =
+    useGetAllSportCategoriesQuery({
+      page: categoryPage,
+      limit: CATEGORY_LIMIT,
+    });
   const sports = sportsRes?.data?.results || [];
 
   const currentSport = sports.find((s: any) => s._id === sportId);
@@ -212,6 +213,7 @@ const TournamentList: React.FC = () => {
         currentPage={categoryPage}
         totalPages={categoryTotalPages}
         onPageChange={setCategoryPage}
+        isLoading={isSportsLoading}
       />
 
       <TournamentGrid

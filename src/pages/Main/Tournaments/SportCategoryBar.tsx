@@ -1,4 +1,5 @@
 import Pagination from "@/components/common/Pagination";
+import SportCategoryBarSkeleton from "@/components/skeletons/SportCategoryBarSkeleton";
 import React from "react";
 
 interface SportCategoryBarProps {
@@ -8,6 +9,7 @@ interface SportCategoryBarProps {
   currentPage: number;
   totalPages: number;
   onPageChange: (page: number) => void;
+  isLoading?: boolean;
 }
 
 const SportCategoryBar: React.FC<SportCategoryBarProps> = ({
@@ -17,7 +19,12 @@ const SportCategoryBar: React.FC<SportCategoryBarProps> = ({
   currentPage,
   totalPages,
   onPageChange,
+  isLoading,
 }) => {
+  if (isLoading) {
+    return <SportCategoryBarSkeleton />;
+  }
+
   return (
     <>
       <div className="flex overflow-x-auto pb-4 mb-4 gap-4 no-scrollbar">
