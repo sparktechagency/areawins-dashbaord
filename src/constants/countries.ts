@@ -12,4 +12,5 @@ export const countries = [
   { code: "JP", name: "Japan" },
   { code: "AU", name: "Australia" },
   { code: "CA", name: "Canada" },
+  { code: "AL", name: "Albania" },
 ];

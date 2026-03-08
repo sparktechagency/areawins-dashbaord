@@ -6,9 +6,9 @@ import {
 } from "@/components/form";
 import FormCheckbox from "@/components/form/FormCheckbox";
 import FormImageUpload from "@/components/form/FormImageUpload";
+import FormSkeleton from "@/components/skeletons/FormSkeleton";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
-import { countries } from "@/constants/countries";
 import { useGetAllSportCategoriesQuery } from "@/redux/features/sportCategory/sportCategoryApi";
 import { useCreateTournamentMutation } from "@/redux/features/tournament/tournamentApi";
 import {
@@ -24,10 +24,13 @@ import { toast } from "sonner";
 
 const AddTournament: React.FC = () => {
   const navigate = useNavigate();
-  const { data: sportsRes } = useGetAllSportCategoriesQuery({ limit: 100 });
+  const { data: sportsRes, isLoading: isSportsLoading } =
+    useGetAllSportCategoriesQuery({ limit: 100 });
   const [createTournament, { isLoading: isCreating }] =
     useCreateTournamentMutation();
   const sports = sportsRes?.data?.results || [];
+
+  if (isSportsLoading) return <FormSkeleton fields={8} columns={2} />;
 
   const form = useForm<TournamentFormValues>({
     resolver: zodResolver(tournamentSchema) as any,
@@ -137,15 +140,11 @@ const AddTournament: React.FC = () => {
                 icon={CalendarIcon}
               />
 
-              <FormSelect
+              <FormInput
                 control={form.control}
                 name="country"
                 label="Country"
-                placeholder="Select Country"
-                options={countries.map((c) => ({
-                  label: `${c.name} (${c.code})`,
-                  value: c.code,
-                }))}
+                placeholder="Enter Country (e.g. Albania, UK)"
                 icon={Globe}
               />
 

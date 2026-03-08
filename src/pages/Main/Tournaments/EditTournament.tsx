@@ -29,11 +29,14 @@ import { toast } from "sonner";
 const EditTournament: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+
   const { data: tournamentRes, isLoading: isFetching } =
     useGetSingleTournamentQuery(id);
-  const { data: sportsRes } = useGetAllSportCategoriesQuery({ limit: 100 });
+  const { data: sportsRes, isLoading: isSportsLoading } =
+    useGetAllSportCategoriesQuery({ limit: 100 });
   const [updateTournament, { isLoading: isUpdating }] =
     useUpdateTournamentMutation();
+
   const sports = sportsRes?.data?.results || [];
 
   const form = useForm<TournamentFormValues>({
@@ -57,7 +60,10 @@ const EditTournament: React.FC = () => {
       const t = tournamentRes.data;
       form.reset({
         name: t.name || "",
-        sport: typeof t.sport === "object" ? t.sport?._id : t.sport || "",
+        sport:
+          typeof t.sport === "object"
+            ? t.sport?._id || t.sport?.id
+            : t.sport || "",
         type: t.type || "league",
         description: t.description || "",
         startDate: t.startDate || "",
@@ -91,7 +97,9 @@ const EditTournament: React.FC = () => {
     }
   };
 
-  if (isFetching) return <FormSkeleton fields={8} columns={2} />;
+  const isDataLoading = isFetching || isSportsLoading;
+
+  if (isDataLoading) return <FormSkeleton fields={8} columns={2} />;
 
   return (
     <div className="p-4 md:p-8 max-w-4xl mx-auto">
@@ -124,7 +132,7 @@ const EditTournament: React.FC = () => {
                 placeholder="Select Sport"
                 options={sports.map((s: any) => ({
                   label: s.name,
-                  value: s._id,
+                  value: s._id || s.id,
                 }))}
                 icon={Trophy}
                 required
