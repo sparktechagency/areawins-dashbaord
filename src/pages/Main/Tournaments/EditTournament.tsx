@@ -161,6 +161,12 @@ const EditTournamentForm: React.FC<EditTournamentFormProps> = ({
               name="isFeatured"
               label="Featured Tournament?"
             />
+
+            <FormCheckbox
+              control={form.control}
+              name="isActive"
+              label="Active Tournament?"
+            />
           </div>
 
           <FormTextarea

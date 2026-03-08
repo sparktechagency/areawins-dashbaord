@@ -172,6 +172,12 @@ const AddTournament: React.FC = () => {
                 name="isFeatured"
                 label="Featured Tournament?"
               />
+
+              <FormCheckbox
+                control={form.control}
+                name="isActive"
+                label="Active Tournament?"
+              />
             </div>
 
             <FormTextarea
