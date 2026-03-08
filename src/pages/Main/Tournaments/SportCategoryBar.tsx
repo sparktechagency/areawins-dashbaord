@@ -9,6 +9,8 @@ interface SportCategoryBarProps {
   totalPages: number;
   onPageChange: (page: number) => void;
   isLoading?: boolean;
+  hasNextPage?: boolean;
+  hasPrevPage?: boolean;
 }
 
 const SportCategoryBar: React.FC<SportCategoryBarProps> = ({
@@ -19,6 +21,8 @@ const SportCategoryBar: React.FC<SportCategoryBarProps> = ({
   totalPages,
   onPageChange,
   isLoading,
+  hasNextPage,
+  hasPrevPage,
 }) => {
   if (isLoading) {
     return <SportCategoryBarSkeleton />;
@@ -28,15 +32,16 @@ const SportCategoryBar: React.FC<SportCategoryBarProps> = ({
     <div className="relative group mb-8">
       <div className="flex items-center gap-2">
         {/* Left Arrow */}
-        <button
-          onClick={() => onPageChange(currentPage - 1)}
-          disabled={currentPage === 1}
-          className={`shrink-0 flex items-center justify-center size-9 rounded border border-slate-200 transition-all hover:border-primary hover:text-primary disabled:opacity-30 disabled:hover:border-slate-200 disabled:hover:text-inherit cursor-pointer`}
-        >
-          <span className="material-symbols-outlined text-xl rotate-180">
-            arrow_forward_ios
-          </span>
-        </button>
+        {hasPrevPage && (
+          <button
+            onClick={() => onPageChange(currentPage - 1)}
+            className={`shrink-0 flex items-center justify-center size-8 rounded border border-slate-200 transition-all hover:border-primary hover:text-primary cursor-pointer`}
+          >
+            <span className="material-symbols-outlined rotate-180">
+              arrow_forward_ios
+            </span>
+          </button>
+        )}
 
         {/* Scrollable Container */}
         <div className="flex-1 flex overflow-x-auto py-1 gap-2 no-scrollbar scroll-smooth">
@@ -79,15 +84,14 @@ const SportCategoryBar: React.FC<SportCategoryBarProps> = ({
         </div>
 
         {/* Right Arrow */}
-        <button
-          onClick={() => onPageChange(currentPage + 1)}
-          disabled={currentPage === totalPages}
-          className={`shrink-0 flex items-center justify-center size-9 rounded border border-slate-200 transition-all hover:border-primary hover:text-primary disabled:opacity-30 disabled:hover:border-slate-200 disabled:hover:text-inherit cursor-pointer`}
-        >
-          <span className="material-symbols-outlined text-xl">
-            arrow_forward_ios
-          </span>
-        </button>
+        {hasNextPage && (
+          <button
+            onClick={() => onPageChange(currentPage + 1)}
+            className={`shrink-0 flex items-center justify-center size-8 rounded border border-slate-200 transition-all hover:border-primary hover:text-primary cursor-pointer`}
+          >
+            <span className="material-symbols-outlined">arrow_forward_ios</span>
+          </button>
+        )}
       </div>
     </div>
   );

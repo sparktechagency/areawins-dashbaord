@@ -26,7 +26,7 @@ const TournamentList: React.FC = () => {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [categoryPage, setCategoryPage] = useState(1);
   const [tournamentPage, setTournamentPage] = useState(1);
-  const CATEGORY_LIMIT = 2;
+  const CATEGORY_LIMIT = 50;
   const TOURNAMENT_LIMIT = 12;
 
   const { data: sportsRes, isLoading: isSportsLoading } =
@@ -215,6 +215,8 @@ const TournamentList: React.FC = () => {
         totalPages={categoryTotalPages}
         onPageChange={setCategoryPage}
         isLoading={isSportsLoading}
+        hasNextPage={sportsRes?.data?.pagination?.hasNextPage}
+        hasPrevPage={sportsRes?.data?.pagination?.hasPrevPage}
       />
 
       <TournamentGrid
