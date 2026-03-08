@@ -1,9 +1,9 @@
 import z from "zod";
 
 export const outcomeSchema = z.object({
-  outcomeId: z.string().min(1, "ID is required"),
+  outcomeId: z.string().optional(),
   label: z.string().min(1, "Label is required"),
-  displayOrder: z.coerce.number(),
+  displayOrder: z.coerce.number().optional(),
 });
 
 export const betTypeSchema = z.object({
