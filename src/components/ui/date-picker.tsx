@@ -194,7 +194,7 @@ const DatePicker: React.FC<DatePickerProps> = ({
         )}
       >
         {dateValue ? (
-          <span className="text-gray-900">{formatDate(dateValue)}</span>
+          <span className="text-foreground">{formatDate(dateValue)}</span>
         ) : (
           <span className="text-muted-foreground">{placeholder}</span>
         )}
