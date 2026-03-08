@@ -50,7 +50,7 @@ export const FormTextarea = <TFieldValues extends FieldValues>({
               placeholder={placeholder}
               disabled={disabled}
               className={cn(
-                "min-h-[100px] text-base border-gray-200 rounded-md focus:border-primary transition-all font-medium",
+                "min-h-[100px] text-sm border-gray-200 rounded-md focus:border-primary transition-all",
                 fieldState.error
                   ? "border-rose-500 bg-red-50/10"
                   : "bg-gray-50/30",

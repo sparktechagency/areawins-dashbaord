@@ -73,7 +73,7 @@ export const FormInput = <TFieldValues extends FieldValues>(
                 placeholder={placeholder}
                 disabled={disabled}
                 className={cn(
-                  "h-12 text-base border-gray-200 rounded-md focus:border-primary transition-all font-medium",
+                  "h-12 text-sm border-gray-200 rounded-md focus:border-primary transition-all",
                   Icon && "pl-10",
                   showPasswordToggle && "pr-10",
                   fieldState.error

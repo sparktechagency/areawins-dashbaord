@@ -47,7 +47,7 @@ export const FormDatePicker = <TFieldValues extends FieldValues>({
               <Icon className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 pointer-events-none" />
               <DatePicker
                 className={cn(
-                  "h-12 text-base border-gray-200 rounded-md focus:border-primary transition-all font-medium",
+                  "h-12 text-sm border-gray-200 rounded-md focus:border-primary transition-all",
                   "pl-10",
                   fieldState.error
                     ? "border-rose-500 bg-red-50/10"

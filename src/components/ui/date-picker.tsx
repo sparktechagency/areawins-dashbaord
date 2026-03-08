@@ -189,14 +189,12 @@ const DatePicker: React.FC<DatePickerProps> = ({
         onClick={() => !disabled && setIsOpen(!isOpen)}
         disabled={disabled}
         className={cn(
-          "flex items-center h-12 w-full rounded-md border border-input bg-background px-3 py-2 ring-offset-background file:border-0 file:bg-transparent file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus:border-primary disabled:cursor-not-allowed disabled:opacity-50",
+          "flex items-center h-12 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus:border-primary disabled:cursor-not-allowed disabled:opacity-50",
           className,
         )}
       >
         {dateValue ? (
-          <span className="text-gray-900 font-medium">
-            {formatDate(dateValue)}
-          </span>
+          <span className="text-gray-900">{formatDate(dateValue)}</span>
         ) : (
           <span className="text-muted-foreground">{placeholder}</span>
         )}

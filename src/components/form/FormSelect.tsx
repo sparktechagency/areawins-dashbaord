@@ -66,7 +66,7 @@ export const FormSelect = <TFieldValues extends FieldValues>({
               <FormControl>
                 <SelectTrigger
                   className={cn(
-                    "h-12 w-full text-base border-gray-200 rounded-md focus:border-primary transition-all font-medium",
+                    "h-12 w-full text-sm border-gray-200 rounded-md focus:border-primary transition-all",
                     Icon && "pl-10",
                     fieldState.error
                       ? "border-rose-500 bg-red-50/10"
