@@ -1,4 +1,3 @@
-import Pagination from "@/components/common/Pagination";
 import SportCategoryBarSkeleton from "@/components/skeletons/SportCategoryBarSkeleton";
 import React from "react";
 
@@ -26,49 +25,71 @@ const SportCategoryBar: React.FC<SportCategoryBarProps> = ({
   }
 
   return (
-    <>
-      <div className="flex overflow-x-auto pb-4 mb-4 gap-4 no-scrollbar">
+    <div className="relative group mb-8">
+      <div className="flex items-center gap-2">
+        {/* Left Arrow */}
         <button
-          onClick={() => onSelectSport("all")}
-          className={`shrink-0 flex  gap-2 items-center p-2 cursor-pointer rounded border ${
-            selectedSportId === "all" ? "border-primary" : "border-transparent"
-          }`}
+          onClick={() => onPageChange(currentPage - 1)}
+          disabled={currentPage === 1}
+          className={`shrink-0 flex items-center justify-center size-9 rounded border border-slate-200 transition-all hover:border-primary hover:text-primary disabled:opacity-30 disabled:hover:border-slate-200 disabled:hover:text-inherit cursor-pointer`}
         >
-          <span className="material-symbols-outlined text-xl">grid_view</span>
-          <span className="text-xs font-bold  text-slate-500">All</span>
+          <span className="material-symbols-outlined text-xl rotate-180">
+            arrow_forward_ios
+          </span>
         </button>
 
-        {sports?.map((sport: any) => (
+        {/* Scrollable Container */}
+        <div className="flex-1 flex overflow-x-auto py-1 gap-2 no-scrollbar scroll-smooth">
           <button
-            key={sport._id}
-            onClick={() => onSelectSport(sport._id)}
-            className={`shrink-0 flex  gap-2 items-center p-2 cursor-pointer rounded border ${
-              selectedSportId === sport._id
-                ? "border-primary"
-                : "border-transparent"
+            onClick={() => onSelectSport("all")}
+            className={`shrink-0 flex gap-2 items-center px-4 py-2 cursor-pointer rounded border transition-all ${
+              selectedSportId === "all"
+                ? "border-primary bg-primary/5 text-primary"
+                : "border-slate-100 hover:border-slate-200 text-slate-500"
             }`}
           >
-            <img
-              src={sport.icon}
-              alt={sport.name}
-              className={`size-5 object-contain`}
-            />
-            <span className="text-xs font-bold  text-slate-500">
-              {sport.name}
+            <span className="material-symbols-outlined text-lg">grid_view</span>
+            <span className="text-xs font-bold uppercase tracking-tight">
+              All
             </span>
           </button>
-        ))}
-      </div>
 
-      {/* Category Pagination */}
-      <div className="mb-8">
-        <Pagination
-          currentPage={currentPage}
-          totalPages={totalPages}
-          onPageChange={onPageChange}
-        />
+          {sports?.map((sport: any) => (
+            <button
+              key={sport._id}
+              onClick={() => onSelectSport(sport._id)}
+              className={`shrink-0 flex gap-2 items-center px-4 py-2 cursor-pointer rounded border transition-all ${
+                selectedSportId === sport._id
+                  ? "border-primary bg-primary/5 text-primary"
+                  : "border-slate-100 hover:border-slate-200 text-slate-500"
+              }`}
+            >
+              <img
+                src={sport.icon}
+                alt={sport.name}
+                className={`size-4 object-contain ${
+                  selectedSportId === sport._id ? "" : "opacity-70"
+                }`}
+              />
+              <span className="text-xs font-bold uppercase tracking-tight">
+                {sport.name}
+              </span>
+            </button>
+          ))}
+        </div>
+
+        {/* Right Arrow */}
+        <button
+          onClick={() => onPageChange(currentPage + 1)}
+          disabled={currentPage === totalPages}
+          className={`shrink-0 flex items-center justify-center size-9 rounded border border-slate-200 transition-all hover:border-primary hover:text-primary disabled:opacity-30 disabled:hover:border-slate-200 disabled:hover:text-inherit cursor-pointer`}
+        >
+          <span className="material-symbols-outlined text-xl">
+            arrow_forward_ios
+          </span>
+        </button>
       </div>
-    </>
+    </div>
   );
 };
 

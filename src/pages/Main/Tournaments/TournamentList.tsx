@@ -26,7 +26,7 @@ const TournamentList: React.FC = () => {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [categoryPage, setCategoryPage] = useState(1);
   const [tournamentPage, setTournamentPage] = useState(1);
-  const CATEGORY_LIMIT = 10;
+  const CATEGORY_LIMIT = 2;
   const TOURNAMENT_LIMIT = 12;
 
   const { data: sportsRes, isLoading: isSportsLoading } =
@@ -177,9 +177,9 @@ const TournamentList: React.FC = () => {
     }
     setTournamentPage(1);
   };
-
   return (
     <div className="p-4 md:p-8">
+      {/* Header */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 mb-4">
         <div>
           <h1 className="text-3xl md:text-5xl font-black tracking-tighter mb-2">
@@ -206,6 +206,7 @@ const TournamentList: React.FC = () => {
         </Button>
       </div>
 
+      {/* Sport Category Bar */}
       <SportCategoryBar
         sports={sports}
         selectedSportId={sportId || "all"}
