@@ -1,6 +1,5 @@
 import { ImageUpload } from "@/components/common/ImageUpload";
 import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
 import {
   Dialog,
   DialogContent,
@@ -24,6 +23,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { countries } from "@/constants/countries";
+import { useGetAllTournamentsQuery } from "@/redux/features/tournament/tournamentApi";
 import React from "react";
 import { UseFormReturn } from "react-hook-form";
 
@@ -48,24 +48,31 @@ const TeamFormDialog: React.FC<TeamFormDialogProps> = ({
   onSubmit,
   onClose,
 }) => {
+  const selectedSport = form.watch("sport");
+  const { data: tournamentsRes } = useGetAllTournamentsQuery(
+    { sport: selectedSport },
+    { skip: !selectedSport },
+  );
+  const tournaments = tournamentsRes?.data?.results || [];
+
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="max-h-[80vh] overflow-y-auto">
+      <DialogContent className="max-h-[90vh] overflow-y-auto max-w-2xl">
         <DialogHeader>
           <DialogTitle>{editingId ? "Edit Team" : "New Team"}</DialogTitle>
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <FormField
                 control={form.control}
                 name="sport"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Sport</FormLabel>
+                    <FormLabel>Sport Category</FormLabel>
                     <Select onValueChange={field.onChange} value={field.value}>
                       <FormControl>
-                        <SelectTrigger>
+                        <SelectTrigger className="h-12">
                           <SelectValue placeholder="Select Sport" />
                         </SelectTrigger>
                       </FormControl>
@@ -81,63 +88,64 @@ const TeamFormDialog: React.FC<TeamFormDialogProps> = ({
                   </FormItem>
                 )}
               />
+
+              <FormField
+                control={form.control}
+                name="tournament"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Tournament / League</FormLabel>
+                    <Select onValueChange={field.onChange} value={field.value}>
+                      <FormControl>
+                        <SelectTrigger className="h-12">
+                          <SelectValue placeholder="Select Tournament" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {tournaments.map((t: any) => (
+                          <SelectItem key={t._id} value={t._id}>
+                            {t.name}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="name"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Team Name</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder="Manchester United"
+                        className="h-12"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
               <FormField
                 control={form.control}
                 name="shortName"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Short Name</FormLabel>
+                    <FormLabel>Short Name (Abbreviation)</FormLabel>
                     <FormControl>
-                      <Input placeholder="MUN" {...field} />
+                      <Input placeholder="MUN" className="h-12" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
-            </div>
 
-            <FormField
-              control={form.control}
-              name="name"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Name</FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder="Manchester United"
-                      {...field}
-                      onChange={(e) => {
-                        field.onChange(e);
-                        const val = e.target.value;
-                        form.setValue(
-                          "slug",
-                          val
-                            .toLowerCase()
-                            .replace(/ /g, "-")
-                            .replace(/[^\w-]+/g, ""),
-                        );
-                      }}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <div className="grid grid-cols-2 gap-4">
-              <FormField
-                control={form.control}
-                name="slug"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Slug</FormLabel>
-                    <FormControl>
-                      <Input placeholder="man-utd" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
               <FormField
                 control={form.control}
                 name="country"
@@ -146,7 +154,7 @@ const TeamFormDialog: React.FC<TeamFormDialogProps> = ({
                     <FormLabel>Country</FormLabel>
                     <Select onValueChange={field.onChange} value={field.value}>
                       <FormControl>
-                        <SelectTrigger>
+                        <SelectTrigger className="h-12">
                           <SelectValue placeholder="Select Country" />
                         </SelectTrigger>
                       </FormControl>
@@ -162,6 +170,20 @@ const TeamFormDialog: React.FC<TeamFormDialogProps> = ({
                   </FormItem>
                 )}
               />
+
+              <FormField
+                control={form.control}
+                name="foundedYear"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Founded Year</FormLabel>
+                    <FormControl>
+                      <Input placeholder="1878" className="h-12" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
             </div>
 
             <FormField
@@ -169,7 +191,7 @@ const TeamFormDialog: React.FC<TeamFormDialogProps> = ({
               name="logo"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Logo</FormLabel>
+                  <FormLabel>Team Logo</FormLabel>
                   <FormControl>
                     <ImageUpload
                       value={field.value}
@@ -182,36 +204,18 @@ const TeamFormDialog: React.FC<TeamFormDialogProps> = ({
               )}
             />
 
-            <FormField
-              control={form.control}
-              name="isActive"
-              render={({ field }) => (
-                <FormItem className="flex flex-row items-start space-x-3 space-y-0 p-4 border rounded">
-                  <FormControl>
-                    <Checkbox
-                      checked={field.value}
-                      onCheckedChange={field.onChange}
-                    />
-                  </FormControl>
-                  <div className="space-y-1 leading-none">
-                    <FormLabel>Active?</FormLabel>
-                  </div>
-                </FormItem>
-              )}
-            />
-
             <div className="flex gap-4 pt-4">
               <Button
                 type="button"
                 variant="outline"
-                className="flex-1"
+                className="flex-1 h-12"
                 onClick={onClose}
               >
                 Cancel
               </Button>
               <Button
                 type="submit"
-                className="flex-1"
+                className="flex-1 h-12"
                 disabled={isCreating || isUpdating}
               >
                 {isCreating || isUpdating ? "Saving..." : "Save Team"}

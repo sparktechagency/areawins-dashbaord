@@ -23,6 +23,7 @@ const TeamManagement: React.FC = () => {
 
   const { data: teamsRes, isLoading } = useGetAllTeamsQuery({});
   const { data: sportsRes } = useGetAllSportCategoriesQuery({});
+
   const [createTeam, { isLoading: isCreating }] = useCreateTeamMutation();
   const [updateTeam, { isLoading: isUpdating }] = useUpdateTeamMutation();
   const [deleteTeam, { isLoading: isDeleting }] = useDeleteTeamMutation();
@@ -37,12 +38,12 @@ const TeamManagement: React.FC = () => {
     resolver: zodResolver(teamSchema) as any,
     defaultValues: {
       name: "",
-      slug: "",
       sport: "",
+      tournament: "",
       shortName: "",
       country: "",
+      foundedYear: "",
       logo: "",
-      isActive: true,
     },
   });
 
@@ -73,12 +74,12 @@ const TeamManagement: React.FC = () => {
     setEditingId(t._id);
     form.reset({
       name: t.name,
-      slug: t.slug,
       sport: t.sport?._id || t.sport,
+      tournament: t.tournament?._id || t.tournament,
       shortName: t.shortName,
       country: t.country,
+      foundedYear: t.foundedYear,
       logo: t.logo,
-      isActive: t.isActive,
     });
     setIsModalOpen(true);
   };
@@ -87,12 +88,12 @@ const TeamManagement: React.FC = () => {
     setEditingId(null);
     form.reset({
       name: "",
-      slug: "",
       sport: "",
+      tournament: "",
       shortName: "",
       country: "",
+      foundedYear: "",
       logo: "",
-      isActive: true,
     });
     setIsModalOpen(true);
   };

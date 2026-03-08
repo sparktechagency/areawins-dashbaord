@@ -9,8 +9,8 @@ const navItems = [
   { label: "Overview", icon: "grid_view", path: "/" },
   { label: "User Management", icon: "group", path: "/users" },
   { label: "Sport Categories", icon: "category", path: "/categories" },
-  { label: "Teams", icon: "shield", path: "/teams" },
   { label: "Tournaments", icon: "emoji_events", path: "/tournaments" },
+  { label: "Teams", icon: "shield", path: "/teams" },
   { label: "Bet Types", icon: "style", path: "/bet-types" },
   { label: "Matchs Management", icon: "sports_soccer", path: "/matches" },
 
