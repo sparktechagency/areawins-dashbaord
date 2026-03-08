@@ -89,7 +89,7 @@ const MatchForm: React.FC<MatchFormProps> = ({
       {title && <h1 className="text-2xl font-bold mb-6">{title}</h1>}
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-          <div className="p-6 bg-white rounded-xl border border-slate-100 shadow-sm space-y-6">
+          <div className="p-6 bg-white rounded-xl border border-slate-100  space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <FormField
                 control={form.control}

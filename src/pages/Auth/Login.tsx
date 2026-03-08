@@ -43,9 +43,7 @@ const Login: React.FC = () => {
   return (
     <div className="space-y-6 animate-in fade-in slide-in-from-top-4 duration-500 border border-white/10 p-6 rounded">
       <div>
-        <h2 className="text-4xl font-black text-white tracking-tight">
-          Welcome Back
-        </h2>
+        <h2 className="text-4xl  text-white tracking-tight">Welcome Back</h2>
         <p className="text-white/40 font-bold  text-[11px] tracking-widest">
           Admin Control Center
         </p>

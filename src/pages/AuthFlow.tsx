@@ -20,7 +20,7 @@ const AuthFlow: React.FC = () => {
       case "LOGIN":
         return (
           <div className="animate-in fade-in slide-in-from-top-4 duration-500">
-            <h2 className="text-4xl font-black text-white mb-2 tracking-tight">
+            <h2 className="text-4xl  text-white mb-2 tracking-tight">
               Welcome Back
             </h2>
             <p className="text-white/40 font-bold  text-[11px] tracking-widest mb-10">
@@ -28,7 +28,7 @@ const AuthFlow: React.FC = () => {
             </p>
             <form onSubmit={handleLogin} className="space-y-6">
               <div className="space-y-2">
-                <label className="text-xs font-black text-white/40  tracking-widest ml-1">
+                <label className="text-xs  text-white/40  tracking-widest ml-1">
                   Work Email
                 </label>
                 <Input
@@ -39,7 +39,7 @@ const AuthFlow: React.FC = () => {
                 />
               </div>
               <div className="space-y-2">
-                <label className="text-xs font-black text-white/40  tracking-widest ml-1">
+                <label className="text-xs  text-white/40  tracking-widest ml-1">
                   Security Key
                 </label>
                 <Input required type="password" placeholder="••••••••" />
@@ -50,7 +50,7 @@ const AuthFlow: React.FC = () => {
                   size="sm"
                   type="button"
                   onClick={() => setStep("FORGOT")}
-                  className="text-[#00D65C] font-black p-0 h-auto"
+                  className="text-[#00D65C]  p-0 h-auto"
                 >
                   Recover Password?
                 </Button>
@@ -68,9 +68,7 @@ const AuthFlow: React.FC = () => {
       case "FORGOT":
         return (
           <div className="animate-in fade-in slide-in-from-left-4 duration-300">
-            <h2 className="text-3xl font-black text-white mb-6">
-              Recover Access
-            </h2>
+            <h2 className="text-3xl  text-white mb-6">Recover Access</h2>
             <p className="text-white/50 text-sm mb-10 leading-relaxed">
               Enter your registered email address and we'll send you a temporary
               security code to reset your key.
@@ -102,9 +100,7 @@ const AuthFlow: React.FC = () => {
       case "OTP":
         return (
           <div className="animate-in fade-in slide-in-from-right-4 duration-300">
-            <h2 className="text-3xl font-black text-white mb-4">
-              Verification
-            </h2>
+            <h2 className="text-3xl  text-white mb-4">Verification</h2>
             <p className="text-white/50 text-sm mb-10">
               We've sent a 6-digit code to{" "}
               <span className="text-[#00D65C] font-bold">
@@ -118,7 +114,7 @@ const AuthFlow: React.FC = () => {
                   <Input
                     key={i}
                     maxLength={1}
-                    className="size-12 bg-white/5 border-white/10 text-center text-xl font-black text-[#00D65C] focus-visible:ring-accent"
+                    className="size-12 bg-white/5 border-white/10 text-center text-xl  text-[#00D65C] focus-visible:ring-accent"
                   />
                 ))}
               </div>
@@ -143,18 +139,16 @@ const AuthFlow: React.FC = () => {
       case "RESET":
         return (
           <div className="animate-in zoom-in-95 duration-300">
-            <h2 className="text-3xl font-black text-white mb-6">
-              Reset Security Key
-            </h2>
+            <h2 className="text-3xl  text-white mb-6">Reset Security Key</h2>
             <div className="space-y-6">
               <div className="space-y-2">
-                <label className="text-xs font-black text-white/40  tracking-widest ml-1">
+                <label className="text-xs  text-white/40  tracking-widest ml-1">
                   New Password
                 </label>
                 <Input type="password" placeholder="••••••••" />
               </div>
               <div className="space-y-2">
-                <label className="text-xs font-black text-white/40  tracking-widest ml-1">
+                <label className="text-xs  text-white/40  tracking-widest ml-1">
                   Confirm New Password
                 </label>
                 <Input type="password" placeholder="••••••••" />
@@ -180,9 +174,7 @@ const AuthFlow: React.FC = () => {
             payments
           </span>
         </div>
-        <span className="text-white font-black text-xl tracking-tight">
-          AreaWins Bet
-        </span>
+        <span className="text-white  text-xl tracking-tight">AreaWins Bet</span>
       </div>
 
       <div className="w-full max-w-md">{renderStep()}</div>

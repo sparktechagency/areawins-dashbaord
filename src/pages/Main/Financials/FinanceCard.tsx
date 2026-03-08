@@ -22,7 +22,7 @@ const FinanceCard: React.FC<FinanceCardProps> = ({
   >
     <p className="text-xs font-bold text-gray-400 tracking-wider">{label}</p>
     <div className="flex items-end justify-between mt-2">
-      <h3 className="text-2xl font-black">{value}</h3>
+      <h3 className="text-2xl ">{value}</h3>
       {trend ? (
         <span className="text-xs font-bold text-slate-500 bg-slate-50 px-2 py-1 rounded">
           {trend}

@@ -100,7 +100,7 @@ const BetTypes: React.FC = () => {
     <div className="p-4 md:p-8">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 mb-4">
         <div>
-          <h1 className="text-3xl md:text-5xl font-black tracking-tighter mb-2">
+          <h1 className="text-3xl md:text-5xl  tracking-tighter mb-2">
             {currentSport?.name} Bet Types
           </h1>
           <p className="text-slate-500 font-medium">
@@ -153,9 +153,7 @@ const BetTypes: React.FC = () => {
               >
                 <CardHeader className="flex flex-row items-start justify-between pb-4">
                   <div>
-                    <CardTitle className="text-xl font-black">
-                      {bt.name}
-                    </CardTitle>
+                    <CardTitle className="text-xl ">{bt.name}</CardTitle>
                     <div className="text-sm text-slate-500 font-bold mt-1">
                       {getSportName(bt.sport)}
                     </div>

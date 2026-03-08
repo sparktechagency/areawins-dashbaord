@@ -13,7 +13,7 @@ const LogEntry = ({ time, admin, action, entity, color }: any) => (
     </td>
     <td className="px-4 lg:px-8 py-4">
       <span
-        className={`px-2 py-0.5 rounded-full text-[8px] lg:text-[10px] font-black tracking-widest border border-current ${color}`}
+        className={`px-2 py-0.5 rounded-full text-[8px] lg:text-[10px]  tracking-widest border border-current ${color}`}
       >
         {action}
       </span>
@@ -84,9 +84,7 @@ const AuditLogs: React.FC = () => {
       <div className="flex-1 flex flex-col bg-white overflow-hidden">
         <div className="p-4 lg:p-8 border-b border-gray-100 flex flex-col sm:flex-row justify-between items-start sm:items-end gap-4 shrink-0">
           <div>
-            <h2 className="text-xl lg:text-2xl font-black tracking-tight">
-              Audit Logs
-            </h2>
+            <h2 className="text-xl lg:text-2xl  tracking-tight">Audit Logs</h2>
             <p className="text-gray-400 text-[10px] lg:text-xs mt-1">
               12,482 total records • Last 30 days
             </p>

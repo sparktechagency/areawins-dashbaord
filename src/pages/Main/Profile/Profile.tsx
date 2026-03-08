@@ -118,9 +118,7 @@ const Profile: React.FC = () => {
       {/* Header */}
       <div className="flex justify-between items-end mb-12">
         <div>
-          <h1 className="text-4xl font-black tracking-tight mb-2">
-            My Profile
-          </h1>
+          <h1 className="text-4xl  tracking-tight mb-2">My Profile</h1>
           <p className="text-gray-500">
             Manage your administrative details and account security.
           </p>

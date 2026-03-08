@@ -61,7 +61,10 @@ const BetTypeForm: React.FC<BetTypeFormProps> = ({
   useEffect(() => {
     if (initialData) {
       form.reset({
-        sport: initialData.sport,
+        sport:
+          typeof initialData.sport === "object"
+            ? initialData.sport?._id || initialData.sport?.id
+            : initialData.sport,
         name: initialData.name,
         outcomes: initialData.outcomes,
         isDefault: initialData.isDefault,
@@ -76,7 +79,7 @@ const BetTypeForm: React.FC<BetTypeFormProps> = ({
       {title && <h1 className="text-2xl font-bold mb-6">{title}</h1>}
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-          <div className="p-6 bg-white rounded-xl border border-slate-100 shadow-sm space-y-6">
+          <div className="p-6 bg-white rounded-xl border border-slate-100  space-y-6">
             <div className="grid grid-cols-1 gap-4">
               <FormField
                 control={form.control}
@@ -155,7 +158,7 @@ const BetTypeForm: React.FC<BetTypeFormProps> = ({
               {fields.map((field, index) => (
                 <div
                   key={field.id}
-                  className="flex gap-2 items-start bg-white p-3 rounded border border-slate-100 mb-2 shadow-sm"
+                  className="flex gap-2 items-start bg-white p-3 rounded border border-slate-100 mb-2 "
                 >
                   <FormField
                     control={form.control}

@@ -87,7 +87,7 @@ const TeamForm: React.FC<TeamFormProps> = ({
       {title && <h1 className="text-2xl font-bold mb-6">{title}</h1>}
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 p-6 bg-white rounded-xl border border-slate-100 shadow-sm">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 p-6 bg-white rounded-xl border border-slate-100 ">
             <FormField
               control={form.control}
               name="sport"

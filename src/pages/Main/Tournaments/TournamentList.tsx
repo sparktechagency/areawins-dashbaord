@@ -119,7 +119,7 @@ const TournamentList: React.FC = () => {
             <span className="material-symbols-outlined">arrow_back</span>
           </Button>
           <div>
-            <h1 className="text-3xl md:text-5xl font-black tracking-tighter mb-2">
+            <h1 className="text-3xl md:text-5xl  tracking-tighter mb-2">
               {currentSport?.name || "Sport"} Tournaments
             </h1>
             <p className="text-slate-500 font-medium">

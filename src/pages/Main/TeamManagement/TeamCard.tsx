@@ -33,9 +33,7 @@ const TeamCard: React.FC<TeamCardProps> = ({
         <Badge variant="outline" className="text-xs mb-1">
           {getSportName(t.sport?._id || t.sport)}
         </Badge>
-        <CardTitle className="text-xl font-black text-center">
-          {t.name}
-        </CardTitle>
+        <CardTitle className="text-xl  text-center">{t.name}</CardTitle>
         <span className="text-sm font-bold text-slate-400">{t.shortName}</span>
       </CardHeader>
       <CardContent>

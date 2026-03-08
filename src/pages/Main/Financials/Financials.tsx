@@ -35,9 +35,7 @@ const Financials: React.FC = () => {
       {/* Header */}
       <div className="flex flex-wrap justify-between items-end gap-4 mb-8">
         <div className="space-y-1">
-          <h1 className="text-3xl font-black tracking-tight">
-            Financial Management
-          </h1>
+          <h1 className="text-3xl  tracking-tight">Financial Management</h1>
           <p className="text-slate-400 text-sm">
             Monitor platform liquidity and user transactions.
           </p>

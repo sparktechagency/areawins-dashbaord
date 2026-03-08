@@ -49,9 +49,7 @@ const BetManagement: React.FC = () => {
     <div className="p-4 md:p-8">
       {/* Header */}
       <div className="flex flex-col gap-1 mb-8">
-        <h2 className="text-3xl font-black tracking-tight text-primary">
-          Bet Oversight
-        </h2>
+        <h2 className="text-3xl  tracking-tight text-primary">Bet Oversight</h2>
         <p className="text-gray-500 font-medium">
           Monitor market activity and manually override results if necessary.
         </p>

@@ -75,7 +75,7 @@ const OTPVerification: React.FC = () => {
   return (
     <div className="space-y-6 animate-in fade-in slide-in-from-top-4 duration-500 border border-white/10 p-6 rounded">
       <div className="space-y-2">
-        <h2 className="text-3xl font-black text-white mb-4">Verification</h2>
+        <h2 className="text-3xl  text-white mb-4">Verification</h2>
         <p className="text-white/50 text-sm mb-10">
           We've sent a 6-digit code to{" "}
           <span className="text-primary font-bold">{email}</span>. Enter it
@@ -102,7 +102,7 @@ const OTPVerification: React.FC = () => {
                         value={form.watch("otp")[i] || ""}
                         onChange={(e) => handleOtpChange(i, e.target.value)}
                         onKeyDown={(e) => handleKeyDown(i, e)}
-                        className="size-12 bg-white/5 border-white/10 text-center text-xl font-black text-primary focus-visible:ring-primary/50 p-0"
+                        className="size-12 bg-white/5 border-white/10 text-center text-xl  text-primary focus-visible:ring-primary/50 p-0"
                       />
                     </FormControl>
                   ))}

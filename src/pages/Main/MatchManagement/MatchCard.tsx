@@ -67,13 +67,13 @@ const MatchCard: React.FC<MatchCardProps> = ({
                 "🏠"
               )}
             </div>
-            <span className="text-xs font-black text-center leading-tight">
+            <span className="text-xs  text-center leading-tight">
               {homeTeamData?.name || "Home"}
             </span>
           </div>
           {/* Score / VS */}
           <div className="flex flex-col items-center">
-            <div className="text-3xl font-black tabular-nums">
+            <div className="text-3xl  tabular-nums">
               {m.status === "live" || m.status === "finished"
                 ? `${m.liveStatus?.homeScore ?? 0} - ${m.liveStatus?.awayScore ?? 0}`
                 : "VS"}
@@ -95,7 +95,7 @@ const MatchCard: React.FC<MatchCardProps> = ({
                 "✈️"
               )}
             </div>
-            <span className="text-xs font-black text-center leading-tight">
+            <span className="text-xs  text-center leading-tight">
               {awayTeamData?.name || "Away"}
             </span>
           </div>

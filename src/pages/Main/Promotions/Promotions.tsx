@@ -119,7 +119,7 @@ const Promotions: React.FC = () => {
     <div className="p-4 md:p-8">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 mb-8">
         <div>
-          <h1 className="text-3xl md:text-5xl font-black tracking-tight mb-2">
+          <h1 className="text-3xl md:text-5xl  tracking-tight mb-2">
             Promotions &amp; Campaigns
           </h1>
           <p className="text-gray-500">
@@ -128,7 +128,7 @@ const Promotions: React.FC = () => {
         </div>
         <Button
           onClick={handleCreate}
-          className="bg-secondary text-primary font-black shadow-lg shadow-green-500/10 hover:brightness-110"
+          className="bg-secondary text-primary"
         >
           New Campaign
         </Button>
@@ -138,12 +138,12 @@ const Promotions: React.FC = () => {
         {promos.map((promo) => (
           <div
             key={promo.id}
-            className="bg-white rounded border border-gray-200  overflow-hidden flex flex-col group hover:shadow-md transition-all"
+            className="bg-white rounded border border-gray-200  overflow-hidden flex flex-col group transition-all"
           >
             <div className={`h-2 ${promo.color}`} />
             <div className="p-6 flex-1 flex flex-col">
               <div className="flex justify-between items-start mb-4">
-                <span className="text-[10px] font-black text-gray-400 tracking-wider bg-gray-50 px-2 py-1 rounded">
+                <span className="text-[10px]  text-gray-400 tracking-wider bg-gray-50 px-2 py-1 rounded">
                   {promo.type}
                 </span>
                 <span
@@ -167,7 +167,7 @@ const Promotions: React.FC = () => {
                   <p className="text-[10px] font-bold text-gray-400 mb-1">
                     Impact Reach
                   </p>
-                  <p className="font-black text-slate-800">{promo.reach}</p>
+                  <p className=" text-slate-800">{promo.reach}</p>
                 </div>
                 <div className="flex gap-2">
                   <Button

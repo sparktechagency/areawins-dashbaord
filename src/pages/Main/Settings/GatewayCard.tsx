@@ -28,7 +28,7 @@ const GatewayCard: React.FC<GatewayCardProps> = ({
               status === "Active" ? "bg-secondary" : "bg-slate-300"
             }`}
           />
-          <span className="text-[10px] font-black tracking-tighter text-slate-400">
+          <span className="text-[10px]  tracking-tighter text-slate-400">
             {status}
           </span>
         </div>

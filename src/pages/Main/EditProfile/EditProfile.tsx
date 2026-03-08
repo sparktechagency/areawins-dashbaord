@@ -69,9 +69,7 @@ const EditProfile: React.FC = () => {
   return (
     <div className="p-4 md:p-8 max-w-2xl mx-auto">
       <div className="mb-12">
-        <h1 className="text-4xl font-black tracking-tight mb-2">
-          Edit Profile
-        </h1>
+        <h1 className="text-4xl  tracking-tight mb-2">Edit Profile</h1>
         <p className="text-gray-500">Update your public profile information.</p>
       </div>
 
@@ -81,7 +79,7 @@ const EditProfile: React.FC = () => {
             {/* Avatar picker */}
             <div className="flex flex-col items-center mb-8">
               <div className="relative">
-                <div className="size-32 rounded-full border-4 border-slate-50 overflow-hidden bg-slate-100 shadow-inner">
+                <div className="size-32 rounded-full border-4 border-slate-50 overflow-hidden bg-slate-100">
                   {preview ? (
                     <img
                       src={preview}
@@ -96,7 +94,7 @@ const EditProfile: React.FC = () => {
                 </div>
                 <label
                   htmlFor="profileImage"
-                  className="absolute bottom-0 right-0 size-9 bg-primary text-white rounded-full flex items-center justify-center shadow-lg cursor-pointer hover:bg-primary/90 transition-colors border-2 border-white"
+                  className="absolute bottom-0 right-0 size-9 bg-primary text-white rounded-full flex items-center justify-center  cursor-pointer hover:bg-primary/90 transition-colors border-2 border-white"
                 >
                   <Camera size={18} />
                 </label>
@@ -134,14 +132,14 @@ const EditProfile: React.FC = () => {
                 type="button"
                 variant="ghost"
                 onClick={() => navigate("/profile")}
-                className="px-8 py-6 rounded font-black"
+                className="px-8 py-6 rounded "
               >
                 Cancel
               </Button>
               <Button
                 type="submit"
                 disabled={isUpdating}
-                className="bg-primary text-secondary px-8 py-6 rounded font-black shadow-xl shadow-primary/20 hover:brightness-110 transition-all"
+                className="bg-primary text-secondary px-8 py-6 rounded "
               >
                 {isUpdating ? "Saving..." : "Save Changes"}
               </Button>

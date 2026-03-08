@@ -7,9 +7,7 @@ const Settings: React.FC = () => {
       {/* Header */}
       <div className="flex justify-between items-end border-b border-gray-100 pb-8">
         <div>
-          <h1 className="text-4xl font-black tracking-tight mb-2">
-            Platform Settings
-          </h1>
+          <h1 className="text-4xl  tracking-tight mb-2">Platform Settings</h1>
           <p className="text-gray-500">
             Global configurations for the AreaWins Bet ecosystem.
           </p>
@@ -18,7 +16,7 @@ const Settings: React.FC = () => {
           <button className="px-6 py-2.5 bg-slate-100 text-slate-600 rounded text-sm font-bold hover:bg-slate-200">
             Discard
           </button>
-          <button className="px-8 py-2.5 bg-primary text-white rounded text-sm font-bold shadow-lg shadow-primary/20 hover:brightness-110">
+          <button className="px-8 py-2.5 bg-primary text-white rounded text-sm font-bold  shadow-primary/20 hover:brightness-110">
             Save Changes
           </button>
         </div>
@@ -38,7 +36,7 @@ const Settings: React.FC = () => {
               <label className="text-sm font-bold text-slate-700">
                 Customer Commission (%)
               </label>
-              <span className="bg-primary/10 text-primary px-3 py-1 rounded-full text-xs font-black">
+              <span className="bg-primary/10 text-primary px-3 py-1 rounded-full text-xs ">
                 5.0%
               </span>
             </div>
@@ -50,7 +48,7 @@ const Settings: React.FC = () => {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 pt-4">
             <div className="space-y-2">
-              <label className="text-xs font-black text-gray-400 tracking-widest">
+              <label className="text-xs  text-gray-400 tracking-widest">
                 Min Bet Amount
               </label>
               <div className="relative">
@@ -64,7 +62,7 @@ const Settings: React.FC = () => {
               </div>
             </div>
             <div className="space-y-2">
-              <label className="text-xs font-black text-gray-400 tracking-widest">
+              <label className="text-xs  text-gray-400 tracking-widest">
                 Max Bet Amount
               </label>
               <div className="relative">

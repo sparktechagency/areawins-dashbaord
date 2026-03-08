@@ -68,10 +68,7 @@ const TournamentCard: React.FC<TournamentCardProps> = ({
         </div>
       </CardHeader>
       <CardContent>
-        <CardTitle
-          className="text-lg font-black mb-1 truncate"
-          title={tournament.name}
-        >
+        <CardTitle className="text-lg  mb-1 truncate" title={tournament.name}>
           {tournament.name}
         </CardTitle>
         <div className="flex flex-wrap gap-2 mb-3">

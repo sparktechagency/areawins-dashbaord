@@ -59,7 +59,7 @@ const SportCategoryCard: React.FC<SportCategoryCardProps> = ({
         </div>
       </CardHeader>
       <CardContent className="relative overflow-hidden">
-        <CardTitle className="mb-1 text-2xl font-black">{sport.name}</CardTitle>
+        <CardTitle className="mb-1 text-2xl ">{sport.name}</CardTitle>
         <div className="text-xs text-slate-400 font-mono mb-4">
           {sport.slug}
         </div>

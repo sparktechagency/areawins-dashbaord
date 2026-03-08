@@ -77,7 +77,7 @@ const AddTournament: React.FC = () => {
     <div className="p-4 md:p-8 max-w-4xl mx-auto">
       <div className="flex justify-between items-center mb-10">
         <div>
-          <h1 className="text-3xl md:text-5xl font-black tracking-tighter mb-2">
+          <h1 className="text-3xl md:text-5xl  tracking-tighter mb-2">
             New Tournament
           </h1>
           <p className="text-slate-500 font-medium">

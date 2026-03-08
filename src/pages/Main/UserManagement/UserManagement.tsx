@@ -20,7 +20,7 @@ const UserManagement: React.FC = () => {
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
         <div>
-          <h2 className="text-3xl font-black text-primary tracking-tight">
+          <h2 className="text-3xl  text-primary tracking-tight">
             User Management
           </h2>
           <p className="text-gray-500 font-medium">

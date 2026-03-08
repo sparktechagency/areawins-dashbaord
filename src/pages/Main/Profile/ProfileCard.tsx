@@ -31,7 +31,7 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
           onClick={() => isEditing && fileInputRef.current?.click()}
         >
           <img
-            className={`size-32 rounded-full border-4 border-slate-50 shadow-inner mb-6 transition-all object-cover ${
+            className={`size-32 rounded-full border-4 border-slate-50  mb-6 transition-all object-cover ${
               isEditing ? "group-hover:brightness-75" : ""
             }`}
             src={
@@ -55,10 +55,10 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
             className="hidden"
           />
         </div>
-        <h2 className="text-2xl font-black text-primary">
+        <h2 className="text-2xl  text-primary">
           {profileData?.fullName || "Loading..."}
         </h2>
-        <p className="text-primary font-black text-[10px] tracking-widest bg-white border border-primary px-3 py-1 rounded-full mt-2">
+        <p className="text-primary  text-[10px] tracking-widest bg-white border border-primary px-3 py-1 rounded-full mt-2">
           {profileData?.role}
         </p>
 
@@ -84,7 +84,7 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
 
       {/* Danger Zone */}
       <div className="bg-red-50 border border-red-100 rounded p-6 mt-6">
-        <h4 className="text-red-600 font-black text-xs tracking-widest mb-4">
+        <h4 className="text-red-600  text-xs tracking-widest mb-4">
           Danger Zone
         </h4>
         <p className="text-red-900/60 text-[10px] font-bold mb-4">
@@ -93,7 +93,7 @@ const ProfileCard: React.FC<ProfileCardProps> = ({
         <Button
           onClick={onDelete}
           disabled={isDeleting}
-          className="w-full bg-white text-red-600 border border-red-200 hover:bg-red-600 hover:text-white transition-all text-xs font-black shadow-none h-10 cursor-pointer disabled:opacity-50"
+          className="w-full bg-white text-red-600 border border-red-200 hover:bg-red-600 hover:text-white transition-all text-xs  shadow-none h-10 cursor-pointer disabled:opacity-50"
         >
           {isDeleting ? "Deleting..." : "Delete My Account"}
         </Button>

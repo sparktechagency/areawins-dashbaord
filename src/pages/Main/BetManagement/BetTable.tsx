@@ -32,7 +32,7 @@ const BetTable: React.FC<BetTableProps> = ({ bets, isLoading, onManage }) => {
               ].map((col, i) => (
                 <th
                   key={col}
-                  className={`px-6 py-4 text-xs font-black text-gray-400 tracking-wider ${
+                  className={`px-6 py-4 text-xs  text-gray-400 tracking-wider ${
                     col === "Stake"
                       ? "text-right"
                       : col === "Action"
