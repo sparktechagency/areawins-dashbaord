@@ -1,8 +1,11 @@
 import FormSkeleton from "@/components/skeletons/FormSkeleton";
+import {
+  useGetSingleBetTypeQuery,
+  useUpdateBetTypeMutation,
+} from "@/redux/features/betType/betTypeApi";
 import { useGetAllSportCategoriesQuery } from "@/redux/features/sportCategory/sportCategoryApi";
-import { betTypeService } from "@/services/mockData";
 import { BetTypeFormValues } from "@/validation/betType";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
 import BetTypeForm from "./BetTypeForm";
@@ -10,36 +13,27 @@ import BetTypeForm from "./BetTypeForm";
 const EditBetType: React.FC = () => {
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
-  const [betType, setBetType] = useState<any>(null);
-  const [isLoading, setIsLoading] = useState(true);
 
+  const { data: betTypeRes, isLoading: isBetTypeLoading } =
+    useGetSingleBetTypeQuery(id);
   const { data: sportsRes } = useGetAllSportCategoriesQuery({});
   const sports = sportsRes?.data?.results || [];
 
-  useEffect(() => {
-    if (id) {
-      const data = betTypeService.getById(id);
-      if (data) {
-        setBetType(data);
-      } else {
-        toast.error("Bet Type not found");
-        navigate("/bet-types");
-      }
-      setIsLoading(false);
-    }
-  }, [id, navigate]);
+  const [updateBetType, { isLoading: isUpdating }] = useUpdateBetTypeMutation();
+
+  const betTypeData = betTypeRes?.data;
 
   const onSubmit = async (data: BetTypeFormValues) => {
-    const updated = betTypeService.update(id!, data);
-    if (updated) {
+    try {
+      await updateBetType({ id: id!, data }).unwrap();
       toast.success("Bet Type updated successfully");
-      navigate("/bet-types");
-    } else {
-      toast.error("Failed to update bet type");
+      navigate(-1);
+    } catch (err: any) {
+      toast.error(err?.data?.message || "Failed to update bet type");
     }
   };
 
-  if (isLoading) {
+  if (isBetTypeLoading) {
     return (
       <div className="p-4 md:p-8">
         <FormSkeleton fields={6} columns={2} />
@@ -51,8 +45,9 @@ const EditBetType: React.FC = () => {
     <div className="p-4 md:p-8">
       <BetTypeForm
         title="Edit Bet Type"
-        initialData={betType}
+        initialData={betTypeData}
         sports={sports}
+        isLoading={isUpdating}
         onSubmit={onSubmit}
       />
     </div>

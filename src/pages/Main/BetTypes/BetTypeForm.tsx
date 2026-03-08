@@ -28,6 +28,7 @@ interface BetTypeFormProps {
   isLoading?: boolean;
   onSubmit: (data: BetTypeFormValues) => void;
   title?: string;
+  initialSportId?: string;
 }
 
 const BetTypeForm: React.FC<BetTypeFormProps> = ({
@@ -36,6 +37,7 @@ const BetTypeForm: React.FC<BetTypeFormProps> = ({
   isLoading,
   onSubmit,
   title,
+  initialSportId,
 }) => {
   const navigate = useNavigate();
   const form = useForm<BetTypeFormValues>({
@@ -46,7 +48,8 @@ const BetTypeForm: React.FC<BetTypeFormProps> = ({
         `BET-TYPE-${Math.floor(Math.random() * 1000)
           .toString()
           .padStart(3, "0")}`,
-      sport: initialData?.sport || "",
+      sport:
+        initialData?.sport?._id || initialData?.sport || initialSportId || "",
       name: initialData?.name || "",
       slug: initialData?.slug || "",
       outcomes: initialData?.outcomes || [],
@@ -103,7 +106,11 @@ const BetTypeForm: React.FC<BetTypeFormProps> = ({
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Sport</FormLabel>
-                    <Select onValueChange={field.onChange} value={field.value}>
+                    <Select
+                      onValueChange={field.onChange}
+                      value={field.value}
+                      disabled={!!initialSportId}
+                    >
                       <FormControl>
                         <SelectTrigger className="h-12">
                           <SelectValue placeholder="Select Sport" />

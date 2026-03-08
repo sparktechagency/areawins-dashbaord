@@ -89,6 +89,10 @@ const router = createBrowserRouter([
         element: <BetTypes />,
       },
       {
+        path: "categories/:sportId/bet-types",
+        element: <BetTypes />,
+      },
+      {
         path: "bet-types/add",
         element: <AddBetType />,
       },
