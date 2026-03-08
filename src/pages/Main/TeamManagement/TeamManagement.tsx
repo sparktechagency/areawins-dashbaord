@@ -12,16 +12,26 @@ import { TeamFormValues, teamSchema } from "@/validation/team";
 import { zodResolver } from "@hookform/resolvers/zod";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
+import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
 import TeamCard from "./TeamCard";
 import TeamFormDialog from "./TeamFormDialog";
 
 const TeamManagement: React.FC = () => {
+  const navigate = useNavigate();
+  const { sportId, tournamentId } = useParams<{
+    sportId: string;
+    tournamentId: string;
+  }>();
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [deletingTeam, setDeletingTeam] = useState<any | null>(null);
 
-  const { data: teamsRes, isLoading } = useGetAllTeamsQuery({});
+  const { data: teamsRes, isLoading } = useGetAllTeamsQuery({
+    sport: sportId,
+    tournament: tournamentId,
+  });
   const { data: sportsRes } = useGetAllSportCategoriesQuery({});
 
   const [createTeam, { isLoading: isCreating }] = useCreateTeamMutation();
@@ -88,8 +98,8 @@ const TeamManagement: React.FC = () => {
     setEditingId(null);
     form.reset({
       name: "",
-      sport: "",
-      tournament: "",
+      sport: sportId || "",
+      tournament: tournamentId || "",
       shortName: "",
       country: "",
       foundedYear: "",
@@ -165,6 +175,8 @@ const TeamManagement: React.FC = () => {
         editingId={editingId}
         form={form}
         sports={sports}
+        sportId={sportId}
+        tournamentId={tournamentId}
         isCreating={isCreating}
         isUpdating={isUpdating}
         onSubmit={onSubmit}

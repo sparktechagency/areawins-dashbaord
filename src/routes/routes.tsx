@@ -36,6 +36,11 @@ const router = createBrowserRouter([
       { path: "categories", element: <SportCategories /> },
       { path: "categories/add", element: <AddSportCategory /> },
       { path: "categories/edit/:id", element: <EditSportCategory /> },
+      { path: "categories/:sportId/tournaments", element: <TournamentList /> },
+      {
+        path: "categories/:sportId/tournaments/:tournamentId/teams",
+        element: <TeamManagement />,
+      },
       { path: "bet-types", element: <BetTypes /> },
       { path: "teams", element: <TeamManagement /> },
       { path: "tournaments", element: <TournamentList /> },

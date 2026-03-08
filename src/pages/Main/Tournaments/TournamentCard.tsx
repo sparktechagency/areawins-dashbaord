@@ -2,6 +2,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import React from "react";
+import { useNavigate, useParams } from "react-router-dom";
 
 interface TournamentCardProps {
   tournament: any;
@@ -16,8 +17,19 @@ const TournamentCard: React.FC<TournamentCardProps> = ({
   onEdit,
   onDelete,
 }) => {
+  const navigate = useNavigate();
+  const { sportId } = useParams<{ sportId: string }>();
+
+  const handleCardClick = () => {
+    const sId = sportId || tournament.sport?._id || tournament.sport;
+    navigate(`/categories/${sId}/tournaments/${tournament._id}/teams`);
+  };
+
   return (
-    <Card>
+    <Card
+      className="cursor-pointer hover:border-primary transition-all duration-300"
+      onClick={handleCardClick}
+    >
       <CardHeader className="flex flex-row items-center justify-between pb-4">
         <div className="size-12 rounded bg-slate-50 flex items-center justify-center border border-slate-100 text-2xl">
           {tournament.logo && tournament.logo.startsWith("http") ? (
@@ -35,7 +47,10 @@ const TournamentCard: React.FC<TournamentCardProps> = ({
             variant="ghost"
             size="icon"
             className="size-8"
-            onClick={() => onEdit(tournament)}
+            onClick={(e) => {
+              e.stopPropagation();
+              onEdit(tournament);
+            }}
           >
             <span className="material-symbols-outlined text-lg">edit</span>
           </Button>
@@ -43,7 +58,10 @@ const TournamentCard: React.FC<TournamentCardProps> = ({
             variant="ghost"
             size="icon"
             className="size-8 text-red-500 hover:bg-red-50"
-            onClick={() => onDelete(tournament)}
+            onClick={(e) => {
+              e.stopPropagation();
+              onDelete(tournament);
+            }}
           >
             <span className="material-symbols-outlined text-lg">delete</span>
           </Button>

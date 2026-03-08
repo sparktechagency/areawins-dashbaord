@@ -2,6 +2,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import React from "react";
+import { useNavigate } from "react-router-dom";
 
 interface SportCategoryCardProps {
   sport: any;
@@ -14,10 +15,14 @@ const SportCategoryCard: React.FC<SportCategoryCardProps> = ({
   onEdit,
   onDelete,
 }) => {
+  const navigate = useNavigate();
   return (
-    <Card className="w-full shadow-none group">
+    <Card
+      className="w-full shadow-none group cursor-pointer hover:border-primary transition-all duration-300"
+      onClick={() => navigate(`/categories/${sport._id}/tournaments`)}
+    >
       <CardHeader className="flex flex-row items-center justify-between pb-4">
-        <div className="size-12 rounded flex items-center justify-center cursor-pointer">
+        <div className="size-12 rounded flex items-center justify-center">
           {sport.icon ? (
             <img
               src={sport.icon}
@@ -33,7 +38,10 @@ const SportCategoryCard: React.FC<SportCategoryCardProps> = ({
             variant="ghost"
             size="icon"
             className="size-8 cursor-pointer"
-            onClick={() => onEdit(sport)}
+            onClick={(e) => {
+              e.stopPropagation();
+              onEdit(sport);
+            }}
           >
             <span className="material-symbols-outlined text-lg">edit</span>
           </Button>
@@ -41,7 +49,10 @@ const SportCategoryCard: React.FC<SportCategoryCardProps> = ({
             variant="ghost"
             size="icon"
             className="size-8 text-red-500 hover:text-red-600 hover:bg-red-50 cursor-pointer"
-            onClick={() => onDelete(sport)}
+            onClick={(e) => {
+              e.stopPropagation();
+              onDelete(sport);
+            }}
           >
             <span className="material-symbols-outlined text-lg">delete</span>
           </Button>

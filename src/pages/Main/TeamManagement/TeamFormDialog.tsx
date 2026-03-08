@@ -32,6 +32,8 @@ interface TeamFormDialogProps {
   editingId: string | null;
   form: UseFormReturn<any>;
   sports: any[];
+  sportId?: string;
+  tournamentId?: string;
   isCreating: boolean;
   isUpdating: boolean;
   onSubmit: (data: any) => void;
@@ -43,6 +45,8 @@ const TeamFormDialog: React.FC<TeamFormDialogProps> = ({
   editingId,
   form,
   sports,
+  sportId,
+  tournamentId,
   isCreating,
   isUpdating,
   onSubmit,
@@ -70,7 +74,11 @@ const TeamFormDialog: React.FC<TeamFormDialogProps> = ({
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Sport Category</FormLabel>
-                    <Select onValueChange={field.onChange} value={field.value}>
+                    <Select
+                      onValueChange={field.onChange}
+                      value={field.value}
+                      disabled={!!sportId}
+                    >
                       <FormControl>
                         <SelectTrigger className="h-12">
                           <SelectValue placeholder="Select Sport" />
@@ -95,7 +103,11 @@ const TeamFormDialog: React.FC<TeamFormDialogProps> = ({
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Tournament / League</FormLabel>
-                    <Select onValueChange={field.onChange} value={field.value}>
+                    <Select
+                      onValueChange={field.onChange}
+                      value={field.value}
+                      disabled={!!tournamentId}
+                    >
                       <FormControl>
                         <SelectTrigger className="h-12">
                           <SelectValue placeholder="Select Tournament" />

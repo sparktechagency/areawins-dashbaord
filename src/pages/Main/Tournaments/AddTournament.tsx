@@ -19,24 +19,25 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { CalendarIcon, Globe, Trophy, Type } from "lucide-react";
 import React from "react";
 import { useForm } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { toast } from "sonner";
 
 const AddTournament: React.FC = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const sportId = searchParams.get("sportId");
+
   const { data: sportsRes, isLoading: isSportsLoading } =
     useGetAllSportCategoriesQuery({ limit: 100 });
   const [createTournament, { isLoading: isCreating }] =
     useCreateTournamentMutation();
   const sports = sportsRes?.data?.results || [];
 
-  if (isSportsLoading) return <FormSkeleton fields={8} columns={2} />;
-
   const form = useForm<TournamentFormValues>({
     resolver: zodResolver(tournamentSchema) as any,
     defaultValues: {
       name: "",
-      sport: "",
+      sport: sportId || "",
       type: "league",
       description: "",
       startDate: "",
@@ -47,6 +48,8 @@ const AddTournament: React.FC = () => {
       logo: "",
     },
   });
+
+  if (isSportsLoading) return <FormSkeleton fields={8} columns={2} />;
 
   const onSubmit = async (data: TournamentFormValues) => {
     const formData = new FormData();
@@ -103,6 +106,7 @@ const AddTournament: React.FC = () => {
                   value: s._id,
                 }))}
                 icon={Trophy}
+                disabled={!!sportId}
                 required
               />
 
