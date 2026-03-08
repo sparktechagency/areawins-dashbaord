@@ -1,5 +1,5 @@
 import Pagination from "@/components/common/Pagination";
-import { Skeleton } from "@/components/ui/skeleton";
+import TournamentSkeleton from "@/components/skeletons/TournamentSkeleton";
 import React from "react";
 import TournamentCard from "./TournamentCard";
 
@@ -27,8 +27,8 @@ const TournamentGrid: React.FC<TournamentGridProps> = ({
   if (isLoading) {
     return (
       <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-6">
-        {[1, 2, 3, 4].map((i) => (
-          <Skeleton key={i} className="h-48 w-full rounded" />
+        {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
+          <TournamentSkeleton key={i} />
         ))}
       </div>
     );

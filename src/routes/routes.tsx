@@ -1,5 +1,4 @@
 import BetTypes from "@/pages/Main/BetTypes/BetTypes";
-import TournamentManagement from "@/pages/Main/Tournaments/TournamentManagement";
 import { createBrowserRouter } from "react-router-dom";
 import Layout from "../layout/Layout";
 import AuthLayout from "../pages/Auth/AuthLayout";
@@ -19,6 +18,7 @@ import Promotions from "../pages/Main/Promotions/Promotions";
 import Settings from "../pages/Main/Settings/Settings";
 import SportCategories from "../pages/Main/SportCategories/SportCategories";
 import TeamManagement from "../pages/Main/TeamManagement/TeamManagement";
+import TournamentList from "../pages/Main/Tournaments/TournamentList";
 import UserManagement from "../pages/Main/UserManagement/UserManagement";
 
 const router = createBrowserRouter([
@@ -32,7 +32,8 @@ const router = createBrowserRouter([
       { path: "categories", element: <SportCategories /> },
       { path: "bet-types", element: <BetTypes /> },
       { path: "teams", element: <TeamManagement /> },
-      { path: "tournaments", element: <TournamentManagement /> },
+      { path: "tournaments", element: <TournamentList /> },
+      { path: "tournaments/:sportId", element: <TournamentList /> },
       { path: "bets", element: <BetManagement /> },
       { path: "financials", element: <Financials /> },
       { path: "promotions", element: <Promotions /> },
