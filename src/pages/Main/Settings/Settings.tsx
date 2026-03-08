@@ -25,7 +25,7 @@ const Settings: React.FC = () => {
       </div>
 
       {/* Commission & Fees */}
-      <section className="bg-white rounded border border-gray-200 shadow-sm overflow-hidden">
+      <section className="bg-white rounded border border-gray-200  overflow-hidden">
         <div className="p-6 border-b border-gray-100 bg-slate-50/50 flex items-center gap-3">
           <span className="material-symbols-outlined text-primary">
             percent
@@ -82,7 +82,7 @@ const Settings: React.FC = () => {
       </section>
 
       {/* Active Gateways */}
-      <section className="bg-white rounded border border-gray-200 shadow-sm overflow-hidden">
+      <section className="bg-white rounded border border-gray-200  overflow-hidden">
         <div className="p-6 border-b border-gray-100 bg-slate-50/50 flex items-center gap-3">
           <span className="material-symbols-outlined text-primary">
             credit_card

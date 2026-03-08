@@ -113,7 +113,7 @@ const EditTournament: React.FC = () => {
         </Button>
       </div>
 
-      <div className="bg-white p-6 rounded-xl border border-gray-100 shadow-sm">
+      <div className="bg-white p-6 rounded-xl border border-gray-100 ">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

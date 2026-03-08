@@ -17,7 +17,7 @@ const getBadgeVariant = (status: string) => {
 
 const BetTable: React.FC<BetTableProps> = ({ bets, isLoading, onManage }) => {
   return (
-    <div className="bg-white rounded border border-gray-200 overflow-hidden shadow-sm">
+    <div className="bg-white rounded border border-gray-200 overflow-hidden ">
       <div className="overflow-x-auto">
         <table className="w-full text-left border-collapse">
           <thead>

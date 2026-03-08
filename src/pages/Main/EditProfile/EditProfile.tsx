@@ -75,7 +75,7 @@ const EditProfile: React.FC = () => {
         <p className="text-gray-500">Update your public profile information.</p>
       </div>
 
-      <div className="bg-white border border-gray-200 rounded-3xl p-8 shadow-sm">
+      <div className="bg-white border border-gray-200 rounded-3xl p-8 ">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
             {/* Avatar picker */}

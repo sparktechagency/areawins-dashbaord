@@ -138,7 +138,7 @@ const Promotions: React.FC = () => {
         {promos.map((promo) => (
           <div
             key={promo.id}
-            className="bg-white rounded border border-gray-200 shadow-sm overflow-hidden flex flex-col group hover:shadow-md transition-all"
+            className="bg-white rounded border border-gray-200  overflow-hidden flex flex-col group hover:shadow-md transition-all"
           >
             <div className={`h-2 ${promo.color}`} />
             <div className="p-6 flex-1 flex flex-col">

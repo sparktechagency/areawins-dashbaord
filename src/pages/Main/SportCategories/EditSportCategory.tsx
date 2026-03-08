@@ -1,4 +1,4 @@
-import { FormInput, FormImageUpload } from "@/components/form";
+import { FormImageUpload, FormInput } from "@/components/form";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
 import {
@@ -76,7 +76,7 @@ const EditSportCategory: React.FC = () => {
         </Button>
       </div>
 
-      <div className="bg-white p-6 rounded-xl border border-gray-100 shadow-sm">
+      <div className="bg-white p-6 rounded-xl border border-gray-100 ">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
             <FormInput

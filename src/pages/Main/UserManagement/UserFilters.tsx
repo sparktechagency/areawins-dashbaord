@@ -16,7 +16,7 @@ const UserFilters: React.FC<UserFiltersProps> = ({
   onClear,
 }) => {
   return (
-    <div className="bg-white p-4 rounded border border-gray-200 flex flex-wrap gap-4 items-center shadow-sm">
+    <div className="bg-white p-4 rounded border border-gray-200 flex flex-wrap gap-4 items-center ">
       <div className="flex-1 min-w-[280px]">
         <div className="relative group">
           <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-primary">

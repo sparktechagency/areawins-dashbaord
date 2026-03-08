@@ -99,7 +99,7 @@ const AuditLogs: React.FC = () => {
         <div className="flex-1 overflow-auto custom-scrollbar">
           <div className="min-width-[800px]">
             <table className="w-full border-collapse">
-              <thead className="sticky top-0 bg-white z-10 shadow-sm">
+              <thead className="sticky top-0 bg-white z-10 ">
                 <tr className="bg-slate-50/50 text-[10px] font-bold text-gray-400 tracking-widest border-b border-gray-100">
                   <th className="px-4 lg:px-8 py-4 text-left">Timestamp</th>
                   <th className="px-4 lg:px-8 py-4 text-left">Admin</th>

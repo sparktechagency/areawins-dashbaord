@@ -8,7 +8,7 @@ interface UserTableProps {
 
 const UserTable: React.FC<UserTableProps> = ({ users, isLoading }) => {
   return (
-    <div className="bg-white rounded border border-gray-200 overflow-hidden shadow-sm">
+    <div className="bg-white rounded border border-gray-200 overflow-hidden ">
       <div className="overflow-x-auto">
         <table className="w-full text-left">
           <thead>

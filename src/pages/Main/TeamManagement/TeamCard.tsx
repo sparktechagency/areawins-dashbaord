@@ -19,7 +19,7 @@ const TeamCard: React.FC<TeamCardProps> = ({
   return (
     <Card className={!t.isActive ? "opacity-60 grayscale" : ""}>
       <CardHeader className="flex flex-col items-center pb-2">
-        <div className="size-24 rounded-full bg-slate-50 border border-slate-100 flex items-center justify-center mb-4 overflow-hidden shadow-sm">
+        <div className="size-24 rounded-full bg-slate-50 border border-slate-100 flex items-center justify-center mb-4 overflow-hidden ">
           {t.logo && t.logo.startsWith("http") ? (
             <img
               src={t.logo}

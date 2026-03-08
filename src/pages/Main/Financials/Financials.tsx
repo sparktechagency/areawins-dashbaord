@@ -43,7 +43,7 @@ const Financials: React.FC = () => {
           </p>
         </div>
         <div className="flex gap-3">
-          <button className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-200 rounded text-sm font-bold hover:bg-gray-50 shadow-sm transition-colors">
+          <button className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-200 rounded text-sm font-bold hover:bg-gray-50  transition-colors">
             <span className="material-symbols-outlined text-sm">download</span>
             Export CSV
           </button>
@@ -83,7 +83,7 @@ const Financials: React.FC = () => {
       </div>
 
       {/* Transaction Table */}
-      <div className="bg-white rounded border border-gray-200 shadow-sm flex flex-col overflow-hidden">
+      <div className="bg-white rounded border border-gray-200  flex flex-col overflow-hidden">
         <div className="flex border-b border-gray-100 px-6 gap-8 overflow-x-auto no-scrollbar">
           {(["all", "deposit", "withdraw"] as const).map((tab) => (
             <button

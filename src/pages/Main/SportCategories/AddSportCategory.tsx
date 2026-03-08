@@ -8,7 +8,6 @@ import {
   sportCategoriesSchema,
 } from "@/validation/sportCategories";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Icon } from "lucide-react";
 import React from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
@@ -60,14 +59,14 @@ const AddSportCategory: React.FC = () => {
         </Button>
       </div>
 
-      <div className="bg-white p-6 rounded-xl border border-gray-100 shadow-sm">
+      <div className="bg-white p-6 rounded-xl border border-gray-100 ">
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
             <FormInput
               control={form.control}
               name="name"
               label="Sport Name"
-              placeholder="Football"
+              placeholder="Enter sport name"
               error={form.formState.errors.name?.message}
               required
             />

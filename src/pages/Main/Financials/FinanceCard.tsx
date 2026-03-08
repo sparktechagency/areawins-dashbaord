@@ -18,7 +18,7 @@ const FinanceCard: React.FC<FinanceCardProps> = ({
   <div
     className={`bg-white p-5 rounded border ${
       isAlert ? "border-l-4 border-l-red-500" : "border-gray-200"
-    } shadow-sm`}
+    } `}
   >
     <p className="text-xs font-bold text-gray-400 tracking-wider">{label}</p>
     <div className="flex items-end justify-between mt-2">
