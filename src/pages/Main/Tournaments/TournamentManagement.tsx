@@ -6,8 +6,7 @@ import SportCategoryBar from "./SportCategoryBar";
 const TournamentManagement: React.FC = () => {
   const navigate = useNavigate();
   const [categoryPage, setCategoryPage] = useState(1);
-  const CATEGORY_LIMIT = 10;
-
+  const CATEGORY_LIMIT = 50;
   const { data: sportsRes } = useGetAllSportCategoriesQuery({
     page: categoryPage,
     limit: CATEGORY_LIMIT,
@@ -49,7 +48,6 @@ const TournamentManagement: React.FC = () => {
           </p>
         </div>
       </div>
-
       <SportCategoryBar
         sports={sports}
         selectedSportId={null}
