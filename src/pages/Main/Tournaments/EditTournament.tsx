@@ -64,9 +64,11 @@ const EditTournamentForm: React.FC<EditTournamentFormProps> = ({
   const onSubmit = async (data: TournamentFormValues) => {
     const formData = new FormData();
     Object.entries(data).forEach(([key, val]) => {
-      if (val !== undefined && val !== null) {
+      if (val !== undefined && val !== null && val !== "") {
         if (val instanceof File) {
           formData.append(key, val);
+        } else if (typeof val === "boolean") {
+          formData.append(key, val ? "true" : "false");
         } else {
           formData.append(key, String(val));
         }

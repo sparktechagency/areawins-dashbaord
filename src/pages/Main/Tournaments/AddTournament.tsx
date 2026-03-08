@@ -58,6 +58,8 @@ const AddTournament: React.FC = () => {
       if (val !== undefined && val !== null) {
         if (val instanceof File) {
           formData.append(key, val);
+        } else if (typeof val === "boolean") {
+          formData.append(key, val ? "true" : "false");
         } else {
           formData.append(key, String(val));
         }

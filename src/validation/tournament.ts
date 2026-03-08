@@ -12,12 +12,12 @@ export const tournamentSchema = z.object({
     "other",
   ]),
   description: z.string().optional(),
-  startDate: z.string().optional(),
-  endDate: z.string().optional(),
+  startDate: z.string().optional().or(z.date().optional()),
+  endDate: z.string().optional().or(z.date().optional()),
   year: z.string().optional(),
   country: z.string().min(1, "Country is required"),
   isFeatured: z.boolean(),
-  isActive: z.boolean().optional(),
+  isActive: z.boolean(),
   logo: z.any().refine((file) => file, "Logo is required"),
 });
 
