@@ -50,7 +50,7 @@ const TournamentList: React.FC = () => {
     limit: TOURNAMENT_LIMIT,
   };
 
-  if (sportId && sportId !== "all") {
+  if (sportId) {
     tournamentParams.sport = sportId;
   }
 
@@ -102,11 +102,7 @@ const TournamentList: React.FC = () => {
   };
 
   const handleSelectSport = (id: string) => {
-    if (id === "all") {
-      navigate("/categories"); // Or back to all tournaments if preferred
-    } else {
-      navigate(`/categories/${id}/tournaments`);
-    }
+    navigate(`/categories/${id}/tournaments`);
     setTournamentPage(1);
   };
   return (
@@ -115,16 +111,11 @@ const TournamentList: React.FC = () => {
       <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 mb-4">
         <div>
           <h1 className="text-3xl md:text-5xl font-black tracking-tighter mb-2">
-            {sportId && sportId !== "all"
-              ? `${currentSport?.name || "Sport"} Tournaments`
-              : "All Tournaments"}
+            {currentSport?.name || "Sport"} Tournaments
           </h1>
           <p className="text-slate-500 font-medium">
-            Manage tournaments and leagues{" "}
-            {sportId && sportId !== "all"
-              ? `for ${currentSport?.name || "this category"}`
-              : "across all categories"}
-            .
+            Manage tournaments and leagues for{" "}
+            {currentSport?.name || "this category"}.
           </p>
         </div>
         <Button
@@ -141,7 +132,7 @@ const TournamentList: React.FC = () => {
       {/* Sport Category Bar */}
       <SportCategoryBar
         sports={sports}
-        selectedSportId={sportId || "all"}
+        selectedSportId={sportId}
         onSelectSport={handleSelectSport}
         currentPage={categoryPage}
         totalPages={categoryTotalPages}

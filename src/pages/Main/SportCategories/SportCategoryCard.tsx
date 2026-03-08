@@ -18,7 +18,7 @@ const SportCategoryCard: React.FC<SportCategoryCardProps> = ({
   const navigate = useNavigate();
   return (
     <Card
-      className="w-full shadow-none group cursor-pointer hover:border-primary transition-all duration-300"
+      className="w-full shadow-none group cursor-pointer hover:border-primary transition-all duration-300 hover:scale-[1.02]"
       onClick={() => navigate(`/categories/${sport._id}/tournaments`)}
     >
       <CardHeader className="flex flex-row items-center justify-between pb-4">
@@ -58,12 +58,20 @@ const SportCategoryCard: React.FC<SportCategoryCardProps> = ({
           </Button>
         </div>
       </CardHeader>
-      <CardContent>
+      <CardContent className="relative overflow-hidden">
         <CardTitle className="mb-1 text-2xl font-black">{sport.name}</CardTitle>
         <div className="text-xs text-slate-400 font-mono mb-4">
           {sport.slug}
         </div>
-        <Badge variant="default">Active</Badge>
+        <div className="flex items-center justify-between">
+          <Badge variant="default">Active</Badge>
+          <div className="flex items-center gap-1 text-primary text-xs font-bold opacity-0 group-hover:opacity-100 transition-all transform translate-x-2 group-hover:translate-x-0">
+            <span>View Tournaments</span>
+            <span className="material-symbols-outlined text-sm">
+              arrow_forward
+            </span>
+          </div>
+        </div>
       </CardContent>
     </Card>
   );

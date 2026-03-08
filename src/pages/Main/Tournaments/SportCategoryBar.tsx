@@ -45,20 +45,6 @@ const SportCategoryBar: React.FC<SportCategoryBarProps> = ({
 
         {/* Scrollable Container */}
         <div className="flex-1 flex overflow-x-auto py-1 gap-2 no-scrollbar scroll-smooth">
-          <button
-            onClick={() => onSelectSport("all")}
-            className={`shrink-0 flex gap-2 items-center px-4 py-2 cursor-pointer rounded border transition-all ${
-              selectedSportId === "all"
-                ? "border-primary bg-primary/5 text-primary"
-                : "border-slate-100 hover:border-slate-200 text-slate-500"
-            }`}
-          >
-            <span className="material-symbols-outlined text-lg">grid_view</span>
-            <span className="text-xs font-bold uppercase tracking-tight">
-              All
-            </span>
-          </button>
-
           {sports?.map((sport: any) => (
             <button
               key={sport._id}
