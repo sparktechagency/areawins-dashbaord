@@ -8,7 +8,7 @@ interface TournamentGridProps {
   isLoading: boolean;
   getSportName: (id: string) => string;
   onEdit: (t: any) => void;
-  onDelete: (id: string) => void;
+  onDelete: (t: any) => void;
   currentPage: number;
   totalPages: number;
   onPageChange: (page: number) => void;

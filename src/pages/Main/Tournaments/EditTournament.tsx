@@ -9,7 +9,6 @@ import {
 import FormSkeleton from "@/components/skeletons/FormSkeleton";
 import { Button } from "@/components/ui/button";
 import { Form } from "@/components/ui/form";
-import { countries } from "@/constants/countries";
 import { useGetAllSportCategoriesQuery } from "@/redux/features/sportCategory/sportCategoryApi";
 import {
   useGetSingleTournamentQuery,
@@ -37,7 +36,9 @@ const EditTournament: React.FC = () => {
   const [updateTournament, { isLoading: isUpdating }] =
     useUpdateTournamentMutation();
 
+  const isDataLoading = isFetching || isSportsLoading;
   const sports = sportsRes?.data?.results || [];
+  const tournament = tournamentRes?.data || null;
 
   const form = useForm<TournamentFormValues>({
     resolver: zodResolver(tournamentSchema) as any,
@@ -56,8 +57,8 @@ const EditTournament: React.FC = () => {
   });
 
   useEffect(() => {
-    if (tournamentRes?.data) {
-      const t = tournamentRes.data;
+    if (tournament) {
+      const t = tournament;
       form.reset({
         name: t.name || "",
         sport:
@@ -74,7 +75,7 @@ const EditTournament: React.FC = () => {
         logo: t.logo || "",
       });
     }
-  }, [tournamentRes, form]);
+  }, [tournament]);
 
   const onSubmit = async (data: TournamentFormValues) => {
     const formData = new FormData();
@@ -97,12 +98,12 @@ const EditTournament: React.FC = () => {
     }
   };
 
-  const isDataLoading = isFetching || isSportsLoading;
-
-  if (isDataLoading) return <FormSkeleton fields={8} columns={2} />;
+  if (isDataLoading || !tournament)
+    return <FormSkeleton fields={8} columns={2} />;
 
   return (
     <div className="p-4 md:p-8 max-w-4xl mx-auto">
+      {/* Header */}
       <div className="flex justify-between items-center mb-10">
         <div>
           <h1 className="text-3xl md:text-5xl font-black tracking-tighter mb-2">
@@ -130,10 +131,13 @@ const EditTournament: React.FC = () => {
                 name="sport"
                 label="Sport Category"
                 placeholder="Select Sport"
-                options={sports.map((s: any) => ({
-                  label: s.name,
-                  value: s._id || s.id,
-                }))}
+                options={sports?.map((s: any) => {
+                  console.log(s);
+                  return {
+                    label: s?.name,
+                    value: s?._id || s?.id,
+                  };
+                })}
                 icon={Trophy}
                 required
               />
@@ -172,15 +176,11 @@ const EditTournament: React.FC = () => {
                 icon={CalendarIcon}
               />
 
-              <FormSelect
+              <FormInput
                 control={form.control}
                 name="country"
                 label="Country"
-                placeholder="Select Country"
-                options={countries.map((c) => ({
-                  label: `${c.name} (${c.code})`,
-                  value: c.code,
-                }))}
+                placeholder="Enter Country (e.g. Albania, UK)"
                 icon={Globe}
               />
 

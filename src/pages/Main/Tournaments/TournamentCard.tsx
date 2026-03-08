@@ -7,7 +7,7 @@ interface TournamentCardProps {
   tournament: any;
   sportName: string;
   onEdit: (t: any) => void;
-  onDelete: (id: string) => void;
+  onDelete: (t: any) => void;
 }
 
 const TournamentCard: React.FC<TournamentCardProps> = ({
@@ -43,7 +43,7 @@ const TournamentCard: React.FC<TournamentCardProps> = ({
             variant="ghost"
             size="icon"
             className="size-8 text-red-500 hover:bg-red-50"
-            onClick={() => onDelete(tournament._id)}
+            onClick={() => onDelete(tournament)}
           >
             <span className="material-symbols-outlined text-lg">delete</span>
           </Button>

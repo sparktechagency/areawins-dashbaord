@@ -1,3 +1,4 @@
+import DeleteConfirmDialog from "@/components/common/DeleteConfirmDialog";
 import { Button } from "@/components/ui/button";
 import { useGetAllSportCategoriesQuery } from "@/redux/features/sportCategory/sportCategoryApi";
 import {
@@ -58,7 +59,11 @@ const TournamentList: React.FC = () => {
 
   const tournamentTotalPages = getPages(tournamentsRes, TOURNAMENT_LIMIT);
 
-  const [deleteTournament] = useDeleteTournamentMutation();
+  const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [deletingName, setDeletingName] = useState<string>("");
+
+  const [deleteTournament, { isLoading: isDeleting }] =
+    useDeleteTournamentMutation();
 
   const tournaments = tournamentsRes?.data?.results || [];
 
@@ -66,14 +71,21 @@ const TournamentList: React.FC = () => {
     return sports.find((s: any) => s._id === id)?.name || "Unknown Sport";
   };
 
-  const handleDelete = async (id: string) => {
-    if (confirm("Are you sure you want to delete this tournament?")) {
-      try {
-        await deleteTournament(id).unwrap();
-        toast.success("Tournament deleted successfully");
-      } catch (err: any) {
-        toast.error(err?.data?.message || "Failed to delete");
-      }
+  const handleDelete = (t: any) => {
+    setDeletingId(t._id);
+    setDeletingName(t.name);
+  };
+
+  const handleDeleteConfirm = async () => {
+    if (!deletingId) return;
+    try {
+      await deleteTournament(deletingId).unwrap();
+      toast.success("Tournament deleted successfully");
+    } catch (err: any) {
+      toast.error(err?.data?.message || "Failed to delete");
+    } finally {
+      setDeletingId(null);
+      setDeletingName("");
     }
   };
 
@@ -144,6 +156,17 @@ const TournamentList: React.FC = () => {
         currentPage={tournamentPage}
         totalPages={tournamentTotalPages}
         onPageChange={setTournamentPage}
+      />
+
+      <DeleteConfirmDialog
+        open={!!deletingId}
+        itemName={deletingName}
+        isDeleting={isDeleting}
+        onConfirm={handleDeleteConfirm}
+        onCancel={() => {
+          setDeletingId(null);
+          setDeletingName("");
+        }}
       />
     </div>
   );

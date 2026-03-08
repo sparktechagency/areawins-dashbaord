@@ -12,7 +12,6 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Form } from "@/components/ui/form";
-import { countries } from "@/constants/countries";
 import { CalendarIcon, Globe, Trophy, Type } from "lucide-react";
 import React from "react";
 import { UseFormReturn } from "react-hook-form";
@@ -94,15 +93,11 @@ const TournamentFormDialog: React.FC<TournamentFormDialogProps> = ({
                 icon={CalendarIcon}
               />
 
-              <FormSelect
+              <FormInput
                 control={form.control}
                 name="country"
                 label="Country"
-                placeholder="Select Country"
-                options={countries.map((c) => ({
-                  label: `${c.name} (${c.code})`,
-                  value: c.code,
-                }))}
+                placeholder="Enter Country (e.g. Albania, UK)"
                 icon={Globe}
               />
 
