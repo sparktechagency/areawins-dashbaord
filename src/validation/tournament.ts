@@ -15,7 +15,7 @@ export const tournamentSchema = z.object({
   startDate: z.string().optional().or(z.date().optional()),
   endDate: z.string().optional().or(z.date().optional()),
   year: z.string().optional(),
-  country: z.string().min(1, "Country is required"),
+  country: z.string().optional(),
   isFeatured: z.boolean(),
   isActive: z.boolean(),
   logo: z.any().refine((file) => file, "Logo is required"),
